@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980">
+  <defs>
+    <style>
+      .title{font:700 38px 'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#15324a}
+      .h{font:700 25px 'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#15324a}
+      .t{font:20px 'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#203744}
+      .s{font:17px 'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#395665}
+      .box{stroke:#315b73;stroke-width:3;rx:18;ry:18}
+      .line{stroke:#315b73;stroke-width:4;fill:none;marker-end:url(#arrow)}
+      .dash{stroke:#728b99;stroke-width:3;stroke-dasharray:10 8;fill:none;marker-end:url(#arrow2)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#315b73"/></marker>
+    <marker id="arrow2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#728b99"/></marker>
+  </defs>
+  <rect width="1600" height="980" fill="#f7fbfd"/>
+  <text x="800" y="58" text-anchor="middle" class="title">STM32F1 GPIO 引脚内部结构（概念图）</text>
+
+  <rect x="60" y="115" width="370" height="250" fill="#e8f4ff" class="box"/>
+  <text x="245" y="158" text-anchor="middle" class="h">输出控制路径</text>
+  <rect x="92" y="190" width="135" height="70" fill="#fff" class="box"/>
+  <text x="160" y="233" text-anchor="middle" class="t">ODR / BSRR</text>
+  <rect x="265" y="190" width="135" height="70" fill="#fff" class="box"/>
+  <text x="333" y="220" text-anchor="middle" class="t">外设输出</text>
+  <text x="333" y="246" text-anchor="middle" class="s">TIM/UART/SPI</text>
+  <rect x="175" y="285" width="145" height="60" fill="#cfe9ff" class="box"/>
+  <text x="248" y="323" text-anchor="middle" class="t">输出复用器</text>
+  <path d="M160 260 L210 285" class="line"/><path d="M333 260 L285 285" class="line"/>
+
+  <rect x="530" y="150" width="330" height="270" fill="#fff2d9" class="box"/>
+  <text x="695" y="193" text-anchor="middle" class="h">输出驱动级</text>
+  <rect x="575" y="220" width="240" height="75" fill="#fff" class="box"/>
+  <text x="695" y="250" text-anchor="middle" class="t">P-MOS 上管：主动拉高</text>
+  <text x="695" y="277" text-anchor="middle" class="s">开漏模式关闭此路径</text>
+  <rect x="575" y="320" width="240" height="75" fill="#fff" class="box"/>
+  <text x="695" y="350" text-anchor="middle" class="t">N-MOS 下管：主动拉低</text>
+  <text x="695" y="377" text-anchor="middle" class="s">推挽与开漏均可使用</text>
+  <path d="M320 315 L530 285" class="line"/>
+
+  <rect x="955" y="170" width="220" height="200" fill="#e9f8e8" class="box"/>
+  <text x="1065" y="214" text-anchor="middle" class="h">上下拉网络</text>
+  <text x="1065" y="260" text-anchor="middle" class="t">弱上拉 → VDD</text>
+  <text x="1065" y="304" text-anchor="middle" class="t">弱下拉 → GND</text>
+  <text x="1065" y="340" text-anchor="middle" class="s">只确定默认电平</text>
+
+  <rect x="1260" y="210" width="250" height="125" fill="#ffe8ea" class="box"/>
+  <text x="1385" y="258" text-anchor="middle" class="h">外部引脚 PAD</text>
+  <text x="1385" y="295" text-anchor="middle" class="t">连接真实电路</text>
+  <path d="M860 285 L1260 270" class="line"/><path d="M1175 270 L1260 270" class="line"/>
+
+  <rect x="915" y="470" width="300" height="230" fill="#e9efff" class="box"/>
+  <text x="1065" y="515" text-anchor="middle" class="h">数字输入路径</text>
+  <rect x="955" y="545" width="220" height="70" fill="#fff" class="box"/>
+  <text x="1065" y="575" text-anchor="middle" class="t">施密特输入缓冲</text>
+  <text x="1065" y="601" text-anchor="middle" class="s">抗慢边沿与小噪声</text>
+  <rect x="955" y="640" width="220" height="42" fill="#fff" class="box"/>
+  <text x="1065" y="668" text-anchor="middle" class="t">IDR 读取实际电平</text>
+  <path d="M1260 295 L1215 295 L1215 580 L1175 580" class="line"/>
+
+  <rect x="1260" y="470" width="250" height="230" fill="#f4eaff" class="box"/>
+  <text x="1385" y="515" text-anchor="middle" class="h">模拟路径</text>
+  <rect x="1300" y="550" width="170" height="65" fill="#fff" class="box"/>
+  <text x="1385" y="590" text-anchor="middle" class="t">ADC / 模拟外设</text>
+  <text x="1385" y="655" text-anchor="middle" class="s">Analog 模式关闭数字缓冲</text>
+  <path d="M1385 335 L1385 470" class="line"/>
+
+  <rect x="70" y="495" width="710" height="315" fill="#ffffff" class="box"/>
+  <text x="425" y="540" text-anchor="middle" class="h">模式选择决定哪些路径工作</text>
+  <text x="110" y="590" class="t">• 输入浮空：数字缓冲开启，无内部上下拉</text>
+  <text x="110" y="635" class="t">• 输入上拉/下拉：数字缓冲开启，弱电阻确定默认状态</text>
+  <text x="110" y="680" class="t">• 推挽输出：上管、下管都工作，可主动输出高和低</text>
+  <text x="110" y="725" class="t">• 开漏输出：只用下管；写 1 是“释放”，必须有上拉</text>
+  <text x="110" y="770" class="t">• 复用输出：信号来自定时器/串口/SPI，而不是 ODR</text>
+
+  <rect x="80" y="865" width="1440" height="70" fill="#eaf3f7" class="box"/>
+  <text x="800" y="898" text-anchor="middle" class="t">F1 关键寄存器：CRL/CRH 选模式与速度；IDR 读引脚；ODR 保存输出；BSRR 原子置位/复位；LCKR 锁定配置</text>
+  <text x="800" y="925" text-anchor="middle" class="s">注意：这是帮助理解的功能概念图，具体保护二极管与 5 V 容忍条件必须查对应型号数据手册。</text>
+</svg>

@@ -1,0 +1,7 @@
+.superdesign/tmp/
+.superdesign/
+site/
+test-results/
+exports/
+.mkdocs-preview.*.log
+__pycache__/

@@ -1,0 +1,449 @@
+(() => {
+  const STORAGE_BEST = "lhyzs-yuumi-best";
+  const STORAGE_BOARD = "lhyzs-yuumi-board";
+
+  const initGame = () => {
+    const root = document.querySelector("#yuumi-flight-game");
+    if (!root || root.dataset.ready === "true") return;
+    root.dataset.ready = "true";
+
+    const canvas = root.querySelector("#yuumi-game-canvas");
+    const ctx = canvas.getContext("2d");
+    const backgroundCanvas = document.createElement("canvas");
+    backgroundCanvas.width = 240;
+    backgroundCanvas.height = 135;
+    const bg = backgroundCanvas.getContext("2d");
+    const curtain = root.querySelector("#game-curtain");
+    const startButton = root.querySelector("#game-start");
+    const pauseButton = root.querySelector("#game-pause");
+    const soundButton = root.querySelector("#game-sound");
+    const statusLabel = root.querySelector("#game-status");
+    const distanceLabel = root.querySelector("#game-distance");
+    const bestLabel = root.querySelector("#game-best");
+    const themeLabel = root.querySelector("#game-theme-label");
+    const leaderboard = root.querySelector("#game-leaderboard");
+    const scoreForm = root.querySelector("#score-form");
+
+    const W = canvas.width;
+    const H = canvas.height;
+    const isDay = new Date().getHours() >= 6 && new Date().getHours() < 18;
+    const sprite = new Image();
+    sprite.src = new URL(root.dataset.sprite, document.baseURI).href;
+    const sceneBackground = new Image();
+    sceneBackground.src = new URL(
+      isDay ? root.dataset.dayBackground : root.dataset.nightBackground,
+      document.baseURI
+    ).href;
+    ctx.imageSmoothingEnabled = false;
+    themeLabel.textContent = isDay ? "白昼 · 雪林" : "夜晚 · 冰洞";
+    root.classList.toggle("is-night", !isDay);
+
+    const player = { x: 185, y: 255, width: 88, height: 68, velocity: 0 };
+    const frameRects = [
+      [42, 32, 340, 300],
+      [405, 25, 335, 300],
+      [760, 45, 330, 285],
+      [1115, 42, 330, 290]
+    ];
+    const particles = Array.from({ length: 52 }, (_, index) => ({
+      x: (index * 83) % W,
+      y: (index * 47) % H,
+      size: 2 + (index % 3),
+      speed: 12 + (index % 5) * 4
+    }));
+
+    let state = "ready";
+    let soundOn = true;
+    let lastTime = performance.now();
+    let distance = 0;
+    let best = Number(localStorage.getItem(STORAGE_BEST) || 0);
+    let worldOffset = 0;
+    let obstacles = [];
+    let lastGapY = H / 2;
+    let submitted = false;
+    let audioContext;
+
+    const defaultBoard = [
+      { name: "CrystalMage", score: 542 },
+      { name: "SnowWalker", score: 294 },
+      { name: "IronBoar", score: 152 },
+      { name: "FrostyTail", score: 86 }
+    ];
+
+    const readBoard = () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_BOARD) || "[]");
+        return [...defaultBoard, ...(Array.isArray(saved) ? saved : [])]
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 5);
+      } catch (_) {
+        return defaultBoard;
+      }
+    };
+
+    const renderBoard = () => {
+      leaderboard.innerHTML = readBoard().map((entry, index) => `
+        <li class="rank-${index + 1}">
+          <span class="yuumi-leaderboard__rank">${index + 1}</span>
+          <span class="yuumi-leaderboard__name">${entry.name.replace(/[<>&"]/g, "")}</span>
+          <strong>${entry.score} m</strong>
+        </li>`).join("");
+    };
+
+    const chooseGapY = () => {
+      const margin = 184;
+      const minDelta = 64;
+      let next = margin + Math.random() * (H - margin * 2);
+      let attempts = 0;
+      while (Math.abs(next - lastGapY) < minDelta && attempts < 12) {
+        next = margin + Math.random() * (H - margin * 2);
+        attempts += 1;
+      }
+      if (Math.abs(next - lastGapY) < minDelta) {
+        next = lastGapY < H / 2 ? H - margin : margin;
+      }
+      lastGapY = next;
+      return next;
+    };
+
+    const resetObstacles = () => {
+      lastGapY = H / 2;
+      obstacles = [0, 1, 2, 3].map((_, index) => ({
+        x: 610 + index * 260,
+        gapY: chooseGapY(),
+        passed: false
+      }));
+    };
+
+    const beep = (frequency, duration = 0.05) => {
+      if (!soundOn) return;
+      try {
+        audioContext ||= new AudioContext();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.frequency.value = frequency;
+        oscillator.type = "square";
+        gain.gain.setValueAtTime(0.025, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+        oscillator.connect(gain).connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + duration);
+      } catch (_) {}
+    };
+
+    const reset = () => {
+      state = "ready";
+      distance = 0;
+      worldOffset = 0;
+      player.y = H / 2 - 20;
+      player.velocity = 0;
+      submitted = false;
+      resetObstacles();
+      distanceLabel.textContent = "0 m";
+      bestLabel.textContent = `${best} m`;
+      statusLabel.textContent = "冰柱高低错落，找准节奏穿过去";
+      startButton.textContent = "开始飞行";
+      curtain.hidden = false;
+      scoreForm.hidden = true;
+      pauseButton.textContent = "暂停";
+    };
+
+    const start = () => {
+      if (state === "playing") return;
+      if (state === "gameover") reset();
+      state = "playing";
+      curtain.hidden = true;
+      player.velocity = -270;
+      canvas.focus({ preventScroll: true });
+      beep(520);
+    };
+
+    const flap = () => {
+      if (state === "ready" || state === "gameover") {
+        start();
+        return;
+      }
+      if (state !== "playing") return;
+      player.velocity = -300;
+      beep(620);
+    };
+
+    const gameOver = () => {
+      if (state !== "playing") return;
+      state = "gameover";
+      const score = Math.floor(distance);
+      best = Math.max(best, score);
+      localStorage.setItem(STORAGE_BEST, String(best));
+      bestLabel.textContent = `${best} m`;
+      statusLabel.textContent = `本次飞行 ${score} 米`;
+      startButton.textContent = "再飞一次";
+      curtain.hidden = false;
+      scoreForm.hidden = false;
+      beep(130, 0.18);
+    };
+
+    const togglePause = () => {
+      if (state === "playing") {
+        state = "paused";
+        statusLabel.textContent = "已暂停";
+        startButton.textContent = "继续飞行";
+        curtain.hidden = false;
+        pauseButton.textContent = "继续";
+      } else if (state === "paused") {
+        state = "playing";
+        curtain.hidden = true;
+        pauseButton.textContent = "暂停";
+      }
+    };
+
+    const drawMountain = (x, baseY, width, height, color, cap) => {
+      const center = Math.round(x + width / 2);
+      for (let row = 0; row < height; row += 1) {
+        const progress = row / height;
+        const half = Math.max(1, Math.floor(progress * width / 2));
+        bg.fillStyle = row < height * 0.34 ? cap : color;
+        bg.fillRect(center - half, baseY - height + row, half * 2, 1);
+      }
+      bg.fillStyle = isDay ? "#a9cfdb" : "#31566a";
+      bg.fillRect(center - 2, baseY - Math.round(height * 0.56), 4, Math.round(height * 0.2));
+    };
+
+    const drawTree = (x, y, scale, color) => {
+      const trunk = Math.max(1, Math.round(2 * scale));
+      bg.fillStyle = isDay ? "#463b40" : "#182633";
+      bg.fillRect(Math.round(x - trunk / 2), Math.round(y - 8 * scale), trunk, Math.round(12 * scale));
+      for (let tier = 0; tier < 3; tier += 1) {
+        const height = Math.round((10 + tier * 2) * scale);
+        const top = Math.round(y - (29 - tier * 9) * scale);
+        for (let row = 0; row < height; row += 1) {
+          const half = Math.max(1, Math.floor((row / height) * (7 + tier * 3) * scale));
+          bg.fillStyle = color;
+          bg.fillRect(Math.round(x - half), top + row, half * 2, 1);
+        }
+      }
+      bg.fillStyle = isDay ? "#dff5f1" : "#6b98a4";
+      bg.fillRect(Math.round(x - 5 * scale), Math.round(y - 16 * scale), Math.round(10 * scale), Math.max(1, Math.round(scale)));
+    };
+
+    const drawBackground = (dt) => {
+      worldOffset += (state === "playing" ? 34 : 8) * dt;
+      bg.imageSmoothingEnabled = false;
+      bg.fillStyle = isDay ? "#68c5e5" : "#071321";
+      bg.fillRect(0, 0, 240, 135);
+      bg.fillStyle = isDay ? "#89d6e9" : "#0d2131";
+      bg.fillRect(0, 25, 240, 42);
+      bg.fillStyle = isDay ? "#b5e7ee" : "#163444";
+      bg.fillRect(0, 54, 240, 24);
+
+      if (isDay) {
+        const cloudShift = -Math.floor((worldOffset * 0.03) % 70);
+        for (let x = cloudShift - 35; x < 260; x += 70) {
+          bg.fillStyle = "#dff5f4";
+          bg.fillRect(x, 17, 14, 3);
+          bg.fillRect(x + 4, 14, 15, 5);
+          bg.fillRect(x + 12, 18, 12, 3);
+        }
+      } else {
+        bg.fillStyle = "#a7d4dc";
+        bg.fillRect(194, 13, 10, 10);
+        bg.fillRect(191, 16, 16, 4);
+        bg.fillStyle = "#071321";
+        bg.fillRect(190, 11, 9, 9);
+        for (let x = 12; x < 230; x += 27) bg.fillRect(x, 8 + (x % 19), 1, 1);
+      }
+
+      const mountainShift = -Math.floor((worldOffset * 0.02) % 82);
+      for (let x = mountainShift - 82; x < 260; x += 68) {
+        drawMountain(x, 91, 84, 48, isDay ? "#6f9eb8" : "#203b4d", isDay ? "#e4f4f2" : "#668f99");
+      }
+
+      bg.fillStyle = isDay ? "#356d73" : "#102b38";
+      bg.fillRect(0, 89, 240, 46);
+      const treeShift = -Math.floor((worldOffset * 0.07) % 24);
+      for (let x = treeShift - 24; x < 252; x += 19) {
+        drawTree(x, 116 + ((Math.floor(x / 19) & 1) ? 4 : 0), 1.15, isDay ? "#1e5960" : "#102b36");
+      }
+
+      bg.fillStyle = isDay ? "#a9dfe4" : "#28596a";
+      bg.fillRect(0, 117, 240, 18);
+      bg.fillStyle = isDay ? "#eef8f5" : "#729da7";
+      bg.fillRect(0, 117, 240, 2);
+      const lakeShift = -Math.floor((worldOffset * 0.2) % 20);
+      bg.fillStyle = isDay ? "#72bfd0" : "#1b4d60";
+      for (let x = lakeShift - 20; x < 240; x += 20) bg.fillRect(x, 124, 9, 1);
+
+      ctx.imageSmoothingEnabled = false;
+      if (sceneBackground.complete && sceneBackground.naturalWidth) {
+        ctx.drawImage(sceneBackground, 0, 0, W, H);
+      } else {
+        ctx.drawImage(backgroundCanvas, 0, 0, W, H);
+      }
+
+      const hazeShift = -Math.round((worldOffset * 0.22) % 190);
+      ctx.fillStyle = isDay ? "rgba(214, 245, 244, 0.1)" : "rgba(72, 142, 166, 0.09)";
+      for (let x = hazeShift - 190; x < W + 190; x += 190) {
+        ctx.fillRect(x, Math.round(H * 0.72), 112, 5);
+        ctx.fillRect(x + 46, Math.round(H * 0.76), 128, 3);
+      }
+
+      for (const particle of particles) {
+        particle.x -= particle.speed * dt;
+        particle.y += particle.speed * 0.18 * dt;
+        if (particle.x < 0) particle.x = W;
+        if (particle.y > H) particle.y = 0;
+        ctx.fillStyle = isDay ? "rgba(255,255,255,.9)" : "rgba(147,221,232,.75)";
+        ctx.fillRect(Math.round(particle.x / 3) * 3, Math.round(particle.y / 3) * 3, particle.size + 1, particle.size + 1);
+      }
+    };
+
+    const drawIceWall = (x, y, width, height, capAtBottom) => {
+      const px = Math.round(x);
+      const py = Math.round(y);
+      const ph = Math.max(0, Math.round(height));
+      if (ph <= 0) return;
+      ctx.fillStyle = "#123f63";
+      ctx.fillRect(px, py, width, ph);
+      ctx.fillStyle = "#1e6285";
+      ctx.fillRect(px + 8, py, width - 16, ph);
+      ctx.fillStyle = "#318aac";
+      ctx.fillRect(px + 13, py, 8, ph);
+      ctx.fillStyle = "#0d3456";
+      ctx.fillRect(px + width - 18, py, 10, ph);
+
+      for (let row = py + 22; row < py + ph - 18; row += 42) {
+        const offset = ((row / 42) & 1) ? 0 : 12;
+        ctx.fillStyle = "#68c6d8";
+        ctx.fillRect(px + 24 + offset, row, 28, 4);
+        ctx.fillRect(px + 48 + offset, row + 4, 4, 17);
+        ctx.fillStyle = "#174f75";
+        ctx.fillRect(px + 52 + offset, row + 17, 20, 4);
+      }
+
+      const capY = capAtBottom ? py + ph - 18 : py;
+      ctx.fillStyle = "#dff4f1";
+      ctx.fillRect(px - 4, capY, width + 8, 12);
+      ctx.fillStyle = "#a7dce1";
+      ctx.fillRect(px, capAtBottom ? capY + 12 : capY + 12, width, 6);
+      ctx.fillStyle = "#effaf7";
+      ctx.fillRect(px + 8, capY + 3, 26, 4);
+      ctx.fillRect(px + 50, capY + 2, 30, 4);
+    };
+
+    const drawPillar = (obstacle) => {
+      const gap = 208;
+      const width = 96;
+      const topHeight = obstacle.gapY - gap / 2;
+      const bottomY = obstacle.gapY + gap / 2;
+      drawIceWall(obstacle.x, 0, width, topHeight, true);
+      drawIceWall(obstacle.x, bottomY, width, H - bottomY, false);
+    };
+
+    const drawPlayer = (time) => {
+      const frame = frameRects[Math.floor(time / 140) % frameRects.length];
+      const bob = state === "ready" ? Math.sin(time / 270) * 5 : 0;
+      ctx.save();
+      ctx.translate(player.x + player.width / 2, player.y + player.height / 2 + bob);
+      ctx.rotate(Math.max(-0.24, Math.min(0.42, player.velocity / 1050)));
+      if (sprite.complete && sprite.naturalWidth) {
+        ctx.drawImage(sprite, ...frame, -player.width / 2 - 10, -player.height / 2 - 10, player.width + 20, player.height + 20);
+      } else {
+        ctx.fillStyle = "#8268c7";
+        ctx.fillRect(-32, -22, 62, 44);
+        ctx.fillStyle = "#d8bc54";
+        ctx.fillRect(-42, 16, 84, 10);
+      }
+      ctx.restore();
+    };
+
+    const update = (dt) => {
+      if (state !== "playing") return;
+      const speed = 205;
+      player.velocity += 720 * dt;
+      player.y += player.velocity * dt;
+      distance += speed * dt / 10;
+      distanceLabel.textContent = `${Math.floor(distance)} m`;
+
+      for (const obstacle of obstacles) {
+        obstacle.x -= speed * dt;
+        if (!obstacle.passed && obstacle.x + 96 < player.x) {
+          obstacle.passed = true;
+          beep(820, 0.035);
+        }
+        if (obstacle.x < -130) {
+          const farthest = Math.max(...obstacles.map((item) => item.x));
+          obstacle.x = farthest + 260;
+          obstacle.gapY = chooseGapY();
+          obstacle.passed = false;
+        }
+      }
+
+      const px = player.x + 25;
+      const py = player.y + 17;
+      const pw = player.width - 50;
+      const ph = player.height - 34;
+      if (py < 0 || py + ph > H) gameOver();
+      for (const obstacle of obstacles) {
+        const overlapX = px + pw > obstacle.x + 12 && px < obstacle.x + 84;
+        const gapTop = obstacle.gapY - 116;
+        const gapBottom = obstacle.gapY + 116;
+        if (overlapX && (py < gapTop || py + ph > gapBottom)) gameOver();
+      }
+    };
+
+    const loop = (time) => {
+      const dt = Math.min((time - lastTime) / 1000, 0.035);
+      lastTime = time;
+      update(dt);
+      drawBackground(dt);
+      obstacles.forEach(drawPillar);
+      drawPlayer(time);
+      requestAnimationFrame(loop);
+    };
+
+    startButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (state === "paused") togglePause();
+      else start();
+    });
+    pauseButton.addEventListener("click", togglePause);
+    soundButton.addEventListener("click", () => {
+      soundOn = !soundOn;
+      soundButton.textContent = `音效 ${soundOn ? "开" : "关"}`;
+    });
+    canvas.addEventListener("pointerdown", flap);
+    window.addEventListener("keydown", (event) => {
+      if (!root.isConnected || event.repeat) return;
+      if (event.code === "Space" && !["INPUT", "BUTTON"].includes(document.activeElement?.tagName)) {
+        event.preventDefault();
+        flap();
+      } else if (event.key.toLowerCase() === "p") {
+        togglePause();
+      } else if (event.key.toLowerCase() === "r") {
+        reset();
+        start();
+      }
+    });
+    scoreForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (submitted) return;
+      const name = new FormData(scoreForm).get("name")?.toString().trim().slice(0, 12) || "旅人";
+      let saved = [];
+      try { saved = JSON.parse(localStorage.getItem(STORAGE_BOARD) || "[]"); } catch (_) {}
+      saved.push({ name, score: Math.floor(distance) });
+      localStorage.setItem(STORAGE_BOARD, JSON.stringify(saved.slice(-20)));
+      submitted = true;
+      scoreForm.hidden = true;
+      renderBoard();
+    });
+
+    renderBoard();
+    reset();
+    requestAnimationFrame(loop);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initGame, { once: true });
+  } else {
+    initGame();
+  }
+})();

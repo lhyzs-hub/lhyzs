@@ -1,0 +1,34 @@
+site_name: lhyzs
+site_url: https://lhyzs-hub.github.io/lhyzs/
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.tabs
+    - navigation.sections
+  palette:
+    scheme: slate
+    primary: indigo
+    accent: amber
+  font:
+    text: Roboto
+    code: JetBrains Mono
+    heading: Inter
+extra_css:
+  - assets/stylesheets/extra.css
+extra_javascript:
+  - assets/javascripts/site.js
+  - assets/javascripts/game.js
+  - assets/javascripts/daily.js
+  - assets/javascripts/supabase-config.js
+  - https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.min.js
+  - assets/javascripts/comments.js
+nav:
+  - 主页: index.md
+  - 笔记:
+      - 总览: notes/index.md
+      - 工科学习: notes/工科学习/index.md
+      - 大学课程学习: notes/大学课程学习/index.md
+  - 日常: daily/index.md
+  - 友链: friends/index.md
+  - 搜索: search/index.md

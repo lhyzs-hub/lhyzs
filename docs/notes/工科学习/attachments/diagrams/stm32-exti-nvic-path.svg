@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="900" viewBox="0 0 1700 900">
+  <defs>
+    <style>
+      .title{font:700 38px 'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#15324a}.h{font:700 24px 'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#15324a}.t{font:19px 'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#203744}.s{font:16px 'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#49636f}.box{stroke:#315b73;stroke-width:3;rx:16;ry:16}.line{stroke:#315b73;stroke-width:4;fill:none;marker-end:url(#a)}.event{stroke:#8b5e19;stroke-width:4;fill:none;marker-end:url(#b)}
+    </style>
+    <marker id="a" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#315b73"/></marker>
+    <marker id="b" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#8b5e19"/></marker>
+  </defs>
+  <rect width="1700" height="900" fill="#f8fbfd"/>
+  <text x="850" y="58" text-anchor="middle" class="title">STM32F1 外部中断：GPIO → EXTI → NVIC → CPU</text>
+
+  <rect x="45" y="155" width="180" height="130" fill="#ffe9eb" class="box"/><text x="135" y="205" text-anchor="middle" class="h">GPIO 引脚</text><text x="135" y="245" text-anchor="middle" class="t">PAx / PBx / PCx</text>
+  <rect x="285" y="135" width="220" height="170" fill="#e9f4ff" class="box"/><text x="395" y="180" text-anchor="middle" class="h">AFIO_EXTICR</text><text x="395" y="220" text-anchor="middle" class="t">端口选择/线路映射</text><text x="395" y="260" text-anchor="middle" class="s">PA0 与 PB0 不能同时</text><text x="395" y="282" text-anchor="middle" class="s">连接到 EXTI0</text>
+  <rect x="565" y="120" width="260" height="200" fill="#fff3dc" class="box"/><text x="695" y="168" text-anchor="middle" class="h">边沿检测</text><text x="695" y="214" text-anchor="middle" class="t">RTSR：上升沿</text><text x="695" y="254" text-anchor="middle" class="t">FTSR：下降沿</text><text x="695" y="294" text-anchor="middle" class="s">SWIER 也可软件触发</text>
+  <rect x="895" y="135" width="225" height="170" fill="#f1eaff" class="box"/><text x="1008" y="183" text-anchor="middle" class="h">PR 挂起锁存</text><text x="1008" y="225" text-anchor="middle" class="t">检测到边沿后置 1</text><text x="1008" y="267" text-anchor="middle" class="s">写 1 清除，不是写 0</text>
+  <rect x="1190" y="115" width="210" height="210" fill="#e8f7e8" class="box"/><text x="1295" y="163" text-anchor="middle" class="h">IMR 中断屏蔽</text><text x="1295" y="205" text-anchor="middle" class="t">1：允许请求</text><text x="1295" y="244" text-anchor="middle" class="t">0：屏蔽请求</text><text x="1295" y="286" text-anchor="middle" class="s">PR 仍可能保持挂起</text>
+  <rect x="1460" y="115" width="200" height="210" fill="#dff2ff" class="box"/><text x="1560" y="160" text-anchor="middle" class="h">NVIC</text><text x="1560" y="198" text-anchor="middle" class="t">使能/挂起</text><text x="1560" y="233" text-anchor="middle" class="t">优先级/抢占</text><text x="1560" y="275" text-anchor="middle" class="s">决定 CPU 何时响应</text>
+  <path d="M225 220 L285 220" class="line"/><path d="M505 220 L565 220" class="line"/><path d="M825 220 L895 220" class="line"/><path d="M1120 220 L1190 220" class="line"/><path d="M1400 220 L1460 220" class="line"/>
+
+  <rect x="1450" y="390" width="220" height="180" fill="#ffe9d9" class="box"/><text x="1560" y="435" text-anchor="middle" class="h">Cortex-M3 CPU</text><text x="1560" y="476" text-anchor="middle" class="t">进入 IRQHandler</text><text x="1560" y="512" text-anchor="middle" class="t">HAL 检查并清 PR</text><text x="1560" y="548" text-anchor="middle" class="s">再调用用户 Callback</text>
+  <path d="M1560 325 L1560 390" class="line"/>
+
+  <rect x="895" y="405" width="225" height="150" fill="#fff7df" class="box"/><text x="1008" y="450" text-anchor="middle" class="h">EMR 事件屏蔽</text><text x="1008" y="490" text-anchor="middle" class="t">允许硬件事件路径</text><text x="1008" y="525" text-anchor="middle" class="s">不必进入 ISR</text>
+  <rect x="1190" y="405" width="210" height="150" fill="#fff1c9" class="box"/><text x="1295" y="452" text-anchor="middle" class="h">事件 / 唤醒</text><text x="1295" y="492" text-anchor="middle" class="t">供 WFE 等机制使用</text><text x="1295" y="527" text-anchor="middle" class="s">与中断路径不同</text>
+  <path d="M825 260 L850 260 L850 480 L895 480" class="event"/><path d="M1120 480 L1190 480" class="event"/>
+
+  <rect x="55" y="650" width="500" height="170" fill="#fff" class="box"/><text x="305" y="695" text-anchor="middle" class="h">两级屏蔽要分清</text><text x="90" y="742" class="t">1. EXTI_IMR：阻止 EXTI 请求送往 NVIC</text><text x="90" y="782" class="t">2. NVIC ICER：NVIC 不把该 IRQ 交给 CPU</text>
+  <rect x="600" y="650" width="500" height="170" fill="#fff" class="box"/><text x="850" y="695" text-anchor="middle" class="h">挂起也有两处</text><text x="635" y="742" class="t">EXTI_PR：哪条 EXTI 线检测到触发</text><text x="635" y="782" class="t">NVIC_ISPR：哪个 IRQ 已在 NVIC 等待处理</text>
+  <rect x="1145" y="650" width="500" height="170" fill="#fff" class="box"/><text x="1395" y="695" text-anchor="middle" class="h">共享 IRQ 向量</text><text x="1180" y="742" class="t">EXTI5–9 共用 EXTI9_5_IRQn</text><text x="1180" y="782" class="t">EXTI10–15 共用 EXTI15_10_IRQn</text>
+</svg>
