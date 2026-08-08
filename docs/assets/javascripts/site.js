@@ -1,4 +1,28 @@
 (() => {
+  const THEME_STORAGE_KEY = "lhyzs-theme";
+  const SUN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-5h1v3h-1V2Zm0 17h1v3h-1v-3ZM2 12h3v1H2v-1Zm17 0h3v1h-3v-1ZM4.22 4.93l.71-.71 2.12 2.12-.71.71-2.12-2.12Zm12.73 12.73.71-.71 2.12 2.12-.71.71-2.12-2.12Zm0-11.32 2.12-2.12.71.71-2.12 2.12-.71-.71ZM4.22 19.07l2.12-2.12.71.71-2.12 2.12-.71-.71Z"/></svg>';
+  const MOON_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.4A8.5 8.5 0 0 1 8.6 3.8 9 9 0 1 0 20.2 15.4Z"/></svg>';
+
+  const preferredTheme = () => {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    return saved === "light" || saved === "dark" ? saved : "dark";
+  };
+
+  const applyTheme = (theme, button) => {
+    document.documentElement.dataset.lhyzsTheme = theme;
+    document.documentElement.style.colorScheme = theme;
+    if (!button) return;
+    const switchesToLight = theme === "dark";
+    button.dataset.nextTheme = switchesToLight ? "light" : "dark";
+    button.classList.toggle("theme-switch--sun", switchesToLight);
+    button.classList.toggle("theme-switch--moon", !switchesToLight);
+    button.innerHTML = switchesToLight ? SUN_ICON : MOON_ICON;
+    button.setAttribute("aria-label", switchesToLight ? "切换到白色主题" : "切换到黑色主题");
+    button.title = switchesToLight ? "白色主题" : "黑色主题";
+  };
+
+  applyTheme(preferredTheme());
+
   const initHeader = () => {
     document.body.classList.toggle("lhyzs-home", Boolean(document.querySelector(".hero-home")));
 
@@ -26,6 +50,17 @@
       nav.append(tabsList);
       headerInner.append(nav);
     }
+
+    const themeSwitch = document.createElement("button");
+    themeSwitch.className = "theme-switch";
+    themeSwitch.type = "button";
+    headerInner.append(themeSwitch);
+    applyTheme(document.documentElement.dataset.lhyzsTheme || preferredTheme(), themeSwitch);
+    themeSwitch.addEventListener("click", () => {
+      const nextTheme = themeSwitch.dataset.nextTheme || "light";
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+      applyTheme(nextTheme, themeSwitch);
+    });
 
     const profile = document.createElement("div");
     profile.className = "player-profile";
