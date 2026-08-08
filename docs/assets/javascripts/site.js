@@ -38,7 +38,9 @@
     const launcher = document.createElement("a");
     launcher.className = "play-launcher";
     launcher.href = playUrl;
-    launcher.textContent = "PLAY";
+    launcher.innerHTML = `
+      <span class="play-launcher__steps" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="play-launcher__label">PLAY</span>`;
     launcher.setAttribute("aria-label", "打开小游戏入口");
     headerInner.prepend(launcher);
 
