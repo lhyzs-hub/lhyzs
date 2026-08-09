@@ -134,7 +134,9 @@
       ".game-nav .md-tabs__link",
       '.md-header__button.md-icon[for="__search"]',
       ".theme-switch",
-      ".player-profile__trigger"
+      ".player-profile__trigger",
+      ".hero-home__action",
+      ".hero-home__update"
     ].join(",");
 
     const flashPressable = (pressable) => {
