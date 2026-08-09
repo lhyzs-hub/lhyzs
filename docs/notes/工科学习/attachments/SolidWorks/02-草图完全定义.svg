@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#f7fafc"/>
+  <text x="55" y="60" fill="#243b53" font-size="34" font-family="Microsoft YaHei">从欠定义到完全定义：先几何关系，后尺寸</text>
+  <rect x="70" y="110" width="440" height="480" rx="16" fill="#fff" stroke="#8aa4ba" stroke-width="3"/>
+  <text x="220" y="155" fill="#486581" font-size="28" font-family="Microsoft YaHei">欠定义（蓝色）</text>
+  <rect x="165" y="245" width="250" height="190" fill="none" stroke="#2780c2" stroke-width="7"/>
+  <path d="M290 200 L290 480 M120 340 L460 340" stroke="#b8c7d4" stroke-width="2" stroke-dasharray="8 8"/>
+  <path d="M410 430 C455 455 470 500 450 535" fill="none" stroke="#ef6c57" stroke-width="5" marker-end="url(#arrow)"/>
+  <text x="125" y="535" fill="#d64545" font-size="21" font-family="Microsoft YaHei">还能平移、缩放或转动</text>
+  <rect x="690" y="110" width="440" height="480" rx="16" fill="#fff" stroke="#8aa4ba" stroke-width="3"/>
+  <text x="830" y="155" fill="#486581" font-size="28" font-family="Microsoft YaHei">完全定义（黑色）</text>
+  <rect x="785" y="245" width="250" height="190" fill="none" stroke="#202124" stroke-width="7"/>
+  <circle cx="910" cy="340" r="8" fill="#38a169"/>
+  <path d="M785 470 L1035 470" stroke="#5f6c7b" stroke-width="2"/>
+  <path d="M785 455 L785 485 M1035 455 L1035 485" stroke="#5f6c7b" stroke-width="2"/>
+  <text x="885" y="505" fill="#243b53" font-size="24" font-family="Microsoft YaHei">80 mm</text>
+  <path d="M750 245 L750 435" stroke="#5f6c7b" stroke-width="2"/>
+  <path d="M735 245 L765 245 M735 435 L765 435" stroke="#5f6c7b" stroke-width="2"/>
+  <text x="700" y="350" fill="#243b53" font-size="24" font-family="Microsoft YaHei" transform="rotate(-90 700 350)">50 mm</text>
+  <path d="M510 350 L670 350" stroke="#38a169" stroke-width="5" marker-end="url(#arrowGreen)"/>
+  <text x="530" y="320" fill="#27785e" font-size="22" font-family="Microsoft YaHei">水平/垂直/重合</text>
+  <text x="535" y="390" fill="#27785e" font-size="22" font-family="Microsoft YaHei">对称 + 智能尺寸</text>
+  <text x="175" y="650" fill="#486581" font-size="24" font-family="Microsoft YaHei">判断方法：拖动检查自由度；蓝色仍可动，黑色通常已完全定义</text>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#ef6c57"/></marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#38a169"/></marker>
+  </defs>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#f7fafc"/>
+  <text x="55" y="62" fill="#243b53" font-size="34" font-family="Microsoft YaHei">装配的本质：用配合逐步消除 6 个自由度</text>
+  <rect x="70" y="125" width="360" height="390" rx="18" fill="#fff" stroke="#8aa4ba" stroke-width="3"/>
+  <text x="150" y="170" fill="#486581" font-size="27" font-family="Microsoft YaHei">自由零件：6 DOF</text>
+  <rect x="150" y="260" width="190" height="125" fill="#d9eaf7" stroke="#2678a8" stroke-width="4"/>
+  <path d="M245 225 L245 420 M115 322 L380 322" stroke="#ef6c57" stroke-width="4" marker-start="url(#r)" marker-end="url(#r)"/>
+  <path d="M160 430 C110 390 105 270 160 220" fill="none" stroke="#8b5fbf" stroke-width="4" marker-end="url(#p)"/>
+  <text x="110" y="475" fill="#486581" font-size="21" font-family="Microsoft YaHei">平移 X/Y/Z + 转动 Rx/Ry/Rz</text>
+  <rect x="475" y="125" width="650" height="390" rx="18" fill="#fff" stroke="#8aa4ba" stroke-width="3"/>
+  <text x="535" y="175" fill="#243b53" font-size="25" font-family="Microsoft YaHei">典型轴孔装配</text>
+  <circle cx="650" cy="325" r="100" fill="#e6fffa" stroke="#2f9e8f" stroke-width="5"/>
+  <circle cx="650" cy="325" r="45" fill="#fff" stroke="#2f9e8f" stroke-width="4"/>
+  <rect x="805" y="280" width="230" height="90" rx="45" fill="#fff4d6" stroke="#d49c21" stroke-width="5"/>
+  <path d="M695 325 L805 325" stroke="#526d82" stroke-width="6" marker-end="url(#a)"/>
+  <text x="760" y="225" fill="#176b62" font-size="22" font-family="Microsoft YaHei">① 同心：轴线重合</text>
+  <text x="760" y="420" fill="#7b5a10" font-size="22" font-family="Microsoft YaHei">② 重合/距离：轴向定位</text>
+  <text x="760" y="463" fill="#8b5fbf" font-size="22" font-family="Microsoft YaHei">③ 锁定旋转：仅在确有需要时</text>
+  <rect x="145" y="565" width="910" height="98" rx="14" fill="#edf2f7" stroke="#9fb3c8" stroke-width="2"/>
+  <text x="185" y="607" fill="#243b53" font-size="23" font-family="Microsoft YaHei">不要追求“配合数量多”；应保留机构需要的运动自由度。</text>
+  <text x="185" y="642" fill="#486581" font-size="22" font-family="Microsoft YaHei">过定义时，先压缩最近添加的配合，再检查是否与固定零件或已有配合重复。</text>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#526d82"/></marker><marker id="r" markerWidth="8" markerHeight="8" refX="4" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 z" fill="#ef6c57"/></marker><marker id="p" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#8b5fbf"/></marker></defs>
+</svg>

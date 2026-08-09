@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#f6f8fb"/>
+  <text x="55" y="60" fill="#243b53" font-size="34" font-family="Microsoft YaHei">特征树不是历史记录，而是依赖关系图</text>
+  <g font-family="Microsoft YaHei" font-size="24">
+    <rect x="70" y="125" width="250" height="74" rx="12" fill="#d9eaf7" stroke="#2678a8" stroke-width="3"/>
+    <text x="118" y="171" fill="#16324f">前视基准面</text>
+    <rect x="70" y="255" width="250" height="74" rx="12" fill="#e6fffa" stroke="#2f9e8f" stroke-width="3"/>
+    <text x="137" y="301" fill="#176b62">草图1</text>
+    <rect x="70" y="385" width="250" height="74" rx="12" fill="#fff4d6" stroke="#d49c21" stroke-width="3"/>
+    <text x="112" y="431" fill="#7b5a10">拉伸凸台1</text>
+    <rect x="475" y="385" width="250" height="74" rx="12" fill="#f3e8ff" stroke="#8b5fbf" stroke-width="3"/>
+    <text x="542" y="431" fill="#5b3c82">圆角1</text>
+    <rect x="880" y="385" width="250" height="74" rx="12" fill="#ffe8e8" stroke="#cf5a5a" stroke-width="3"/>
+    <text x="935" y="431" fill="#8d3434">线性阵列1</text>
+  </g>
+  <path d="M195 199 L195 250 M195 329 L195 380 M320 422 L470 422 M725 422 L875 422" stroke="#526d82" stroke-width="5" marker-end="url(#a)"/>
+  <text x="380" y="235" fill="#486581" font-size="22" font-family="Microsoft YaHei">上游参考改变</text>
+  <path d="M455 245 C680 210 850 250 1000 365" fill="none" stroke="#ef6c57" stroke-width="4" stroke-dasharray="10 7" marker-end="url(#r)"/>
+  <text x="470" y="285" fill="#c74444" font-size="22" font-family="Microsoft YaHei">下游可能重建失败</text>
+  <rect x="110" y="535" width="980" height="108" rx="14" fill="#ffffff" stroke="#9fb3c8" stroke-width="2"/>
+  <text x="145" y="578" fill="#243b53" font-size="23" font-family="Microsoft YaHei">稳健策略：优先引用基准面、基准轴和核心草图；少引用容易消失的圆角边、阵列实例边。</text>
+  <text x="145" y="616" fill="#486581" font-size="23" font-family="Microsoft YaHei">排错顺序：找到最早红叉 → 编辑其草图/参考 → 重建 → 再处理下游特征。</text>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#526d82"/></marker><marker id="r" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#ef6c57"/></marker></defs>
+</svg>

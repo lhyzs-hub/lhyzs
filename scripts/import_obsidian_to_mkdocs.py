@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import shutil
 import sys
+import re
 from pathlib import Path
 
 
@@ -15,6 +16,13 @@ STAGING_ROOT = DOCS_ROOT / ".notes-import-staging"
 
 SKIPPED_SUFFIXES = {".base"}
 SKIPPED_DIRS = {".obsidian", ".trash"}
+SKIPPED_NOTE_NAMES = {"电路设计索引.md", "知识库首页.md", "迁移记录.md"}
+SKIPPED_NOTE_STEMS = {Path(name).stem for name in SKIPPED_NOTE_NAMES}
+SKIPPED_WIKILINK_PATTERN = re.compile(
+    r"\[\[(?:"
+    + "|".join(re.escape(name) for name in sorted(SKIPPED_NOTE_STEMS))
+    + r")(?:[#|][^\]]*)?\]\]"
+)
 
 
 def fail(message: str) -> None:
@@ -40,7 +48,29 @@ def should_copy(path: Path) -> bool:
     relative = path.relative_to(SRC)
     if any(part.startswith(".") or part in SKIPPED_DIRS for part in relative.parts):
         return False
+    if path.suffix.lower() == ".md" and path.name in SKIPPED_NOTE_NAMES:
+        return False
     return path.suffix.lower() not in SKIPPED_SUFFIXES
+
+
+def remove_skipped_wikilinks(markdown_file: Path) -> None:
+    """从网站副本移除指向未发布管理页的 Obsidian 双链。"""
+    original = markdown_file.read_text(encoding="utf-8")
+    cleaned_lines: list[str] = []
+
+    for line in original.splitlines():
+        cleaned = SKIPPED_WIKILINK_PATTERN.sub("", line)
+        cleaned = re.sub(r"\s*·\s*·\s*", " · ", cleaned)
+        cleaned = re.sub(r"^([>\s]*)(?:·\s*)+", r"\1", cleaned)
+        cleaned = re.sub(r"\s*·\s*$", "", cleaned).rstrip()
+        if cleaned.strip() in {"-", "*", "+"}:
+            continue
+        cleaned_lines.append(cleaned)
+
+    cleaned_text = "\n".join(cleaned_lines)
+    if original.endswith("\n"):
+        cleaned_text += "\n"
+    markdown_file.write_text(cleaned_text, encoding="utf-8")
 
 
 def copy_vault() -> tuple[int, int]:
@@ -61,6 +91,7 @@ def copy_vault() -> tuple[int, int]:
         shutil.copy2(source_file, target)
 
         if source_file.suffix.lower() == ".md":
+            remove_skipped_wikilinks(target)
             notes += 1
         else:
             assets += 1

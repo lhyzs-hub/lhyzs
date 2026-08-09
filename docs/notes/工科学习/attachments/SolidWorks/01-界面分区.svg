@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#f4f7fb"/>
+  <rect x="30" y="28" width="1140" height="664" rx="18" fill="#ffffff" stroke="#324a67" stroke-width="3"/>
+  <rect x="30" y="28" width="1140" height="56" rx="18" fill="#243b53"/>
+  <text x="60" y="64" fill="white" font-size="24" font-family="Microsoft YaHei">菜单栏 / 快速访问：新建、打开、保存、撤销、选项</text>
+  <rect x="30" y="84" width="1140" height="92" fill="#d9eaf7" stroke="#7aa7c7"/>
+  <text x="60" y="138" fill="#16324f" font-size="28" font-family="Microsoft YaHei">CommandManager：草图 / 特征 / 评估 / 装配体 / 工程图</text>
+  <rect x="30" y="176" width="275" height="516" fill="#edf2f7" stroke="#829ab1"/>
+  <text x="55" y="222" fill="#243b53" font-size="25" font-family="Microsoft YaHei">管理器面板</text>
+  <text x="55" y="268" fill="#486581" font-size="21" font-family="Microsoft YaHei">FeatureManager 设计树</text>
+  <text x="55" y="306" fill="#486581" font-size="21" font-family="Microsoft YaHei">PropertyManager 参数</text>
+  <text x="55" y="344" fill="#486581" font-size="21" font-family="Microsoft YaHei">Configuration 配置</text>
+  <rect x="305" y="176" width="865" height="470" fill="#fbfdff" stroke="#829ab1"/>
+  <text x="620" y="370" fill="#334e68" font-size="38" font-family="Microsoft YaHei">图形区</text>
+  <text x="495" y="420" fill="#627d98" font-size="23" font-family="Microsoft YaHei">选择几何体 · 建模 · 旋转/缩放/平移</text>
+  <circle cx="1060" cy="230" r="38" fill="#d9eaf7" stroke="#1687a7" stroke-width="3"/>
+  <text x="1005" y="290" fill="#1687a7" font-size="20" font-family="Microsoft YaHei">视图方向</text>
+  <rect x="305" y="646" width="865" height="46" fill="#e6fffa" stroke="#38a89d"/>
+  <text x="330" y="677" fill="#147d73" font-size="21" font-family="Microsoft YaHei">状态栏：单位制、草图状态、重建提示、选择信息</text>
+</svg>

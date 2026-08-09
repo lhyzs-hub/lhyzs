@@ -18,7 +18,7 @@ aliases:
 > [!abstract] 这篇笔记解决什么问题
 > 用单片机读取传感器或编码器反馈，通过 PID 计算 PWM 输出，让电机速度、位置或温度更快、更稳地跟随目标值。
 
-![[attachments/diagrams/pid-control-loop-v2.png]]
+![[工科学习/attachments/diagrams/pid-control-loop-v2.png]]
 
 ## 最小闭环
 
@@ -140,4 +140,3 @@ void loop() {
 - [[步进电机笔记]]
 - [[半小时学完单片机基础#BA-5 模拟输出篇：PWM，不只是 0 和 1 了，还有 0.666]]
 - [[半小时学完单片机基础#BA-8 实时处理篇：IRQ，中断一下，请求先看这个]]
-- [[电路设计索引]]

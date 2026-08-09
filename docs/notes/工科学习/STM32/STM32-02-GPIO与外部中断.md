@@ -48,7 +48,7 @@ tags:
 2. NVIC 中启用对应 EXTI IRQ。
 3. 优先级数值越小，逻辑优先级越高。
 
-![[attachments/diagrams/stm32-exti-nvic-path.svg]]
+![[工科学习/attachments/diagrams/stm32-exti-nvic-path.svg]]
 
 这条链上任何一层未配置，都可能出现“引脚电平变化了，但回调不执行”。
 
@@ -99,11 +99,11 @@ EXTI0–15 与 GPIO 引脚编号对应，而不是与端口一一对应。因此
 
 ### 2. EXTI 关键寄存器
 
-![[attachments/diagrams/stm32-exti-registers.svg]]
+![[工科学习/attachments/diagrams/stm32-exti-registers.svg]]
 
 下面这张图进一步展开单条 EXTI 线路内部的门电路和挂起锁存器。阅读时从右侧输入线沿白色信号线向左看：
 
-![[attachments/diagrams/stm32-exti-logic-schematic.svg]]
+![[工科学习/attachments/diagrams/stm32-exti-logic-schematic.svg]]
 
 图中的 `S-R Latch` 是理解 PR 的关键：触发脉冲负责置位，软件写 1 负责复位。因此中断被屏蔽时，已经发生的边沿仍可能被 PR 记住。
 
@@ -145,7 +145,7 @@ EXTI 产生的是外设中断请求，Cortex-M3 的 NVIC 决定 CPU 是否以及
 
 全局 `__disable_irq()` 会通过 CPU 的 PRIMASK 屏蔽绝大多数可配置中断，只应在极短的临界区使用，并尽快执行 `__enable_irq()`。不要用它代替单个外设中断的正常管理。
 
-![[attachments/diagrams/stm32-nvic-priority-schematic.svg]]
+![[工科学习/attachments/diagrams/stm32-nvic-priority-schematic.svg]]
 
 图中应特别区分三种状态：
 
