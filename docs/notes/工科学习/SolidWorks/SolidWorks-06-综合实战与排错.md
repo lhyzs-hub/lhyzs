@@ -12,7 +12,7 @@ tags:
 
 # SolidWorks 06 综合实战与排错
 
-> 上一篇：[[SolidWorks-05-工程图与交付]] · [[SolidWorks-00-阿奇教程学习索引]] · 下一篇：[[SolidWorks-07-快捷键与复习清单]]
+> 上一篇：[SolidWorks-05-工程图与交付](SolidWorks-05-工程图与交付.md) · [SolidWorks-00-阿奇教程学习索引](SolidWorks-00-阿奇教程学习索引.md) · 下一篇：[SolidWorks-07-快捷键与复习清单](SolidWorks-07-快捷键与复习清单.md)
 
 对应教程：P16 手机支架、P26～P32 桌下抽屉、P36～P43 小风扇摇头底座。
 
@@ -223,3 +223,7 @@ FIL_触碰圆角
 - 下次如何避免：
 ```
 
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[SolidWorks 05 工程图与交付](SolidWorks-05-工程图与交付.md) · 下一篇：[SolidWorks 07 快捷键与复习清单](SolidWorks-07-快捷键与复习清单.md) →
+<!-- lhyzs-note-nav:end -->

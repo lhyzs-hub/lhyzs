@@ -13,7 +13,7 @@ tags:
 
 # STM32 ADC 与 RTC
 
-> 上一篇：[[STM32-06-PWM与电机控制]] · 下一篇：[[STM32-08-工程化专题与综合项目]] · 速查：[[STM32-HAL函数速查]]
+> 上一篇：[STM32-06-PWM与电机控制](STM32-06-PWM与电机控制.md) · 下一篇：[STM32-08-工程化专题与综合项目](STM32-08-工程化专题与综合项目.md) · 速查：[STM32-HAL函数速查](STM32-HAL函数速查.md)
 
 对应第 24–27 集：ADC、多通道、NTC、内部参考电压、RTC 和万年历。
 
@@ -119,3 +119,8 @@ RTC驱动 → 时间模型 → 按键设置 → 显示格式化 → OLED刷新
 - [ ] 复位不重设 RTC，断主电后 VBAT 仍走时
 
 资料：[ADC电位器](https://docs.keysking.com/docs/stm32/example/ADC_Potentiometer/) · [ADC NTC](https://docs.keysking.com/docs/stm32/example/ADC_NTC/) · [RTC掉电走时](https://docs.keysking.com/docs/stm32/example/Misc_RTC/)
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[STM32 PWM 与电机控制](STM32-06-PWM与电机控制.md) · 下一篇：[STM32 工程化专题与综合项目](STM32-08-工程化专题与综合项目.md) →
+<!-- lhyzs-note-nav:end -->

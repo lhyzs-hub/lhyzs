@@ -14,7 +14,7 @@ aliases:
 
 # SolidWorks 阿奇教程学习索引
 
->  [[机械任务笔记]]
+>  [机械任务笔记](../koala考核期/机械任务笔记.md)
 
 > [!summary] 目标
 > 从零完成“参数化零件 → 装配体 → 工程图 → 打包/导出”的完整工作流，并能独立排查草图、特征和配合错误。
@@ -25,13 +25,13 @@ aliases:
 
 ## 笔记目录
 
-1. [[SolidWorks-01-界面与基础操作]]：界面、文件、选择、视图、单位和模板。
-2. [[SolidWorks-02-草图绘制与完全定义]]：草图实体、几何关系、尺寸、镜像阵列和绘制思路。
-3. [[SolidWorks-03-零件特征与设计树]]：拉伸、旋转、扫描、放样、壳、孔、圆角、阵列和父子关系。
-4. [[SolidWorks-04-装配体与配合]]：插入零件、固定/浮动、标准配合、阵列镜像和干涉检查。
-5. [[SolidWorks-05-工程图与交付]]：视图、尺寸、剖视、BOM、打包、STEP 与 STL。
-6. [[SolidWorks-06-综合实战与排错]]：手机支架、桌下抽屉、小风扇底座的建模拆解。
-7. [[SolidWorks-07-快捷键与复习清单]]：快捷键、鼠标操作、命令搜索和阶段验收。
+1. [SolidWorks-01-界面与基础操作](SolidWorks-01-界面与基础操作.md)：界面、文件、选择、视图、单位和模板。
+2. [SolidWorks-02-草图绘制与完全定义](SolidWorks-02-草图绘制与完全定义.md)：草图实体、几何关系、尺寸、镜像阵列和绘制思路。
+3. [SolidWorks-03-零件特征与设计树](SolidWorks-03-零件特征与设计树.md)：拉伸、旋转、扫描、放样、壳、孔、圆角、阵列和父子关系。
+4. [SolidWorks-04-装配体与配合](SolidWorks-04-装配体与配合.md)：插入零件、固定/浮动、标准配合、阵列镜像和干涉检查。
+5. [SolidWorks-05-工程图与交付](SolidWorks-05-工程图与交付.md)：视图、尺寸、剖视、BOM、打包、STEP 与 STL。
+6. [SolidWorks-06-综合实战与排错](SolidWorks-06-综合实战与排错.md)：手机支架、桌下抽屉、小风扇底座的建模拆解。
+7. [SolidWorks-07-快捷键与复习清单](SolidWorks-07-快捷键与复习清单.md)：快捷键、鼠标操作、命令搜索和阶段验收。
 
 ## 推荐学习顺序
 
@@ -92,3 +92,7 @@ flowchart LR
 - [SOLIDWORKS 官方入门指南](https://my-akamai.solidworks.com/solidworks/guide/SOLIDWORKS_Introduction_CN.pdf)
 - [SOLIDWORKS 在线帮助](https://help.solidworks.com/)
 
+<!-- lhyzs-note-nav:start -->
+---
+> 下一篇：[SolidWorks 01 界面与基础操作](SolidWorks-01-界面与基础操作.md) →
+<!-- lhyzs-note-nav:end -->

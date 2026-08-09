@@ -13,7 +13,7 @@ tags:
 
 # STM32 UART 与 DMA
 
-> 上一篇：[[STM32-02-GPIO与外部中断]] · 下一篇：[[STM32-04-I2C与OLED]] · 速查：[[STM32-HAL函数速查]]
+> 上一篇：[STM32-02-GPIO与外部中断](STM32-02-GPIO与外部中断.md) · 下一篇：[STM32-04-I2C与OLED](STM32-04-I2C与OLED.md) · 速查：[STM32-HAL函数速查](STM32-HAL函数速查.md)
 
 对应第 8–11 集及 DMA、循环缓冲区补充篇。
 
@@ -130,3 +130,8 @@ int _write(int file, char *ptr, int len)
 - [ ] 连续发送 1000 条命令，无死机且能统计错误帧
 
 资料：[UART轮询例程](https://docs.keysking.com/docs/stm32/example/UART_RGB/) · [UART中断例程](https://docs.keysking.com/docs/stm32/example/UART_RGB_IT/) · [循环缓冲区例程](https://docs.keysking.com/docs/stm32/example/UART_COMMAND/)
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[STM32 GPIO 与外部中断](STM32-02-GPIO与外部中断.md) · 下一篇：[STM32 I2C 与 OLED](STM32-04-I2C与OLED.md) →
+<!-- lhyzs-note-nav:end -->

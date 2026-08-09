@@ -14,7 +14,7 @@ aliases:
 
 # SolidWorks 07 快捷键与复习清单
 
-> [[SolidWorks-00-阿奇教程学习索引]] · [[SolidWorks-06-综合实战与排错]]
+> [SolidWorks-00-阿奇教程学习索引](SolidWorks-00-阿奇教程学习索引.md) · [SolidWorks-06-综合实战与排错](SolidWorks-06-综合实战与排错.md)
 
 > [!warning] 快捷键可能被自定义
 > 下表是常见默认值与推荐设置。请在 `工具 → 自定义 → 键盘` 中搜索命令，确认当前版本和当前电脑的实际绑定。
@@ -188,3 +188,8 @@ aliases:
 - [SOLIDWORKS 2026 官方鼠标笔势说明](https://help.solidworks.com/2026/english/SolidWorks/sldworks/c_mouse_sestures.htm)
 - [SOLIDWORKS 官方完全定义草图](https://help.solidworks.com/2024/English/SolidWorks/sldworks/c_Fully_Defined_Sketches.htm)
 - [SOLIDWORKS 官方装配体配合教程](https://help.solidworks.com/2026/english/swtutorialonline/Assembly_Mates_Tutorial.htm)
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[SolidWorks 06 综合实战与排错](SolidWorks-06-综合实战与排错.md)
+<!-- lhyzs-note-nav:end -->

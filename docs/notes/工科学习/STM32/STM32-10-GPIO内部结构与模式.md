@@ -13,11 +13,11 @@ tags:
 
 # STM32 GPIO 内部结构与模式
 
-> [[STM32-09-内部结构与总线架构]] · [[STM32-02-GPIO与外部中断]] · [[STM32-11-输入输出方式总览]]
+> [STM32-09-内部结构与总线架构](STM32-09-内部结构与总线架构.md) · [STM32-02-GPIO与外部中断](STM32-02-GPIO与外部中断.md) · [STM32-11-输入输出方式总览](STM32-11-输入输出方式总览.md)
 
 ## 一、一个 GPIO 引脚里面有什么
 
-![[工科学习/attachments/diagrams/stm32-gpio-internal-structure.svg]]
+![stm32-gpio-internal-structure](../attachments/diagrams/stm32-gpio-internal-structure.svg)
 
 > [!tip] 看图顺序
 > 从右侧外部引脚出发：向下是输入/ADC 路径，向左是输出驱动路径。推挽和开漏的本质区别，是输出驱动级中的上管是否参与工作。
@@ -52,7 +52,7 @@ tags:
 
 ## 二、数字输入模式
 
-![[工科学习/attachments/diagrams/stm32-gpio-input-circuit.svg]]
+![stm32-gpio-input-circuit](../attachments/diagrams/stm32-gpio-input-circuit.svg)
 
 这张电路图同时画出了数字与模拟两条输入路径：普通 GPIO、EXTI 和外设复用输入经过施密特触发缓冲；ADC 则从 PAD 进入模拟采样路径。Analog 模式会关闭数字输入缓冲，以减少漏电和数字噪声。
 
@@ -77,7 +77,7 @@ CMOS 输入阻抗很高，悬空引脚会被环境电场、走线耦合和手触
 
 ## 三、数字输出模式
 
-![[工科学习/attachments/diagrams/stm32-gpio-output-drivers.svg]]
+![stm32-gpio-output-drivers](../attachments/diagrams/stm32-gpio-output-drivers.svg)
 
 左半部分是推挽上下管结构，右半部分是开漏与外部上拉组成的共享总线。I²C 能让多个设备共用 SDA/SCL，正是因为任何设备都只能拉低或释放，不会主动把总线推高。
 
@@ -126,7 +126,7 @@ CMOS 输入阻抗很高，悬空引脚会被环境电场、走线耦合和手触
 
 ## 四、普通输出与复用输出
 
-![[工科学习/attachments/diagrams/stm32-gpio-register-mux.svg]]
+![stm32-gpio-register-mux](../attachments/diagrams/stm32-gpio-register-mux.svg)
 
 该图把软件寄存器、复用器、输出驱动和输入回读放在同一条路径上：`CRL/CRH` 决定信号从 ODR 还是外设而来，`BSRR/BRR` 修改 ODR，而 `IDR` 从 PAD 的实际电平回读。
 
@@ -197,3 +197,8 @@ F103 大多数普通 GPIO 复位后是浮空输入，调试相关引脚和特殊
 | ADC 噪声大 | 未用模拟模式、源阻抗高、采样时间短、地噪声 |
 
 资料：[RM0008 GPIO章节](https://www.st.com/resource/en/reference_manual/cd00171190-stm32f101-103-105-107-stm32f100-series-armbased-32bit-mcus-stmicroelectronics.pdf) · [STM32F103C8 产品规格](https://www.st.com/en/microcontrollers-microprocessors/stm32f103c8)
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[STM32 内部结构与总线架构](STM32-09-内部结构与总线架构.md) · 下一篇：[STM32 输入输出方式总览](STM32-11-输入输出方式总览.md) →
+<!-- lhyzs-note-nav:end -->

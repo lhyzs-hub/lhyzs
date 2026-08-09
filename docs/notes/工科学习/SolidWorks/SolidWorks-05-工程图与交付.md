@@ -12,7 +12,7 @@ tags:
 
 # SolidWorks 05 工程图与交付
 
-> 上一篇：[[SolidWorks-04-装配体与配合]] · [[SolidWorks-00-阿奇教程学习索引]] · 下一篇：[[SolidWorks-06-综合实战与排错]]
+> 上一篇：[SolidWorks-04-装配体与配合](SolidWorks-04-装配体与配合.md) · [SolidWorks-00-阿奇教程学习索引](SolidWorks-00-阿奇教程学习索引.md) · 下一篇：[SolidWorks-06-综合实战与排错](SolidWorks-06-综合实战与排错.md)
 
 对应教程：P33“工程图1”、P34“工程图2”，以及版本问题、打包和 3D 打印相关附加课。
 
@@ -150,3 +150,7 @@ STL 不携带“毫米还是英寸”的可靠语义，导出和切片两端必�
 - [ ] PDF 打印后文字和线型仍清晰。
 - [ ] 装配图 BOM 与零件序号一致。
 
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[SolidWorks 04 装配体与配合](SolidWorks-04-装配体与配合.md) · 下一篇：[SolidWorks 06 综合实战与排错](SolidWorks-06-综合实战与排错.md) →
+<!-- lhyzs-note-nav:end -->

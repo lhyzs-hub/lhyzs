@@ -12,7 +12,7 @@ tags:
 
 # SolidWorks 04 装配体与配合
 
-> 上一篇：[[SolidWorks-03-零件特征与设计树]] · [[SolidWorks-00-阿奇教程学习索引]] · 下一篇：[[SolidWorks-05-工程图与交付]]
+> 上一篇：[SolidWorks-03-零件特征与设计树](SolidWorks-03-零件特征与设计树.md) · [SolidWorks-00-阿奇教程学习索引](SolidWorks-00-阿奇教程学习索引.md) · 下一篇：[SolidWorks-05-工程图与交付](SolidWorks-05-工程图与交付.md)
 
 对应教程：P21～P25，以及桌下抽屉和摇头底座中的装配过程。
 
@@ -20,7 +20,7 @@ tags:
 
 每个自由零件有 6 个自由度：沿 X/Y/Z 平移，绕 X/Y/Z 转动。配合通过几何关系消除自由度，但机构需要的自由度应保留。
 
-![[工科学习/attachments/SolidWorks/04-装配体配合自由度.png]]
+![04-装配体配合自由度](../attachments/SolidWorks/04-装配体配合自由度.png)
 
 ## 二、新建装配体
 
@@ -161,3 +161,8 @@ tags:
 - [ ] 制造一个重复配合冲突并定位解决。
 - [ ] 运行干涉检查和间隙验证。
 - [ ] 创建爆炸视图并保存。
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[SolidWorks 03 零件特征与设计树](SolidWorks-03-零件特征与设计树.md) · 下一篇：[SolidWorks 05 工程图与交付](SolidWorks-05-工程图与交付.md) →
+<!-- lhyzs-note-nav:end -->

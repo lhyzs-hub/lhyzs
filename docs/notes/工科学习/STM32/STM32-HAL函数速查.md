@@ -14,7 +14,7 @@ aliases:
 
 # STM32 HAL 函数速查
 
-> [[STM32-00-Keysking教程索引]] · [[半小时学完单片机基础]]
+> [STM32-00-Keysking教程索引](STM32-00-Keysking教程索引.md) · [半小时学完单片机基础](半小时学完单片机基础.md)
 
 ## 先读懂参数类型
 
@@ -140,3 +140,8 @@ void HAL_xxx_Callback(Xxx_HandleTypeDef *h)
 6. 输入信号是否真实存在：用万用表、示波器或逻辑分析仪确认。
 
 参考：[波特律动 HAL 库函数入口](https://docs.keysking.com/docs/stm32/intro/) · [STM32F1 HAL/LL 资料入口](https://docs.keysking.com/docs/stm32/resourcePack/)
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[STM32 输入输出方式总览](STM32-11-输入输出方式总览.md) · 下一篇：[半小时学完单片机基础](半小时学完单片机基础.md) →
+<!-- lhyzs-note-nav:end -->

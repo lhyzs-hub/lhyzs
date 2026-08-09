@@ -12,7 +12,7 @@ tags:
 
 # SolidWorks 03 零件特征与设计树
 
-> 上一篇：[[SolidWorks-02-草图绘制与完全定义]] · [[SolidWorks-00-阿奇教程学习索引]] · 下一篇：[[SolidWorks-04-装配体与配合]]
+> 上一篇：[SolidWorks-02-草图绘制与完全定义](SolidWorks-02-草图绘制与完全定义.md) · [SolidWorks-00-阿奇教程学习索引](SolidWorks-00-阿奇教程学习索引.md) · 下一篇：[SolidWorks-04-装配体与配合](SolidWorks-04-装配体与配合.md)
 
 对应教程：P9～P20，包含特征成型、设计树、手机支架、修改报错、父子关系、放样和钣金。
 
@@ -20,7 +20,7 @@ tags:
 
 特征是“草图 + 生成规则”。设计树按依赖顺序重建，后面的特征可能引用前面的面、边、草图或基准。
 
-![[工科学习/attachments/SolidWorks/03-特征树父子关系.png]]
+![03-特征树父子关系](../attachments/SolidWorks/03-特征树父子关系.png)
 
 推荐顺序：主体体积 → 主要切除 → 功能孔槽 → 阵列/镜像 → 圆角倒角 → 外观细节。
 
@@ -199,3 +199,8 @@ tags:
 - [ ] 用阵列完成法兰孔。
 - [ ] 用放样连接圆形和方形截面，调整连接点消除扭曲。
 - [ ] 修改主体尺寸，模型无红叉、圆角不丢失。
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[SolidWorks 02 草图绘制与完全定义](SolidWorks-02-草图绘制与完全定义.md) · 下一篇：[SolidWorks 04 装配体与配合](SolidWorks-04-装配体与配合.md) →
+<!-- lhyzs-note-nav:end -->

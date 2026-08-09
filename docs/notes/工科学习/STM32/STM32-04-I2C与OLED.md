@@ -13,7 +13,7 @@ tags:
 
 # STM32 I2C 与 OLED
 
-> 上一篇：[[STM32-03-UART与DMA]] · 下一篇：[[STM32-05-时钟树与定时器]] · 速查：[[STM32-HAL函数速查]]
+> 上一篇：[STM32-03-UART与DMA](STM32-03-UART与DMA.md) · 下一篇：[STM32-05-时钟树与定时器](STM32-05-时钟树与定时器.md) · 速查：[STM32-HAL函数速查](STM32-HAL函数速查.md)
 
 对应第 12–14 集及温湿度计番外。
 
@@ -133,3 +133,8 @@ OLED_ShowFrame();
 > Keysking 主线没有单独的硬件 SPI 章节。理解 I²C 后可补做 SPI：SCK/MOSI/MISO/CS，重点比较“寻址方式、全双工、速度、片选”。
 
 资料：[AHT20例程](https://docs.keysking.com/docs/stm32/example/I2C_AHT20/) · [OLED例程](https://docs.keysking.com/docs/stm32/example/I2C_OLED/)
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[STM32 UART 与 DMA](STM32-03-UART与DMA.md) · 下一篇：[STM32 时钟树与定时器](STM32-05-时钟树与定时器.md) →
+<!-- lhyzs-note-nav:end -->

@@ -12,7 +12,7 @@ tags:
 
 # SolidWorks 01 界面与基础操作
 
-> [[SolidWorks-00-阿奇教程学习索引]] · 下一篇：[[SolidWorks-02-草图绘制与完全定义]]
+> [SolidWorks-00-阿奇教程学习索引](SolidWorks-00-阿奇教程学习索引.md) · 下一篇：[SolidWorks-02-草图绘制与完全定义](SolidWorks-02-草图绘制与完全定义.md)
 
 对应教程：P1“软件界面及基础操作”、P2“学习地图”。
 
@@ -24,11 +24,11 @@ tags:
 | 装配体 | `.SLDASM` | 组合零件并定义运动关系 | 引用外部零件文件，不是简单复制 |
 | 工程图 | `.SLDDRW` | 二维制造表达 | 引用零件/装配体，模型变化后可更新 |
 
-移动项目时不能只复制 `.SLDASM`，否则装配体会丢失零件引用。交付项目应使用 `文件 → Pack and Go`，详见 [[SolidWorks-05-工程图与交付]]。
+移动项目时不能只复制 `.SLDASM`，否则装配体会丢失零件引用。交付项目应使用 `文件 → Pack and Go`，详见 [SolidWorks-05-工程图与交付](SolidWorks-05-工程图与交付.md)。
 
 ## 二、界面分区
 
-![[工科学习/attachments/SolidWorks/01-界面分区.png]]
+![01-界面分区](../attachments/SolidWorks/01-界面分区.png)
 
 ### 2.1 CommandManager
 
@@ -135,3 +135,8 @@ tags:
 - [ ] 隐藏/显示实体，区分隐藏与压缩。
 - [ ] 修改尺寸后分别执行 `Ctrl+B` 和 `Ctrl+Q`。
 - [ ] 自定义鼠标笔势并导出设置。
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[SolidWorks 阿奇教程学习索引](SolidWorks-00-阿奇教程学习索引.md) · 下一篇：[SolidWorks 02 草图绘制与完全定义](SolidWorks-02-草图绘制与完全定义.md) →
+<!-- lhyzs-note-nav:end -->

@@ -13,7 +13,7 @@ tags:
 
 # STM32 PWM 与电机控制
 
-> 上一篇：[[STM32-05-时钟树与定时器]] · 下一篇：[[STM32-07-ADC与RTC]] · 相关：[[PID控制笔记]]
+> 上一篇：[STM32-05-时钟树与定时器](STM32-05-时钟树与定时器.md) · 下一篇：[STM32-07-ADC与RTC](STM32-07-ADC与RTC.md) · 相关：[PID控制笔记](../koala考核期/PID控制笔记.md)
 
 对应第 20、22、23 集及 WS2812、蜂鸣器补充篇。
 
@@ -76,7 +76,7 @@ void motor_set(int16_t speed)
 }
 ```
 
-换向前先降到 0，并限制加速度。闭环速度控制参见 [[PID控制笔记]]。
+换向前先降到 0，并限制加速度。闭环速度控制参见 [PID控制笔记](../koala考核期/PID控制笔记.md)。
 
 ## 五、无源蜂鸣器
 
@@ -113,3 +113,8 @@ WS2812 用单线脉宽编码，不是普通 PWM 调光。常用“定时器 PWM 
 - [ ] 电机正反转、制动和斜坡控制正确
 
 资料：[PWM呼吸灯](https://docs.keysking.com/docs/stm32/example/PWM_RGB/) · [舵机控制](https://docs.keysking.com/docs/stm32/example/PWM_Servo/) · [DRV8833电机](https://docs.keysking.com/docs/stm32/example/PWM_DRV8833/)
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[STM32 时钟树与定时器](STM32-05-时钟树与定时器.md) · 下一篇：[STM32 ADC 与 RTC](STM32-07-ADC与RTC.md) →
+<!-- lhyzs-note-nav:end -->

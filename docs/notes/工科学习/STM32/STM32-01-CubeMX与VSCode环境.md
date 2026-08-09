@@ -13,7 +13,7 @@ tags:
 
 # STM32 CubeMX 与 VSCode 环境
 
-> [[STM32-00-Keysking教程索引]] · 下一篇：[[STM32-02-GPIO与外部中断]]
+> [STM32-00-Keysking教程索引](STM32-00-Keysking教程索引.md) · 下一篇：[STM32-02-GPIO与外部中断](STM32-02-GPIO与外部中断.md)
 
 ## 工具分工
 
@@ -117,3 +117,8 @@ while (1)
 - [ST 官方 VSCode 扩展说明](https://marketplace.visualstudio.com/items?itemName=stmicroelectronics.stm32-vscode-extension)
 - [ST VSCode 安装指南 UM3512](https://www.st.com/resource/en/user_manual/um3512-stm32cubeide-for-visual-studio-code-installation-guide-stmicroelectronics.pdf)
 - [Keysking 配套资源](https://docs.keysking.com/docs/stm32/resourcePack/)
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[STM32 Keysking 教程索引](STM32-00-Keysking教程索引.md) · 下一篇：[STM32 GPIO 与外部中断](STM32-02-GPIO与外部中断.md) →
+<!-- lhyzs-note-nav:end -->

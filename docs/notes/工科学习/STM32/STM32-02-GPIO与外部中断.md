@@ -13,7 +13,7 @@ tags:
 
 # STM32 GPIO 与外部中断
 
-> 上一篇：[[STM32-01-CubeMX与VSCode环境]] · 下一篇：[[STM32-03-UART与DMA]] · 速查：[[STM32-HAL函数速查]]
+> 上一篇：[STM32-01-CubeMX与VSCode环境](STM32-01-CubeMX与VSCode环境.md) · 下一篇：[STM32-03-UART与DMA](STM32-03-UART与DMA.md) · 速查：[STM32-HAL函数速查](STM32-HAL函数速查.md)
 
 对应 Keysking 第 2–7 集：点灯、按键、GPIO 内部结构和外部中断。
 
@@ -48,7 +48,7 @@ tags:
 2. NVIC 中启用对应 EXTI IRQ。
 3. 优先级数值越小，逻辑优先级越高。
 
-![[工科学习/attachments/diagrams/stm32-exti-nvic-path.svg]]
+![stm32-exti-nvic-path](../attachments/diagrams/stm32-exti-nvic-path.svg)
 
 这条链上任何一层未配置，都可能出现“引脚电平变化了，但回调不执行”。
 
@@ -99,11 +99,11 @@ EXTI0–15 与 GPIO 引脚编号对应，而不是与端口一一对应。因此
 
 ### 2. EXTI 关键寄存器
 
-![[工科学习/attachments/diagrams/stm32-exti-registers.svg]]
+![stm32-exti-registers](../attachments/diagrams/stm32-exti-registers.svg)
 
 下面这张图进一步展开单条 EXTI 线路内部的门电路和挂起锁存器。阅读时从右侧输入线沿白色信号线向左看：
 
-![[工科学习/attachments/diagrams/stm32-exti-logic-schematic.svg]]
+![stm32-exti-logic-schematic](../attachments/diagrams/stm32-exti-logic-schematic.svg)
 
 图中的 `S-R Latch` 是理解 PR 的关键：触发脉冲负责置位，软件写 1 负责复位。因此中断被屏蔽时，已经发生的边沿仍可能被 PR 记住。
 
@@ -145,7 +145,7 @@ EXTI 产生的是外设中断请求，Cortex-M3 的 NVIC 决定 CPU 是否以及
 
 全局 `__disable_irq()` 会通过 CPU 的 PRIMASK 屏蔽绝大多数可配置中断，只应在极短的临界区使用，并尽快执行 `__enable_irq()`。不要用它代替单个外设中断的正常管理。
 
-![[工科学习/attachments/diagrams/stm32-nvic-priority-schematic.svg]]
+![stm32-nvic-priority-schematic](../attachments/diagrams/stm32-nvic-priority-schematic.svg)
 
 图中应特别区分三种状态：
 
@@ -256,3 +256,8 @@ if (key_event) {
 - `WritePin` 的第三个参数是物理电平还是灯的语义状态？
 
 资料：[按键例程](https://docs.keysking.com/docs/stm32/example/GPIO_key/) · [外部中断例程](https://docs.keysking.com/docs/stm32/example/GPIO_EXTI/) · [RM0008 STM32F1 参考手册](https://www.st.com/resource/en/reference_manual/cd00171190-stm32f101-103-105-107-stm32f100-series-armbased-32bit-mcus-stmicroelectronics.pdf) · [PM0056 Cortex-M3 编程手册](https://www.st.com/resource/en/programming_manual/pm0056-stm32f10xxx20xxx21xxxl1xxxx-cortexm3-programming-manual-stmicroelectronics.pdf)
+
+<!-- lhyzs-note-nav:start -->
+---
+> ← 上一篇：[STM32 CubeMX 与 VSCode 环境](STM32-01-CubeMX与VSCode环境.md) · 下一篇：[STM32 UART 与 DMA](STM32-03-UART与DMA.md) →
+<!-- lhyzs-note-nav:end -->
