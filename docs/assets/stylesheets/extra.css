@@ -551,6 +551,12 @@ body {
 }
 
 .home-portals {
+  --portal-text: #b7bfbc;
+  --portal-text-hover: #e8dfcd;
+  --portal-accent: #967130;
+  --portal-accent-hover: #d1ad5b;
+  --portal-muted: #66757c;
+  --portal-update: #879799;
   position: relative;
   min-height: clamp(22rem, 52vh, 32rem);
   padding: clamp(3rem, 7vw, 5.5rem) max(2rem, calc((100vw - 86rem) / 2));
@@ -600,7 +606,7 @@ body {
   align-items: center;
   min-height: 3.25rem;
   padding: 0 2.2rem 0 1rem;
-  color: var(--lhyzs-text) !important;
+  color: var(--portal-text) !important;
   border-bottom: 1px solid rgba(42, 101, 115, 0.32);
   text-decoration: none !important;
   transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease;
@@ -613,14 +619,14 @@ body {
 .hero-home__action::after {
   position: absolute;
   right: 0.85rem;
-  color: var(--lhyzs-gold);
+  color: var(--portal-accent);
   font-size: 1rem;
   content: "›";
   transition: transform 160ms ease, color 160ms ease;
 }
 
 .hero-home__action > span {
-  color: var(--lhyzs-gold);
+  color: var(--portal-accent);
   font: 700 0.58rem/1 var(--md-code-font-family);
   letter-spacing: 0.12em;
 }
@@ -633,7 +639,7 @@ body {
 
 .hero-home__action:hover,
 .hero-home__action:focus-visible {
-  color: var(--lhyzs-gold-light) !important;
+  color: var(--portal-text-hover) !important;
   background: linear-gradient(90deg, rgba(42, 101, 115, 0.18), rgba(201, 155, 61, 0.055));
   box-shadow: inset 0 0 18px rgba(42, 101, 115, 0.1);
   outline: 0;
@@ -641,7 +647,7 @@ body {
 
 .hero-home__action:hover::after,
 .hero-home__action:focus-visible::after {
-  color: var(--lhyzs-gold-light);
+  color: var(--portal-accent-hover);
   transform: translateX(0.18rem);
 }
 
@@ -657,7 +663,7 @@ body {
   align-items: center;
   min-height: 2.8rem;
   padding: 0.45rem 0.15rem 0.45rem 1rem;
-  color: var(--lhyzs-muted) !important;
+  color: var(--portal-muted) !important;
   border-bottom: 1px solid rgba(201, 155, 61, 0.2);
   text-decoration: none !important;
   transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
@@ -667,7 +673,7 @@ body {
   display: inline-flex;
   gap: 0.42rem;
   align-items: center;
-  color: var(--lhyzs-gold);
+  color: var(--portal-accent);
   font: 700 0.58rem/1 var(--md-code-font-family);
   letter-spacing: 0.12em;
 }
@@ -682,7 +688,7 @@ body {
 
 .hero-home__update strong {
   overflow: hidden;
-  color: var(--lhyzs-text);
+  color: var(--portal-update);
   font-size: 0.68rem;
   font-weight: 550;
   letter-spacing: 0.025em;
@@ -691,20 +697,20 @@ body {
 }
 
 .hero-home__update time {
-  color: var(--lhyzs-muted);
+  color: var(--portal-muted);
   font: 600 0.57rem/1 var(--md-code-font-family);
   letter-spacing: 0.06em;
 }
 
 .hero-home__update-arrow {
-  color: var(--lhyzs-gold);
+  color: var(--portal-accent);
   font-size: 0.78rem;
   transition: transform 160ms ease;
 }
 
 .hero-home__update:hover,
 .hero-home__update:focus-visible {
-  color: var(--lhyzs-text) !important;
+  color: var(--portal-text-hover) !important;
   border-bottom-color: rgba(201, 155, 61, 0.58);
   background: linear-gradient(90deg, rgba(201, 155, 61, 0.065), transparent 72%);
   outline: 0;
@@ -1468,6 +1474,12 @@ html[data-lhyzs-theme="light"] .hero-home {
 }
 
 html[data-lhyzs-theme="light"] .home-portals {
+  --portal-text: #39454a;
+  --portal-text-hover: #171d21;
+  --portal-accent: #87631f;
+  --portal-accent-hover: #65450e;
+  --portal-muted: #6d787e;
+  --portal-update: #526066;
   background:
     radial-gradient(circle at 18% 10%, rgba(154, 110, 30, 0.055), transparent 24rem),
     linear-gradient(180deg, #f8fafb, #edf3f5 58%, #f3f5f6);
