@@ -854,6 +854,14 @@ body:has(.jungle-404) [data-md-component="skip"] {
   display: none !important;
 }
 
+body:has(.jungle-404) .player-profile,
+body:has(.jungle-404) .player-profile__card,
+body:has(.jungle-404) .play-launcher,
+body:has(.jungle-404) .theme-switch,
+body:has(.jungle-404) .game-nav {
+  display: none !important;
+}
+
 body:has(.jungle-404) .md-main {
   min-height: 100vh;
   min-height: 100svh;
@@ -861,6 +869,8 @@ body:has(.jungle-404) .md-main {
 }
 
 body:has(.jungle-404) .md-main__inner {
+  position: fixed;
+  inset: 0;
   display: grid;
   width: 100% !important;
   max-width: none !important;
@@ -885,9 +895,13 @@ body:has(.jungle-404) .md-content__inner {
 }
 
 .jungle-404 {
-  width: min(100%, 70rem);
-  margin: 0 auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(calc(100vw - 1.5rem), 70rem);
+  margin: 0 !important;
   color: #151515;
+  transform: translate(-50%, -50%);
 }
 
 .jungle-runner__canvas {
@@ -908,8 +922,7 @@ body:has(.jungle-404) .md-content__inner {
 }
 
 .jungle-runner__canvas:focus-visible {
-  outline: 2px dashed rgba(21, 21, 21, 0.5);
-  outline-offset: 4px;
+  outline: 0;
 }
 
 .jungle-runner__sr-status {
@@ -926,6 +939,10 @@ body:has(.jungle-404) .md-content__inner {
 @media (min-width: 44em) {
   body:has(.jungle-404) .md-main__inner {
     padding: 1.5rem !important;
+  }
+
+  .jungle-404 {
+    width: min(calc(100vw - 3rem), 70rem);
   }
 }
 

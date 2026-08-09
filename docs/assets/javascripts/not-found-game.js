@@ -12,15 +12,16 @@
   const GROUND = 252;
   const BG = "#f4f4f2";
   const INK = "#151515";
-  const STORAGE_KEY = "lhyzs.ivernRunner.best";
+  const STORAGE_KEY = "lhyzs.daisyRunner.best";
+  const LEGACY_STORAGE_KEY = "lhyzs.ivernRunner.best";
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const sprite = new Image();
   const spriteLayer = document.createElement("canvas");
   const spriteCtx = spriteLayer.getContext("2d");
 
   sprite.src = root.dataset.sprite;
-  spriteLayer.width = 66;
-  spriteLayer.height = 66;
+  spriteLayer.width = 64;
+  spriteLayer.height = 64;
   ctx.imageSmoothingEnabled = false;
   spriteCtx.imageSmoothingEnabled = false;
 
@@ -44,7 +45,8 @@
 
   function readBest() {
     try {
-      const saved = Number.parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
+      const stored = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY) ?? "0";
+      const saved = Number.parseInt(stored, 10);
       return Number.isFinite(saved) ? Math.max(0, saved) : 0;
     } catch (_error) {
       return 0;
@@ -62,9 +64,9 @@
   function createPlayer() {
     return {
       x: 78,
-      y: GROUND - 58,
-      width: 23,
-      height: 58,
+      y: GROUND - 46,
+      width: 36,
+      height: 46,
       velocityY: 0,
       grounded: true,
       phase: 0,
@@ -164,9 +166,9 @@
 
     const hitbox = {
       x: player.x + 5,
-      y: player.y + 5,
-      width: player.width - 9,
-      height: player.height - 7,
+      y: player.y + 4,
+      width: player.width - 10,
+      height: player.height - 6,
     };
     for (const wall of obstacles) {
       if (
@@ -259,17 +261,17 @@
     }
   }
 
-  function drawIvern() {
+  function drawDaisy() {
     const frameIndex = state === "running" && !reducedMotion.matches
-      ? Math.floor(player.phase / 1.45) % 4
+      ? Math.floor(player.phase / 0.95) % 8
       : 0;
-    const frameWidth = sprite.naturalWidth / 2;
+    const frameWidth = sprite.naturalWidth / 4;
     const frameHeight = sprite.naturalHeight / 2;
-    const sourceX = (frameIndex % 2) * frameWidth;
-    const sourceY = Math.floor(frameIndex / 2) * frameHeight;
-    const bob = player.grounded ? [0, -1, 1, -2][frameIndex] : -1;
+    const sourceX = (frameIndex % 4) * frameWidth;
+    const sourceY = Math.floor(frameIndex / 4) * frameHeight;
+    const bob = player.grounded ? [0, 1, 0, -1, 0, 1, 0, -1][frameIndex] : -1;
     const drawX = Math.round(player.x + player.width / 2 - spriteLayer.width / 2);
-    const drawY = Math.round(player.y - 4 + bob);
+    const drawY = Math.round(player.y - 13 + bob);
 
     if (sprite.complete && sprite.naturalWidth) {
       spriteCtx.clearRect(0, 0, spriteLayer.width, spriteLayer.height);
@@ -293,10 +295,13 @@
       return;
     }
 
-    pixelRect(player.x + 7, player.y + 2, 10, 50);
-    pixelRect(player.x + 3, player.y, 18, 14);
-    pixelRect(player.x, player.y - 4, 9, 7);
-    pixelRect(player.x + 16, player.y - 5, 8, 8);
+    pixelRect(player.x + 5, player.y + 8, 27, 28);
+    pixelRect(player.x, player.y + 14, 10, 19);
+    pixelRect(player.x + 27, player.y + 14, 12, 18);
+    pixelRect(player.x + 7, player.y + 2, 22, 11);
+    pixelRect(player.x + 8, player.y - 3, 5, 7);
+    pixelRect(player.x + 17, player.y - 4, 5, 8);
+    pixelRect(player.x + 25, player.y - 2, 5, 6);
   }
 
   function formatScore(value) {
@@ -322,12 +327,13 @@
     ctx.textBaseline = "middle";
     ctx.fillText("G A M E  O V E R", centerX, 123);
 
-    pixelRect(centerX - 9, 139, 18, 16);
-    pixelRect(centerX - 5, 136, 10, 3);
-    ctx.fillStyle = BG;
-    ctx.fillRect(centerX - 5, 142, 10, 8);
-    pixelRect(centerX - 3, 143, 6, 2);
-    pixelRect(centerX + 2, 141, 2, 5);
+    pixelRect(centerX - 5, 138, 10, 2);
+    pixelRect(centerX + 4, 140, 2, 8);
+    pixelRect(centerX - 3, 148, 9, 2);
+    pixelRect(centerX - 7, 145, 2, 5);
+    pixelRect(centerX - 9, 141, 2, 6);
+    pixelRect(centerX - 7, 140, 4, 2);
+    pixelRect(centerX - 7, 146, 4, 2);
   }
 
   function draw() {
@@ -337,7 +343,7 @@
     draw404();
     drawGround();
     obstacles.forEach(drawWall);
-    drawIvern();
+    drawDaisy();
     drawScore();
     drawGameOver();
   }
