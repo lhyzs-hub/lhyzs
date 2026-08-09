@@ -1,11 +1,12 @@
-const CACHE_VERSION = "lhyzs-404-v1";
+const CACHE_VERSION = "lhyzs-site-v2";
 const CACHE_NAME = `lhyzs-offline-${CACHE_VERSION}`;
 const SCOPE_URL = new URL(self.registration.scope);
 const OFFLINE_PAGE = new URL("404.html", SCOPE_URL).href;
 const CORE_ASSETS = [
   OFFLINE_PAGE,
-  new URL("assets/stylesheets/extra.css", SCOPE_URL).href,
-  new URL("assets/javascripts/site.js", SCOPE_URL).href,
+  new URL("assets/stylesheets/theme-v2.css", SCOPE_URL).href,
+  new URL("assets/javascripts/site-v2.js", SCOPE_URL).href,
+  new URL("assets/javascripts/notes-hub.js", SCOPE_URL).href,
   new URL("assets/javascripts/not-found-game.js", SCOPE_URL).href,
   new URL("assets/images/game/daisy-run-spritesheet-v2.png", SCOPE_URL).href,
 ];
@@ -65,16 +66,17 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (!isLocalAsset(requestUrl)) return;
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-      return fetch(event.request).then((networkResponse) => {
-        if (networkResponse.ok) {
-          const copy = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-        }
-        return networkResponse;
-      });
-    }),
-  );
+  event.respondWith((async () => {
+    try {
+      const networkResponse = await fetch(event.request, { cache: "no-cache" });
+      if (networkResponse.ok) {
+        const copy = networkResponse.clone();
+        const cache = await caches.open(CACHE_NAME);
+        await cache.put(event.request, copy);
+      }
+      return networkResponse;
+    } catch {
+      return (await caches.match(event.request)) || Response.error();
+    }
+  })());
 });

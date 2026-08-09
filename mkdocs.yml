@@ -16,9 +16,9 @@ theme:
     code: JetBrains Mono
     heading: Inter
 extra_css:
-  - assets/stylesheets/extra.css
+  - assets/stylesheets/theme-v2.css
 extra_javascript:
-  - assets/javascripts/site.js
+  - assets/javascripts/site-v2.js
   - assets/javascripts/notes-hub.js
   - assets/javascripts/not-found-game.js
   - assets/javascripts/supabase-config.js
