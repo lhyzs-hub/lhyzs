@@ -18,10 +18,10 @@ extra_css:
   - assets/stylesheets/extra.css
 extra_javascript:
   - assets/javascripts/site.js
-  - assets/javascripts/game.js
-  - assets/javascripts/daily.js
   - assets/javascripts/supabase-config.js
   - https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.min.js
+  - assets/javascripts/game.js
+  - assets/javascripts/daily.js
   - assets/javascripts/comments.js
 nav:
   - 主页: index.md

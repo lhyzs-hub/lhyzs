@@ -40,16 +40,16 @@ hide:
     <aside class="yuumi-leaderboard" aria-labelledby="leaderboard-title">
       <div class="yuumi-leaderboard__head">
         <div>
-          <p>LOCAL RECORDS</p>
+          <p>GLOBAL RECORDS</p>
           <h2 id="leaderboard-title">里程英雄榜</h2>
         </div>
-        <span>本机</span>
+        <span id="game-board-status" data-tone="loading" aria-live="polite">连接中</span>
       </div>
       <ol id="game-leaderboard"></ol>
       <form class="yuumi-leaderboard__form" id="score-form" hidden>
         <label for="player-name">留下昵称</label>
         <div>
-          <input id="player-name" name="name" maxlength="12" value="lhyzs" autocomplete="nickname">
+          <input id="player-name" name="name" maxlength="12" placeholder="旅人" autocomplete="nickname" required>
           <button type="submit">登记</button>
         </div>
       </form>

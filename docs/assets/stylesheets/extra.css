@@ -1400,6 +1400,27 @@ body:has(.yuumi-game) .md-content__inner > h1 {
   font: 600 0.58rem/1.2 "JetBrains Mono", monospace;
 }
 
+.yuumi-leaderboard__head > span[data-tone="ready"] {
+  border-color: rgba(98, 168, 140, 0.7);
+  color: #87c8ad;
+  box-shadow: 0 0 0.7rem rgba(98, 168, 140, 0.12);
+}
+
+.yuumi-leaderboard__head > span[data-tone="loading"] {
+  border-color: rgba(86, 175, 192, 0.65);
+  color: #83c9d4;
+}
+
+.yuumi-leaderboard__head > span[data-tone="warning"] {
+  border-color: rgba(215, 170, 70, 0.68);
+  color: #e0bf72;
+}
+
+.yuumi-leaderboard__head > span[data-tone="error"] {
+  border-color: rgba(196, 102, 85, 0.62);
+  color: #d99487;
+}
+
 .yuumi-leaderboard ol {
   margin: 0;
   padding: 0;
@@ -1433,6 +1454,16 @@ body:has(.yuumi-game) .md-content__inner > h1 {
 .yuumi-leaderboard li strong {
   color: #8fbcc5;
   white-space: nowrap;
+}
+
+.yuumi-leaderboard .yuumi-leaderboard__empty {
+  min-height: 6rem;
+  grid-column: 1 / -1;
+  justify-content: center;
+  padding: 1.25rem;
+  color: #718b94;
+  line-height: 1.7;
+  text-align: center;
 }
 
 .yuumi-leaderboard .rank-1 .yuumi-leaderboard__rank,
@@ -1475,6 +1506,11 @@ body:has(.yuumi-game) .md-content__inner > h1 {
   color: var(--game-gold-soft);
   font-size: 0.68rem;
   cursor: pointer;
+}
+
+.yuumi-leaderboard__form button:disabled {
+  cursor: wait;
+  opacity: 0.58;
 }
 
 @media (max-width: 62rem) {

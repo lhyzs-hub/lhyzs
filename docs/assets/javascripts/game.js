@@ -1,6 +1,7 @@
 (() => {
   const STORAGE_BEST = "lhyzs-yuumi-best";
-  const STORAGE_BOARD = "lhyzs-yuumi-board";
+  const STORAGE_NAME = "lhyzs-yuumi-player-name";
+  const SUBMIT_COOLDOWN_KEY = "lhyzs-yuumi-last-submit";
 
   const initGame = () => {
     const root = document.querySelector("#yuumi-flight-game");
@@ -22,7 +23,18 @@
     const bestLabel = root.querySelector("#game-best");
     const themeLabel = root.querySelector("#game-theme-label");
     const leaderboard = root.querySelector("#game-leaderboard");
+    const boardStatus = root.querySelector("#game-board-status");
     const scoreForm = root.querySelector("#score-form");
+    const scoreSubmitButton = scoreForm.querySelector("button[type='submit']");
+    const playerNameInput = scoreForm.elements.name;
+
+    const config = window.LHYZS_SUPABASE || {};
+    const isConfigured = Boolean(config.url && config.publishableKey && window.supabase?.createClient);
+    const supabaseClient = isConfigured
+      ? window.supabase.createClient(config.url, config.publishableKey, {
+          auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+        })
+      : null;
 
     const W = canvas.width;
     const H = canvas.height;
@@ -62,32 +74,61 @@
     let lastGapY = H / 2;
     let submitted = false;
     let audioContext;
+    let boardEntries = [];
 
-    const defaultBoard = [
-      { name: "CrystalMage", score: 542 },
-      { name: "SnowWalker", score: 294 },
-      { name: "IronBoar", score: 152 },
-      { name: "FrostyTail", score: 86 }
-    ];
+    const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+    })[char]);
 
-    const readBoard = () => {
-      try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_BOARD) || "[]");
-        return [...defaultBoard, ...(Array.isArray(saved) ? saved : [])]
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 5);
-      } catch (_) {
-        return defaultBoard;
-      }
+    const setBoardStatus = (text, tone = "ready") => {
+      boardStatus.textContent = text;
+      boardStatus.dataset.tone = tone;
     };
 
     const renderBoard = () => {
-      leaderboard.innerHTML = readBoard().map((entry, index) => `
+      if (!boardEntries.length) {
+        leaderboard.innerHTML = '<li class="yuumi-leaderboard__empty">暂无公共成绩，来拿下第一名吧</li>';
+        return;
+      }
+
+      leaderboard.innerHTML = boardEntries.map((entry, index) => `
         <li class="rank-${index + 1}">
           <span class="yuumi-leaderboard__rank">${index + 1}</span>
-          <span class="yuumi-leaderboard__name">${entry.name.replace(/[<>&"]/g, "")}</span>
+          <span class="yuumi-leaderboard__name">${escapeHtml(entry.name)}</span>
           <strong>${entry.score} m</strong>
         </li>`).join("");
+    };
+
+    const loadBoard = async (quiet = false) => {
+      if (!supabaseClient) {
+        boardEntries = [];
+        renderBoard();
+        setBoardStatus("未连接", "error");
+        return;
+      }
+
+      if (!quiet) setBoardStatus("同步中", "loading");
+      const { data, error } = await supabaseClient
+        .from("game_scores")
+        .select("id,player_name,score,created_at")
+        .order("score", { ascending: false })
+        .order("created_at", { ascending: true })
+        .limit(5);
+
+      if (error) {
+        console.error("Unable to load game leaderboard", error);
+        boardEntries = [];
+        renderBoard();
+        setBoardStatus("同步失败", "error");
+        return;
+      }
+
+      boardEntries = (data || []).map((entry) => ({
+        name: entry.player_name,
+        score: entry.score
+      }));
+      renderBoard();
+      setBoardStatus("云端", "ready");
     };
 
     const chooseGapY = () => {
@@ -423,20 +464,55 @@
         start();
       }
     });
-    scoreForm.addEventListener("submit", (event) => {
+    scoreForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (submitted) return;
-      const name = new FormData(scoreForm).get("name")?.toString().trim().slice(0, 12) || "旅人";
-      let saved = [];
-      try { saved = JSON.parse(localStorage.getItem(STORAGE_BOARD) || "[]"); } catch (_) {}
-      saved.push({ name, score: Math.floor(distance) });
-      localStorage.setItem(STORAGE_BOARD, JSON.stringify(saved.slice(-20)));
+      if (!supabaseClient) {
+        setBoardStatus("未连接", "error");
+        return;
+      }
+
+      const name = playerNameInput.value.trim().slice(0, 12);
+      const score = Math.floor(distance);
+      if (!name || score < 1) return;
+
+      const lastSubmit = Number(sessionStorage.getItem(SUBMIT_COOLDOWN_KEY) || 0);
+      if (Date.now() - lastSubmit < 10000) {
+        setBoardStatus("请稍候", "warning");
+        return;
+      }
+
+      scoreSubmitButton.disabled = true;
+      scoreSubmitButton.textContent = "提交中…";
+      setBoardStatus("提交中", "loading");
+      const { error } = await supabaseClient
+        .from("game_scores")
+        .insert({ player_name: name, score });
+      scoreSubmitButton.disabled = false;
+      scoreSubmitButton.textContent = "登记";
+
+      if (error) {
+        console.error("Unable to submit game score", error);
+        setBoardStatus("提交失败", "error");
+        return;
+      }
+
+      localStorage.setItem(STORAGE_NAME, name);
+      sessionStorage.setItem(SUBMIT_COOLDOWN_KEY, String(Date.now()));
       submitted = true;
       scoreForm.hidden = true;
-      renderBoard();
+      await loadBoard();
     });
 
+    playerNameInput.value = localStorage.getItem(STORAGE_NAME) || "";
     renderBoard();
+    loadBoard();
+    window.setInterval(() => {
+      if (!document.hidden && root.isConnected) loadBoard(true);
+    }, 30000);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && root.isConnected) loadBoard(true);
+    });
     reset();
     requestAnimationFrame(loop);
   };
