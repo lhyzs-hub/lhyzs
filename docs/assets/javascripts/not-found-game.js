@@ -11,8 +11,6 @@
   const scoreNode = root.querySelector("[data-runner-score]");
   const bestNode = root.querySelector("[data-runner-best]");
   const titleNode = root.querySelector("[data-runner-title]");
-  const overlineNode = root.querySelector("[data-runner-overline]");
-  const copyNode = root.querySelector("[data-runner-copy]");
   const buttonTextNode = root.querySelector("[data-runner-button-text]");
   const statusNode = root.querySelector("[data-runner-status]");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -21,6 +19,8 @@
   const HEIGHT = canvas.height;
   const GROUND = 217;
   const STORAGE_KEY = "lhyzs.ivernRunner.best";
+  const sprite = new Image();
+  sprite.src = root.dataset.sprite;
   const colors = {
     skyTop: "#07111b",
     skyBottom: "#10262a",
@@ -78,9 +78,9 @@
   function createPlayer() {
     return {
       x: 104,
-      y: GROUND - 86,
-      width: 34,
-      height: 86,
+      y: GROUND - 112,
+      width: 40,
+      height: 112,
       velocityY: 0,
       grounded: true,
       phase: 0,
@@ -93,17 +93,11 @@
 
   function setMessage(mode) {
     if (mode === "idle") {
-      overlineNode.textContent = "迷路也要优雅";
-      titleNode.textContent = "准备穿越野区";
-      copyNode.textContent = "跳过高低不平的石墙，看看翠神能跑多远。";
+      titleNode.textContent = "";
       buttonTextNode.textContent = "开始奔跑";
       statusNode.textContent = "等待开始";
     } else {
-      overlineNode.textContent = `本次里程 ${Math.floor(distance)} m`;
-      titleNode.textContent = "撞到野区墙了";
-      copyNode.textContent = distance >= best && distance > 0
-        ? "新的最佳里程！再跑一次，把纪录留得更远。"
-        : "森林不会责怪迷路的人，再试一次吧。";
+      titleNode.textContent = `${Math.floor(distance)} m`;
       buttonTextNode.textContent = "重新奔跑";
       statusNode.textContent = `游戏结束，本次里程 ${Math.floor(distance)} 米`;
     }
@@ -216,10 +210,10 @@
     particles = particles.filter((particle) => particle.life > 0);
 
     const hitbox = {
-      x: player.x + 9,
-      y: player.y + 10,
-      width: player.width - 17,
-      height: player.height - 13,
+      x: player.x + 12,
+      y: player.y + 9,
+      width: player.width - 22,
+      height: player.height - 12,
     };
     for (const wall of obstacles) {
       const margin = 3;
@@ -253,10 +247,39 @@
     }
   }
 
+  function draw404Backdrop() {
+    const digits = [
+      ["10001", "10001", "10001", "11111", "00001", "00001", "00001"],
+      ["11111", "10001", "10001", "10001", "10001", "10001", "11111"],
+      ["10001", "10001", "10001", "11111", "00001", "00001", "00001"],
+    ];
+    const pixel = 11;
+    const gap = 13;
+    const totalWidth = digits.length * 5 * pixel + (digits.length - 1) * gap;
+    const startX = Math.round((WIDTH - totalWidth) / 2);
+    const startY = 18;
+
+    ctx.globalAlpha = 0.36;
+    digits.forEach((digit, digitIndex) => {
+      digit.forEach((row, rowIndex) => {
+        [...row].forEach((bit, columnIndex) => {
+          if (bit !== "1") return;
+          const x = startX + digitIndex * (5 * pixel + gap) + columnIndex * pixel;
+          const y = startY + rowIndex * pixel;
+          fillPixel(x + 3, y + 3, pixel - 2, pixel - 2, "#02080d");
+          fillPixel(x, y, pixel - 2, pixel - 2, "#559081");
+          fillPixel(x, y, pixel - 2, 2, "#8db89b");
+        });
+      });
+    });
+    ctx.globalAlpha = 1;
+  }
+
   function drawBackground() {
     fillPixel(0, 0, WIDTH, 52, colors.skyTop);
     fillPixel(0, 52, WIDTH, 55, "#0a1a22");
     fillPixel(0, 107, WIDTH, 62, colors.skyBottom);
+    draw404Backdrop();
 
     const starOffset = reducedMotion.matches ? 0 : Math.floor(elapsed * 8) % 80;
     for (let i = 0; i < 9; i += 1) {
@@ -334,62 +357,40 @@
   }
 
   function drawIvern() {
-    const airborne = !player.grounded;
-    const stride = airborne ? 0.35 : Math.sin(player.phase);
-    const sway = airborne ? 1 : Math.round(Math.sin(player.phase * 0.5) * 3);
-    const bob = airborne ? 0 : Math.abs(Math.round(Math.cos(player.phase))) * 2;
-    const baseX = Math.round(player.x + 17 + sway);
-    const baseY = Math.round(player.y + bob);
+    const frameIndex = state === "running" && !reducedMotion.matches
+      ? Math.floor(player.phase / 1.7) % 4
+      : 0;
+    const frameWidth = sprite.naturalWidth / 2;
+    const frameHeight = sprite.naturalHeight / 2;
+    const sourceX = (frameIndex % 2) * frameWidth;
+    const sourceY = Math.floor(frameIndex / 2) * frameHeight;
+    const bob = player.grounded ? [0, -3, 1, -4][frameIndex] : -3;
+    const sway = player.grounded ? [-2, 2, -1, 3][frameIndex] : 1;
+    const size = 126;
+    const drawX = Math.round(player.x + player.width / 2 - size / 2 + sway);
+    const drawY = Math.round(player.y - 14 + bob);
 
-    const hipX = baseX - sway * 0.25;
-    const hipY = baseY + 59;
-    const shoulderX = baseX + sway * 0.5;
-    const shoulderY = baseY + 31;
-    const leftFootX = hipX - 7 + stride * 8;
-    const rightFootX = hipX + 7 - stride * 8;
-    const leftKneeX = hipX - 5 - stride * 4;
-    const rightKneeX = hipX + 5 + stride * 4;
-
-    pixelSegment(hipX - 3, hipY, leftKneeX, hipY + 14, 6, colors.barkDark);
-    pixelSegment(leftKneeX, hipY + 14, leftFootX, baseY + 82, 5, colors.bark);
-    pixelSegment(hipX + 3, hipY, rightKneeX, hipY + 14, 6, colors.bark);
-    pixelSegment(rightKneeX, hipY + 14, rightFootX, baseY + 82, 5, colors.barkLight);
-    fillPixel(leftFootX - 7, baseY + 80, 11, 5, colors.barkDark);
-    fillPixel(rightFootX - 3, baseY + 80, 11, 5, colors.barkDark);
-
-    const armSwing = stride * 10;
-    pixelSegment(shoulderX - 5, shoulderY + 3, shoulderX - 11 - armSwing * 0.4, baseY + 47, 5, colors.bark);
-    pixelSegment(shoulderX - 11 - armSwing * 0.4, baseY + 47, shoulderX - 5 - armSwing, baseY + 60, 4, colors.barkLight);
-    pixelSegment(shoulderX + 5, shoulderY + 3, shoulderX + 10 + armSwing * 0.4, baseY + 47, 5, colors.barkLight);
-    pixelSegment(shoulderX + 10 + armSwing * 0.4, baseY + 47, shoulderX + 4 + armSwing, baseY + 61, 4, colors.bark);
-    fillPixel(shoulderX - 8 - armSwing, baseY + 59, 7, 4, colors.leafLight);
-    fillPixel(shoulderX + 2 + armSwing, baseY + 60, 7, 4, colors.leafLight);
-
-    fillPixel(baseX - 7, baseY + 29, 15, 33, colors.barkDark);
-    fillPixel(baseX - 4, baseY + 31, 10, 29, colors.bark);
-    fillPixel(baseX - 7, baseY + 37, 4, 12, colors.moss);
-    fillPixel(baseX + 5, baseY + 43, 4, 10, colors.leafLight);
-    fillPixel(baseX - 9, baseY + 56, 19, 7, colors.leafDark);
-
-    fillPixel(baseX - 5, baseY + 23, 10, 9, colors.barkLight);
-    fillPixel(baseX - 9, baseY + 9, 18, 17, colors.face);
-    fillPixel(baseX - 10, baseY + 12, 4, 11, colors.barkDark);
-    fillPixel(baseX + 7, baseY + 13, 4, 10, colors.barkDark);
-    fillPixel(baseX - 5, baseY + 15, 3, 3, colors.eye);
-    fillPixel(baseX + 3, baseY + 15, 3, 3, colors.eye);
-    fillPixel(baseX - 1, baseY + 20, 4, 3, "#8a744f");
-
-    fillPixel(baseX - 12, baseY + 5, 9, 8, colors.leaf);
-    fillPixel(baseX + 4, baseY + 4, 10, 9, colors.leafLight);
-    fillPixel(baseX - 5, baseY, 8, 11, colors.moss);
-    fillPixel(baseX - 15, baseY + 1, 7, 7, colors.leafLight);
-    fillPixel(baseX + 10, baseY - 3, 6, 10, colors.leaf);
-    fillPixel(baseX - 8, baseY - 5, 5, 9, colors.leafLight);
-    fillPixel(baseX + 1, baseY - 7, 5, 10, colors.moss);
-
-    if (state === "running" && !reducedMotion.matches) {
-      fillPixel(baseX + 13, baseY + 28, 2, 2, colors.gold);
+    if (sprite.complete && sprite.naturalWidth) {
+      ctx.drawImage(
+        sprite,
+        sourceX,
+        sourceY,
+        frameWidth,
+        frameHeight,
+        drawX,
+        drawY,
+        size,
+        size,
+      );
+      return;
     }
+
+    fillPixel(player.x + 13, player.y + 8, 14, 96, colors.bark);
+    fillPixel(player.x + 8, player.y, 24, 18, colors.face);
+    fillPixel(player.x + 4, player.y - 5, 13, 10, colors.leafLight);
+    fillPixel(player.x + 23, player.y - 7, 12, 12, colors.leaf);
+    fillPixel(player.x + 12, player.y + 7, 4, 4, colors.eye);
+    fillPixel(player.x + 24, player.y + 7, 4, 4, colors.eye);
   }
 
   function drawParticles() {

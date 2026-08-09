@@ -768,6 +768,77 @@ body:not(.lhyzs-home) .md-typeset li {
   }
 }
 
+/* 404 game-only revision */
+body:has(.jungle-404) .md-main__inner {
+  display: grid;
+  width: 100% !important;
+  max-width: none !important;
+  padding: clamp(1rem, 3vw, 2rem) !important;
+  place-items: start center;
+}
+
+body:has(.jungle-404) .md-content {
+  width: min(100%, 74rem);
+}
+
+body:has(.jungle-404) .md-content__inner {
+  width: min(100%, 74rem);
+  max-width: 74rem;
+  min-height: 0;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+
+.jungle-404 {
+  width: min(100%, 74rem);
+  margin: 0 auto;
+}
+
+.jungle-runner__curtain {
+  display: block;
+  background: transparent;
+}
+
+.jungle-runner__action {
+  position: absolute;
+  right: 0.8rem;
+  bottom: 0.8rem;
+  text-align: center;
+}
+
+.jungle-runner__action h2 {
+  margin: 0 0 0.42rem;
+  color: var(--runner-gold-bright);
+  font: 700 0.74rem/1 var(--md-code-font-family);
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 0 #02070b;
+}
+
+.jungle-runner__action h2:empty {
+  display: none;
+}
+
+.jungle-runner > .jungle-runner__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 44em) {
+  body:has(.jungle-404) .md-main__inner {
+    padding: clamp(1.5rem, 4vw, 3.5rem) !important;
+    place-items: center;
+  }
+}
+
 /* Supabase comments — shared by notes and daily cards */
 .comments-panel {
   margin-top: 4rem;

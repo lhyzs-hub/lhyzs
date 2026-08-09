@@ -1,30 +1,16 @@
 {% extends "main.html" %}
 
 {% block content %}
-  <section class="jungle-404" aria-labelledby="jungle-404-title">
-    <div class="jungle-404__eyebrow" aria-hidden="true">
-      <span>ERROR</span>
-      <i></i>
-      <strong>404</strong>
-    </div>
-
-    <header class="jungle-404__header">
-      <div>
-        <p class="jungle-404__kicker">野区路径已丢失</p>
-        <h1 id="jungle-404-title">翠神跑错路了</h1>
-        <p>这片野区没有你要找的页面。先越过墙壁继续前进，或者从传送门返回主页。</p>
-      </div>
-      <a class="jungle-404__home" href="{{ config.site_url }}">
-        <span aria-hidden="true">←</span>
-        返回主页
-      </a>
-    </header>
-
-    <div class="jungle-runner" data-jungle-runner>
+  <section class="jungle-404" aria-label="404 像素跑酷游戏">
+    <div
+      class="jungle-runner"
+      data-jungle-runner
+      data-sprite="{{ 'assets/images/game/ivern-run-spritesheet.png' | url }}"
+    >
       <div class="jungle-runner__topbar">
         <div class="jungle-runner__brand">
           <span class="jungle-runner__rune" aria-hidden="true"></span>
-          <span>IVERN'S WILD RUN</span>
+          <span>404 / WILD RUN</span>
         </div>
         <dl class="jungle-runner__scores" aria-label="游戏里程">
           <div>
@@ -46,28 +32,18 @@
           height="260"
           tabindex="0"
           aria-label="翠神躲避野区墙壁的像素跑酷游戏。按空格、上方向键或点击画面跳跃。"
-        >你的浏览器不支持 Canvas，仍可使用下方按钮返回主页。</canvas>
+        >404</canvas>
 
         <div class="jungle-runner__curtain" data-runner-curtain>
-          <div class="jungle-runner__message">
-            <span class="jungle-runner__message-rune" aria-hidden="true">✦</span>
-            <p class="jungle-runner__overline" data-runner-overline>迷路也要优雅</p>
-            <h2 data-runner-title>准备穿越野区</h2>
-            <p data-runner-copy>跳过高低不平的石墙，看看翠神能跑多远。</p>
+          <div class="jungle-runner__action">
+            <h2 data-runner-title></h2>
             <button class="jungle-runner__start" type="button" data-runner-start>
               <span data-runner-button-text>开始奔跑</span>
             </button>
           </div>
         </div>
       </div>
-
-      <div class="jungle-runner__controls">
-        <p><kbd>Space</kbd><kbd>↑</kbd><span>跳跃</span></p>
-        <p><kbd>R</kbd><span>重新开始</span></p>
-        <p class="jungle-runner__status" data-runner-status aria-live="polite">等待开始</p>
-      </div>
+      <span class="jungle-runner__status" data-runner-status aria-live="polite">等待开始</span>
     </div>
-
-    <p class="jungle-404__note">原创像素绘制 · 无官方游戏素材</p>
   </section>
 {% endblock %}
