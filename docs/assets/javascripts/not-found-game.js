@@ -327,13 +327,16 @@
     ctx.textBaseline = "middle";
     ctx.fillText("G A M E  O V E R", centerX, 123);
 
-    pixelRect(centerX - 5, 138, 10, 2);
-    pixelRect(centerX + 4, 140, 2, 8);
-    pixelRect(centerX - 3, 148, 9, 2);
-    pixelRect(centerX - 7, 145, 2, 5);
-    pixelRect(centerX - 9, 141, 2, 6);
-    pixelRect(centerX - 7, 140, 4, 2);
-    pixelRect(centerX - 7, 146, 4, 2);
+    // Clockwise replay arrow with an intentionally large opening on the left.
+    pixelRect(centerX - 10, 139, 15, 2);
+    pixelRect(centerX - 8, 136, 2, 3);
+    pixelRect(centerX - 8, 141, 2, 3);
+    pixelRect(centerX + 5, 141, 3, 2);
+    pixelRect(centerX + 7, 143, 2, 7);
+    pixelRect(centerX + 5, 150, 3, 2);
+    pixelRect(centerX - 3, 152, 8, 2);
+    pixelRect(centerX - 6, 150, 3, 2);
+    pixelRect(centerX - 8, 147, 2, 3);
   }
 
   function draw() {
