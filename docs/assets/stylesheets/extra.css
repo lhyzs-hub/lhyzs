@@ -550,6 +550,39 @@ body {
   text-shadow: 0 0 38px rgba(201, 155, 61, 0.11);
 }
 
+.home-portals {
+  position: relative;
+  min-height: clamp(22rem, 52vh, 32rem);
+  padding: clamp(3rem, 7vw, 5.5rem) max(2rem, calc((100vw - 86rem) / 2));
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(201, 155, 61, 0.04), transparent 24rem),
+    linear-gradient(180deg, var(--lhyzs-bg-deep), #081019 58%, var(--lhyzs-bg));
+  border-top: 1px solid rgba(201, 155, 61, 0.08);
+}
+
+.home-portals::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: max(2rem, calc((100vw - 86rem) / 2));
+  width: 1px;
+  background: linear-gradient(180deg, rgba(201, 155, 61, 0.5), rgba(42, 101, 115, 0.12), transparent 88%);
+  content: "";
+  pointer-events: none;
+}
+
+.home-portals__inner {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 43rem);
+  padding-left: 1.4rem;
+}
+
+.home-portals .hero-home__actions {
+  margin-top: 0;
+}
+
 .hero-home__actions {
   display: grid;
   grid-template-columns: 1fr;
@@ -912,6 +945,19 @@ body:not(.lhyzs-home) .md-typeset li {
   .play-launcher__steps { left: 0.6rem; }
   .game-nav .md-tabs__list { justify-content: flex-start; }
   .hero-home__copy h1 { font-size: clamp(3rem, 17vw, 4.6rem); }
+
+  .home-portals {
+    min-height: 26rem;
+    padding: 3rem 1.5rem 4.5rem;
+  }
+
+  .home-portals::after {
+    left: 1.5rem;
+  }
+
+  .home-portals__inner {
+    padding-left: 1.4rem;
+  }
 
   .hero-home__update {
     grid-template-areas:
@@ -1419,6 +1465,13 @@ html[data-lhyzs-theme="light"] .hero-home {
     radial-gradient(circle at 75% 43%, rgba(54, 125, 139, 0.12), transparent 23rem),
     radial-gradient(circle at 28% 52%, rgba(154, 110, 30, 0.07), transparent 30rem),
     linear-gradient(135deg, #fff 0%, #eef3f5 52%, #f8fafb 100%);
+}
+
+html[data-lhyzs-theme="light"] .home-portals {
+  background:
+    radial-gradient(circle at 18% 10%, rgba(154, 110, 30, 0.055), transparent 24rem),
+    linear-gradient(180deg, #f8fafb, #edf3f5 58%, #f3f5f6);
+  border-top-color: rgba(154, 110, 30, 0.12);
 }
 
 html[data-lhyzs-theme="light"] .hero-home__actions {

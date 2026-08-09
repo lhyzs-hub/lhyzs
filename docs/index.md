@@ -2,6 +2,16 @@
   <div class="hero-home__copy">
     <p>欢迎来到 lhyzs 的个人网站</p>
     <h1 id="hero-title">光域之城</h1>
+  </div>
+  <div class="hero-home__sigil" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</section>
+
+<section class="home-portals" aria-label="继续探索">
+  <div class="home-portals__inner">
     <nav class="hero-home__actions" aria-label="首页快捷入口">
       <a class="hero-home__action" href="notes/大学课程学习/军事理论/26期末卷_答案/">
         <span aria-hidden="true">01</span>
@@ -22,10 +32,5 @@
       <time datetime="2026-08-09">2026.08.09</time>
       <span class="hero-home__update-arrow" aria-hidden="true">↗</span>
     </a>
-  </div>
-  <div class="hero-home__sigil" aria-hidden="true">
-    <span></span>
-    <span></span>
-    <span></span>
   </div>
 </section>
