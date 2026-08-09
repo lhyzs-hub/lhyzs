@@ -40,7 +40,8 @@
     launcher.href = playUrl;
     launcher.innerHTML = `
       <span class="play-launcher__steps" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="play-launcher__label">PLAY</span>`;
+      <span class="play-launcher__frame" aria-hidden="true"></span>
+      <span class="play-launcher__label" data-text="PLAY">PLAY</span>`;
     launcher.setAttribute("aria-label", "打开小游戏入口");
     headerInner.prepend(launcher);
 
@@ -110,6 +111,36 @@
       if (event.key === "Escape" && trigger.getAttribute("aria-expanded") === "true") {
         setOpen(false);
         trigger.focus();
+      }
+    });
+
+    const pressableSelector = [
+      ".play-launcher",
+      ".game-nav .md-tabs__link",
+      '.md-header__button.md-icon[for="__search"]',
+      ".theme-switch",
+      ".player-profile__trigger"
+    ].join(",");
+
+    const flashPressable = (pressable) => {
+      if (!pressable) return;
+      pressable.classList.remove("is-press-glow");
+      void pressable.offsetWidth;
+      pressable.classList.add("is-press-glow");
+    };
+
+    document.addEventListener("pointerdown", (event) => {
+      flashPressable(event.target.closest(pressableSelector));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      flashPressable(event.target.closest(pressableSelector));
+    });
+
+    document.addEventListener("animationend", (event) => {
+      if (event.animationName === "lhyzs-press-glow") {
+        event.target.classList.remove("is-press-glow");
       }
     });
   };

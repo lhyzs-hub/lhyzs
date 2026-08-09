@@ -127,7 +127,8 @@ body {
   font-weight: 700;
   letter-spacing: 0.1em;
   opacity: 1;
-  transition: color 180ms ease-out;
+  border-radius: 0.15rem;
+  transition: color 180ms ease-out, text-shadow 180ms ease-out, transform 90ms ease-out;
 }
 
 .game-nav .md-tabs__link::after {
@@ -146,6 +147,7 @@ body {
 .game-nav .md-tabs__link:focus-visible,
 .game-nav .md-tabs__item--active .md-tabs__link {
   color: var(--lhyzs-gold-light) !important;
+  text-shadow: 0 0 10px rgba(240, 213, 138, 0.24);
 }
 
 .game-nav .md-tabs__link:hover::after,
@@ -194,17 +196,40 @@ body {
 }
 
 .play-launcher::after {
-  inset: 0.34rem 0.48rem;
-  border: 1px solid #268da0;
-  background: linear-gradient(90deg, rgba(42, 101, 115, 0.05), rgba(42, 101, 115, 0.15));
+  inset: 0.3rem 0.42rem;
+  background: linear-gradient(90deg, rgba(42, 101, 115, 0.03), rgba(42, 101, 115, 0.13));
   clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
-  box-shadow: inset 0 0 0 1px rgba(8, 32, 39, 0.9), inset 0 0 10px rgba(42, 101, 115, 0.16);
-  transition: border-color 180ms ease-out, box-shadow 180ms ease-out, background 180ms ease-out;
+  box-shadow: inset 0 0 12px rgba(42, 101, 115, 0.12);
+  transition: box-shadow 180ms ease-out, background 180ms ease-out;
 }
 
 .play-launcher__label {
   position: relative;
   z-index: 2;
+  color: #f7edd7;
+  -webkit-text-stroke: 1.25px #896728;
+  paint-order: stroke fill;
+  text-shadow: 0 1px 0 #33250e, 0 0 8px rgba(240, 213, 138, 0.14);
+  transition: color 180ms ease-out, -webkit-text-stroke-color 180ms ease-out, text-shadow 180ms ease-out;
+}
+
+.play-launcher__frame {
+  position: absolute;
+  inset: 0.34rem 0.48rem;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(120deg, #247f91, #42b7c8 48%, #1c6576);
+  clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
+  filter: drop-shadow(0 0 2px rgba(56, 190, 211, 0.18));
+  transition: background 180ms ease-out, filter 180ms ease-out;
+}
+
+.play-launcher__frame::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(90deg, #08131c, #10202b 58%, #08131c);
+  clip-path: polygon(0 0, calc(100% - 0.96rem) 0, 100% 50%, calc(100% - 0.96rem) 100%, 0 100%);
 }
 
 .play-launcher__steps {
@@ -231,9 +256,21 @@ body {
 
 .play-launcher:hover::after,
 .play-launcher:focus-visible::after {
-  border-color: #38bed3;
   background: linear-gradient(90deg, rgba(42, 101, 115, 0.12), rgba(42, 101, 115, 0.3));
-  box-shadow: inset 0 0 0 1px rgba(8, 32, 39, 0.8), inset 0 0 14px rgba(42, 170, 193, 0.25);
+  box-shadow: inset 0 0 16px rgba(42, 170, 193, 0.22);
+}
+
+.play-launcher:hover .play-launcher__frame,
+.play-launcher:focus-visible .play-launcher__frame {
+  background: linear-gradient(120deg, #38a7b9, #63d8e6 48%, #278398);
+  filter: drop-shadow(0 0 5px rgba(56, 190, 211, 0.46));
+}
+
+.play-launcher:hover .play-launcher__label,
+.play-launcher:focus-visible .play-launcher__label {
+  color: #fff8e7;
+  -webkit-text-stroke-color: #b58835;
+  text-shadow: 0 1px 0 #33250e, 0 0 10px rgba(240, 213, 138, 0.34);
 }
 
 .play-launcher:hover,
@@ -243,6 +280,33 @@ body {
   transform: translateY(-1px);
   outline: 2px solid rgba(56, 190, 211, 0.22);
   outline-offset: 2px;
+}
+
+.play-launcher:active,
+.game-nav .md-tabs__link:active,
+.md-header__button.md-icon[for="__search"]:active,
+.theme-switch:active,
+.player-profile__trigger:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+@keyframes lhyzs-press-glow {
+  0% { filter: brightness(1); }
+  28% {
+    color: #fff8df;
+    filter: brightness(1.26) drop-shadow(0 0 5px rgba(56, 190, 211, 0.58));
+    box-shadow: 0 0 0 1px rgba(240, 213, 138, 0.7), 0 0 16px rgba(201, 155, 61, 0.5), inset 0 0 12px rgba(56, 190, 211, 0.2);
+    text-shadow: 0 0 10px rgba(240, 213, 138, 0.7);
+  }
+  100% { filter: brightness(1); }
+}
+
+.play-launcher.is-press-glow,
+.game-nav .md-tabs__link.is-press-glow,
+.md-header__button.md-icon[for="__search"].is-press-glow,
+.theme-switch.is-press-glow,
+.player-profile__trigger.is-press-glow {
+  animation: lhyzs-press-glow 360ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Real clickable player profile */
@@ -980,6 +1044,16 @@ html[data-lhyzs-theme="light"] .play-launcher::before {
 html[data-lhyzs-theme="light"] .play-launcher::after {
   background: linear-gradient(90deg, rgba(54, 125, 139, 0.04), rgba(54, 125, 139, 0.11));
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.88), inset 0 0 8px rgba(54, 125, 139, 0.12);
+}
+
+html[data-lhyzs-theme="light"] .play-launcher__frame::after {
+  background: linear-gradient(90deg, #fff, #e8f0f2 58%, #fff);
+}
+
+html[data-lhyzs-theme="light"] .play-launcher__label {
+  color: #3a2b12;
+  -webkit-text-stroke-color: #c39845;
+  text-shadow: 0 1px 0 #fff, 0 0 7px rgba(154, 110, 30, 0.14);
 }
 
 html[data-lhyzs-theme="light"] .play-launcher:hover,
