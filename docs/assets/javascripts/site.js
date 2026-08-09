@@ -40,6 +40,7 @@
 
   const initHeader = () => {
     document.body.classList.toggle("lhyzs-home", Boolean(document.querySelector(".hero-home")));
+    document.body.classList.toggle("lhyzs-notes-hub", Boolean(document.querySelector("[data-notes-hub]")));
 
     const headerInner = document.querySelector(".md-header__inner");
     if (!headerInner || headerInner.dataset.lhyzsReady === "true") return;

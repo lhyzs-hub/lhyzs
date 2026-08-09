@@ -19,6 +19,7 @@ extra_css:
   - assets/stylesheets/extra.css
 extra_javascript:
   - assets/javascripts/site.js
+  - assets/javascripts/notes-hub.js
   - assets/javascripts/not-found-game.js
   - assets/javascripts/supabase-config.js
   - https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.min.js
