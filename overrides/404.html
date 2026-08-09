@@ -1,49 +1,20 @@
 {% extends "main.html" %}
 
 {% block content %}
-  <section class="jungle-404" aria-label="404 像素跑酷游戏">
-    <div
-      class="jungle-runner"
-      data-jungle-runner
-      data-sprite="{{ 'assets/images/game/ivern-run-spritesheet.png' | url }}"
-    >
-      <div class="jungle-runner__topbar">
-        <div class="jungle-runner__brand">
-          <span class="jungle-runner__rune" aria-hidden="true"></span>
-          <span>404 / WILD RUN</span>
-        </div>
-        <dl class="jungle-runner__scores" aria-label="游戏里程">
-          <div>
-            <dt>本局</dt>
-            <dd><span data-runner-score>0000</span> m</dd>
-          </div>
-          <div>
-            <dt>最佳</dt>
-            <dd><span data-runner-best>0000</span> m</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div class="jungle-runner__screen">
-        <canvas
-          class="jungle-runner__canvas"
-          data-runner-canvas
-          width="640"
-          height="260"
-          tabindex="0"
-          aria-label="翠神躲避野区墙壁的像素跑酷游戏。按空格、上方向键或点击画面跳跃。"
-        >404</canvas>
-
-        <div class="jungle-runner__curtain" data-runner-curtain>
-          <div class="jungle-runner__action">
-            <h2 data-runner-title></h2>
-            <button class="jungle-runner__start" type="button" data-runner-start>
-              <span data-runner-button-text>开始奔跑</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      <span class="jungle-runner__status" data-runner-status aria-live="polite">等待开始</span>
-    </div>
+  <section
+    class="jungle-404"
+    data-jungle-runner
+    data-sprite="{{ 'assets/images/game/ivern-run-spritesheet.png' | url }}"
+    aria-label="404 像素跑酷游戏"
+  >
+    <canvas
+      class="jungle-runner__canvas"
+      data-runner-canvas
+      width="720"
+      height="300"
+      tabindex="0"
+      aria-label="翠神黑色剪影跑酷。按空格、上方向键、W 或点击画布跳跃。"
+    >404</canvas>
+    <span class="jungle-runner__sr-status" data-runner-status aria-live="polite">等待开始</span>
   </section>
 {% endblock %}

@@ -3,65 +3,49 @@
   if (!root) return;
 
   const canvas = root.querySelector("[data-runner-canvas]");
-  const ctx = canvas && canvas.getContext("2d");
+  const statusNode = root.querySelector("[data-runner-status]");
+  const ctx = canvas?.getContext("2d");
   if (!ctx) return;
 
-  const curtain = root.querySelector("[data-runner-curtain]");
-  const startButton = root.querySelector("[data-runner-start]");
-  const scoreNode = root.querySelector("[data-runner-score]");
-  const bestNode = root.querySelector("[data-runner-best]");
-  const titleNode = root.querySelector("[data-runner-title]");
-  const buttonTextNode = root.querySelector("[data-runner-button-text]");
-  const statusNode = root.querySelector("[data-runner-status]");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-  const WIDTH = canvas.width;
-  const HEIGHT = canvas.height;
-  const GROUND = 217;
+  const W = canvas.width;
+  const H = canvas.height;
+  const GROUND = 252;
+  const BG = "#f4f4f2";
+  const INK = "#151515";
   const STORAGE_KEY = "lhyzs.ivernRunner.best";
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const sprite = new Image();
+  const spriteLayer = document.createElement("canvas");
+  const spriteCtx = spriteLayer.getContext("2d");
+
   sprite.src = root.dataset.sprite;
-  const colors = {
-    skyTop: "#07111b",
-    skyBottom: "#10262a",
-    far: "#122f2c",
-    mid: "#174137",
-    leafDark: "#183a2d",
-    leaf: "#2f6b43",
-    leafLight: "#6ea65b",
-    moss: "#4e7a3c",
-    barkDark: "#3b2922",
-    bark: "#78503a",
-    barkLight: "#b98a55",
-    face: "#d8c69a",
-    eye: "#4fc4bc",
-    stoneDark: "#182831",
-    stone: "#324854",
-    stoneLight: "#60717a",
-    stoneEdge: "#91a1a3",
-    gold: "#d0a84a",
-    cyan: "#35aab3",
-  };
+  spriteLayer.width = 66;
+  spriteLayer.height = 66;
+  ctx.imageSmoothingEnabled = false;
+  spriteCtx.imageSmoothingEnabled = false;
+
+  const stars = Array.from({ length: 31 }, (_, index) => ({
+    x: 24 + ((index * 83 + index * index * 7) % (W - 48)),
+    y: 20 + ((index * 47 + index * 11) % 142),
+    type: index % 5,
+  }));
 
   let state = "idle";
   let lastTime = performance.now();
   let elapsed = 0;
   let distance = 0;
-  let speed = 205;
-  let spawnTimer = 1.25;
-  let flashTimer = 0;
   let best = readBest();
+  let speed = 218;
+  let spawnTimer = 1.55;
+  let jumpBuffer = 0;
+  let coyoteTime = 0;
   let obstacles = [];
-  let particles = [];
   let player = createPlayer();
-
-  ctx.imageSmoothingEnabled = false;
-  bestNode.textContent = formatScore(best);
 
   function readBest() {
     try {
-      const value = Number.parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
-      return Number.isFinite(value) ? Math.max(0, value) : 0;
+      const saved = Number.parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
+      return Number.isFinite(saved) ? Math.max(0, saved) : 0;
     } catch (_error) {
       return 0;
     }
@@ -71,347 +55,291 @@
     try {
       localStorage.setItem(STORAGE_KEY, String(value));
     } catch (_error) {
-      // The game still works when storage is unavailable.
+      // Storage is optional; gameplay remains available without it.
     }
   }
 
   function createPlayer() {
     return {
-      x: 104,
-      y: GROUND - 112,
-      width: 40,
-      height: 112,
+      x: 78,
+      y: GROUND - 58,
+      width: 23,
+      height: 58,
       velocityY: 0,
       grounded: true,
       phase: 0,
     };
   }
 
-  function formatScore(value) {
-    return String(Math.max(0, Math.floor(value))).padStart(4, "0");
-  }
-
-  function setMessage(mode) {
-    if (mode === "idle") {
-      titleNode.textContent = "";
-      buttonTextNode.textContent = "开始奔跑";
-      statusNode.textContent = "等待开始";
-    } else {
-      titleNode.textContent = `${Math.floor(distance)} m`;
-      buttonTextNode.textContent = "重新奔跑";
-      statusNode.textContent = `游戏结束，本次里程 ${Math.floor(distance)} 米`;
-    }
-  }
-
   function resetGame() {
     state = "running";
     elapsed = 0;
     distance = 0;
-    speed = 205;
-    spawnTimer = 1.12;
-    flashTimer = 0;
+    speed = 218;
+    spawnTimer = 1.35;
+    jumpBuffer = 0;
+    coyoteTime = 0.09;
     obstacles = [];
-    particles = [];
     player = createPlayer();
-    scoreNode.textContent = "0000";
-    curtain.classList.add("is-hidden");
-    root.classList.add("is-running");
-    statusNode.textContent = "奔跑中，按空格或点击跳跃";
+    statusNode.textContent = "游戏进行中";
     canvas.focus({ preventScroll: true });
   }
 
   function endGame() {
     if (state !== "running") return;
     state = "gameover";
-    root.classList.remove("is-running");
-    flashTimer = 0.18;
-    const finalDistance = Math.floor(distance);
-    if (finalDistance > best) {
-      best = finalDistance;
+    const score = Math.floor(distance);
+    if (score > best) {
+      best = score;
       saveBest(best);
-      bestNode.textContent = formatScore(best);
     }
-    setMessage("gameover");
-    window.setTimeout(() => {
-      curtain.classList.remove("is-hidden");
-      startButton.focus({ preventScroll: true });
-    }, reducedMotion.matches ? 0 : 280);
+    statusNode.textContent = `游戏结束，本次里程 ${score} 米`;
   }
 
-  function jump() {
+  function requestJump() {
     if (state !== "running") {
       resetGame();
+      jumpBuffer = 0.12;
       return;
     }
-    if (!player.grounded) return;
-    player.velocityY = -515;
+    jumpBuffer = 0.12;
+  }
+
+  function performJump() {
+    player.velocityY = -365;
     player.grounded = false;
-    for (let i = 0; i < 5; i += 1) {
-      particles.push({
-        x: player.x + 17 + i * 2,
-        y: GROUND - 3,
-        vx: -35 - i * 8,
-        vy: -20 - (i % 2) * 18,
-        life: 0.38 + i * 0.03,
-      });
-    }
+    coyoteTime = 0;
+    jumpBuffer = 0;
   }
 
   function spawnObstacle() {
-    const tall = Math.random() > 0.55;
-    const height = tall ? 68 + Math.floor(Math.random() * 24) : 43 + Math.floor(Math.random() * 18);
-    const width = tall ? 33 + Math.floor(Math.random() * 15) : 45 + Math.floor(Math.random() * 20);
+    // The 38 px ceiling stays safely below the 53 px jump apex.
+    const height = 20 + Math.floor(Math.random() * 19);
+    const width = 17 + Math.floor(Math.random() * 12);
     obstacles.push({
-      x: WIDTH + 8,
+      x: W + 8,
       y: GROUND - height,
       width,
       height,
-      seed: Math.floor(Math.random() * 97),
+      notch: Math.floor(Math.random() * 4),
     });
-    const minGap = 1.08;
-    const maxGap = 1.63;
-    spawnTimer = minGap + Math.random() * (maxGap - minGap) + (tall ? 0.12 : 0);
+
+    // Distance-based spacing remains fair as the game accelerates.
+    const safeDistance = speed * 0.82 + Math.random() * 72;
+    spawnTimer = safeDistance / speed;
   }
 
   function update(dt) {
-    if (flashTimer > 0) flashTimer -= dt;
     if (state !== "running") {
-      if (!reducedMotion.matches) player.phase += dt * 1.4;
+      if (!reducedMotion.matches) player.phase += dt * 2.2;
       return;
     }
 
     elapsed += dt;
-    distance += dt * (speed / 17);
-    speed = Math.min(345, 205 + distance * 0.2);
-    player.phase += dt * (speed / 15);
-    player.velocityY += 1380 * dt;
-    player.y += player.velocityY * dt;
+    distance += dt * (speed / 19);
+    speed = Math.min(292, 218 + distance * 0.16);
+    player.phase += dt * (speed / 19);
 
+    jumpBuffer = Math.max(0, jumpBuffer - dt);
+    coyoteTime = player.grounded ? 0.09 : Math.max(0, coyoteTime - dt);
+    if (jumpBuffer > 0 && coyoteTime > 0) performJump();
+
+    player.velocityY += 1280 * dt;
+    player.y += player.velocityY * dt;
     if (player.y >= GROUND - player.height) {
       player.y = GROUND - player.height;
       player.velocityY = 0;
       player.grounded = true;
+      if (jumpBuffer > 0) performJump();
+    } else {
+      player.grounded = false;
     }
 
     spawnTimer -= dt;
     if (spawnTimer <= 0) spawnObstacle();
-
     obstacles.forEach((wall) => {
       wall.x -= speed * dt;
     });
-    obstacles = obstacles.filter((wall) => wall.x + wall.width > -12);
-
-    particles.forEach((particle) => {
-      particle.x += particle.vx * dt;
-      particle.y += particle.vy * dt;
-      particle.vy += 125 * dt;
-      particle.life -= dt;
-    });
-    particles = particles.filter((particle) => particle.life > 0);
+    obstacles = obstacles.filter((wall) => wall.x + wall.width > -10);
 
     const hitbox = {
-      x: player.x + 12,
-      y: player.y + 9,
-      width: player.width - 22,
-      height: player.height - 12,
+      x: player.x + 5,
+      y: player.y + 5,
+      width: player.width - 9,
+      height: player.height - 7,
     };
     for (const wall of obstacles) {
-      const margin = 3;
       if (
-        hitbox.x < wall.x + wall.width - margin &&
-        hitbox.x + hitbox.width > wall.x + margin &&
+        hitbox.x < wall.x + wall.width - 2 &&
+        hitbox.x + hitbox.width > wall.x + 2 &&
         hitbox.y < wall.y + wall.height &&
-        hitbox.y + hitbox.height > wall.y + 5
+        hitbox.y + hitbox.height > wall.y + 3
       ) {
         endGame();
         break;
       }
     }
-
-    scoreNode.textContent = formatScore(distance);
   }
 
-  function fillPixel(x, y, width, height, color) {
+  function pixelRect(x, y, width, height, color = INK) {
     ctx.fillStyle = color;
     ctx.fillRect(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
   }
 
-  function pixelSegment(x1, y1, x2, y2, size, color) {
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    const steps = Math.max(Math.abs(dx), Math.abs(dy));
-    const count = Math.max(1, Math.ceil(steps / Math.max(1, size - 1)));
-    for (let i = 0; i <= count; i += 1) {
-      const ratio = i / count;
-      fillPixel(x1 + dx * ratio - size / 2, y1 + dy * ratio - size / 2, size, size, color);
-    }
+  function drawStars() {
+    ctx.globalAlpha = 0.68;
+    stars.forEach((star) => {
+      const drift = state === "running" && !reducedMotion.matches ? (elapsed * speed * 0.025) % W : 0;
+      const x = (star.x - drift + W) % W;
+      const y = star.y;
+      if (star.type === 0) {
+        pixelRect(x + 2, y, 2, 6);
+        pixelRect(x, y + 2, 6, 2);
+      } else if (star.type === 1) {
+        pixelRect(x + 1, y, 1, 5);
+        pixelRect(x, y + 2, 3, 1);
+      } else {
+        pixelRect(x, y, star.type === 2 ? 2 : 1, star.type === 2 ? 2 : 1);
+      }
+    });
+    ctx.globalAlpha = 1;
   }
 
-  function draw404Backdrop() {
+  function draw404() {
     const digits = [
-      ["10001", "10001", "10001", "11111", "00001", "00001", "00001"],
-      ["11111", "10001", "10001", "10001", "10001", "10001", "11111"],
-      ["10001", "10001", "10001", "11111", "00001", "00001", "00001"],
+      ["10001", "10001", "11111", "00001", "00001"],
+      ["11111", "10001", "10001", "10001", "11111"],
+      ["10001", "10001", "11111", "00001", "00001"],
     ];
-    const pixel = 11;
-    const gap = 13;
+    const pixel = 4;
+    const gap = 7;
     const totalWidth = digits.length * 5 * pixel + (digits.length - 1) * gap;
-    const startX = Math.round((WIDTH - totalWidth) / 2);
-    const startY = 18;
+    const startX = Math.round((W - totalWidth) / 2);
+    const startY = 52;
 
-    ctx.globalAlpha = 0.36;
+    ctx.globalAlpha = 0.16;
     digits.forEach((digit, digitIndex) => {
       digit.forEach((row, rowIndex) => {
         [...row].forEach((bit, columnIndex) => {
-          if (bit !== "1") return;
-          const x = startX + digitIndex * (5 * pixel + gap) + columnIndex * pixel;
-          const y = startY + rowIndex * pixel;
-          fillPixel(x + 3, y + 3, pixel - 2, pixel - 2, "#02080d");
-          fillPixel(x, y, pixel - 2, pixel - 2, "#559081");
-          fillPixel(x, y, pixel - 2, 2, "#8db89b");
+          if (bit === "1") {
+            pixelRect(
+              startX + digitIndex * (5 * pixel + gap) + columnIndex * pixel,
+              startY + rowIndex * pixel,
+              3,
+              3,
+            );
+          }
         });
       });
     });
     ctx.globalAlpha = 1;
   }
 
-  function drawBackground() {
-    fillPixel(0, 0, WIDTH, 52, colors.skyTop);
-    fillPixel(0, 52, WIDTH, 55, "#0a1a22");
-    fillPixel(0, 107, WIDTH, 62, colors.skyBottom);
-    draw404Backdrop();
-
-    const starOffset = reducedMotion.matches ? 0 : Math.floor(elapsed * 8) % 80;
-    for (let i = 0; i < 9; i += 1) {
-      const x = (57 + i * 83 - starOffset + WIDTH) % WIDTH;
-      const y = 31 + ((i * 29) % 72);
-      fillPixel(x, y, i % 3 === 0 ? 3 : 2, 2, i % 2 ? "#6bbeb2" : "#b4ca7b");
-    }
-
-    const farOffset = Math.floor(elapsed * speed * 0.035) % 96;
-    for (let x = -96 - farOffset; x < WIDTH + 96; x += 96) {
-      fillPixel(x + 10, 112, 22, 64, "#0d2a29");
-      fillPixel(x + 3, 98, 38, 17, "#123631");
-      fillPixel(x + 28, 83, 30, 31, "#123631");
-      fillPixel(x + 52, 104, 37, 20, "#123631");
-    }
-
-    const midOffset = Math.floor(elapsed * speed * 0.09) % 126;
-    for (let x = -126 - midOffset; x < WIDTH + 126; x += 126) {
-      fillPixel(x + 8, 145, 25, 72, colors.leafDark);
-      fillPixel(x, 131, 49, 23, colors.mid);
-      fillPixel(x + 39, 118, 46, 39, colors.mid);
-      fillPixel(x + 76, 139, 42, 25, colors.mid);
-      fillPixel(x + 50, 151, 12, 66, "#163126");
-    }
-
-    fillPixel(0, 181, WIDTH, 36, "#16292a");
-    fillPixel(0, 190, WIDTH, 4, "#29473f");
-    fillPixel(0, GROUND, WIDTH, HEIGHT - GROUND, "#101a20");
-    fillPixel(0, GROUND, WIDTH, 4, "#556358");
-    fillPixel(0, GROUND + 4, WIDTH, 3, "#263b38");
-
-    const groundOffset = Math.floor(elapsed * speed) % 50;
-    for (let x = -50 - groundOffset; x < WIDTH + 50; x += 50) {
-      fillPixel(x + 7, GROUND + 13, 21, 3, "#26353a");
-      fillPixel(x + 31, GROUND + 28, 12, 3, "#1b292f");
-      fillPixel(x + 2, GROUND + 36, 7, 2, "#38443f");
+  function drawGround() {
+    pixelRect(0, GROUND, W, 2);
+    const offset = state === "running" ? Math.floor(elapsed * speed) % 34 : 0;
+    for (let x = -34 - offset; x < W + 34; x += 34) {
+      pixelRect(x + 8, GROUND + 11, 9, 2);
+      if ((x / 34) % 3 === 0) pixelRect(x + 25, GROUND + 20, 3, 2);
     }
   }
 
   function drawWall(wall) {
     const x = Math.round(wall.x);
     const y = Math.round(wall.y);
-    const capSteps = [5, 0, 3, -4, 2, -1];
-    fillPixel(x + 2, y + 4, wall.width - 2, wall.height - 4, colors.stoneDark);
-
-    for (let rowY = y + 5, row = 0; rowY < GROUND; rowY += 14, row += 1) {
-      const offset = row % 2 ? -5 : 2;
-      for (let blockX = x + offset; blockX < x + wall.width; blockX += 19) {
-        const right = Math.min(blockX + 17, x + wall.width - 2);
-        if (right <= x + 2) continue;
-        const shade = (row + blockX + wall.seed) % 3;
-        fillPixel(
-          Math.max(x + 3, blockX),
-          rowY,
-          right - Math.max(x + 3, blockX),
-          11,
-          shade === 0 ? colors.stoneLight : colors.stone,
-        );
-        fillPixel(Math.max(x + 4, blockX + 3), rowY + 2, 6, 2, shade === 0 ? colors.stoneEdge : "#53656d");
-      }
+    pixelRect(x + 2, y + 3, wall.width - 3, wall.height - 3);
+    pixelRect(x, y + 5 + wall.notch, wall.width, wall.height - 8 - wall.notch);
+    pixelRect(x + 3, y + 1, Math.max(5, Math.floor(wall.width * 0.48)), 4);
+    pixelRect(x + wall.width - 7, y + 3, 7, 4);
+    if (wall.notch % 2 === 0) {
+      pixelRect(x - 3, y + 9, 5, 3);
+      pixelRect(x - 5, y + 7, 3, 2);
+    } else {
+      pixelRect(x + wall.width - 1, y + 12, 5, 3);
     }
-
-    for (let i = 0; i < Math.ceil(wall.width / 10); i += 1) {
-      const capX = x + i * 10;
-      const capY = y + capSteps[(i + wall.seed) % capSteps.length];
-      fillPixel(capX, capY, Math.min(12, x + wall.width - capX), 7, colors.stoneLight);
-      fillPixel(capX + 2, capY, Math.min(7, x + wall.width - capX - 2), 2, colors.stoneEdge);
-      fillPixel(capX, capY + 7, Math.min(10, x + wall.width - capX), 3, colors.moss);
-    }
-
-    const vineX = x + 7 + (wall.seed % Math.max(8, wall.width - 15));
-    pixelSegment(vineX, y + 3, vineX + 2, y + Math.min(28, wall.height - 6), 3, "#376a3b");
-    fillPixel(vineX - 5, y + 17, 6, 4, colors.leafLight);
-    fillPixel(vineX + 2, y + 25, 6, 4, colors.moss);
   }
 
   function drawIvern() {
     const frameIndex = state === "running" && !reducedMotion.matches
-      ? Math.floor(player.phase / 1.7) % 4
+      ? Math.floor(player.phase / 1.45) % 4
       : 0;
     const frameWidth = sprite.naturalWidth / 2;
     const frameHeight = sprite.naturalHeight / 2;
     const sourceX = (frameIndex % 2) * frameWidth;
     const sourceY = Math.floor(frameIndex / 2) * frameHeight;
-    const bob = player.grounded ? [0, -3, 1, -4][frameIndex] : -3;
-    const sway = player.grounded ? [-2, 2, -1, 3][frameIndex] : 1;
-    const size = 126;
-    const drawX = Math.round(player.x + player.width / 2 - size / 2 + sway);
-    const drawY = Math.round(player.y - 14 + bob);
+    const bob = player.grounded ? [0, -1, 1, -2][frameIndex] : -1;
+    const drawX = Math.round(player.x + player.width / 2 - spriteLayer.width / 2);
+    const drawY = Math.round(player.y - 4 + bob);
 
     if (sprite.complete && sprite.naturalWidth) {
-      ctx.drawImage(
+      spriteCtx.clearRect(0, 0, spriteLayer.width, spriteLayer.height);
+      spriteCtx.globalCompositeOperation = "source-over";
+      spriteCtx.drawImage(
         sprite,
         sourceX,
         sourceY,
         frameWidth,
         frameHeight,
-        drawX,
-        drawY,
-        size,
-        size,
+        0,
+        0,
+        spriteLayer.width,
+        spriteLayer.height,
       );
+      spriteCtx.globalCompositeOperation = "source-in";
+      spriteCtx.fillStyle = INK;
+      spriteCtx.fillRect(0, 0, spriteLayer.width, spriteLayer.height);
+      spriteCtx.globalCompositeOperation = "source-over";
+      ctx.drawImage(spriteLayer, drawX, drawY);
       return;
     }
 
-    fillPixel(player.x + 13, player.y + 8, 14, 96, colors.bark);
-    fillPixel(player.x + 8, player.y, 24, 18, colors.face);
-    fillPixel(player.x + 4, player.y - 5, 13, 10, colors.leafLight);
-    fillPixel(player.x + 23, player.y - 7, 12, 12, colors.leaf);
-    fillPixel(player.x + 12, player.y + 7, 4, 4, colors.eye);
-    fillPixel(player.x + 24, player.y + 7, 4, 4, colors.eye);
+    pixelRect(player.x + 7, player.y + 2, 10, 50);
+    pixelRect(player.x + 3, player.y, 18, 14);
+    pixelRect(player.x, player.y - 4, 9, 7);
+    pixelRect(player.x + 16, player.y - 5, 8, 8);
   }
 
-  function drawParticles() {
-    particles.forEach((particle) => {
-      const shade = particle.life > 0.2 ? "#71817a" : "#3b4d49";
-      fillPixel(particle.x, particle.y, 4, 3, shade);
-    });
+  function formatScore(value) {
+    return String(Math.max(0, Math.floor(value))).padStart(5, "0");
+  }
+
+  function drawScore() {
+    ctx.fillStyle = INK;
+    ctx.globalAlpha = 0.62;
+    ctx.font = "700 12px 'JetBrains Mono', monospace";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "top";
+    ctx.fillText(`HI ${formatScore(best)}  ${formatScore(distance)}`, W - 16, 15);
+    ctx.globalAlpha = 1;
+  }
+
+  function drawGameOver() {
+    if (state !== "gameover") return;
+    const centerX = W / 2;
+    ctx.fillStyle = INK;
+    ctx.font = "700 15px 'JetBrains Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("G A M E  O V E R", centerX, 123);
+
+    pixelRect(centerX - 9, 139, 18, 16);
+    pixelRect(centerX - 5, 136, 10, 3);
+    ctx.fillStyle = BG;
+    ctx.fillRect(centerX - 5, 142, 10, 8);
+    pixelRect(centerX - 3, 143, 6, 2);
+    pixelRect(centerX + 2, 141, 2, 5);
   }
 
   function draw() {
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    drawBackground();
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, W, H);
+    drawStars();
+    draw404();
+    drawGround();
     obstacles.forEach(drawWall);
-    drawParticles();
     drawIvern();
-
-    if (flashTimer > 0) {
-      ctx.globalAlpha = Math.min(0.55, flashTimer * 3);
-      fillPixel(0, 0, WIDTH, HEIGHT, "#d9b865");
-      ctx.globalAlpha = 1;
-    }
+    drawScore();
+    drawGameOver();
   }
 
   function frame(now) {
@@ -425,23 +353,21 @@
   function handleKey(event) {
     if (["Space", "ArrowUp", "KeyW"].includes(event.code)) {
       event.preventDefault();
-      jump();
+      requestJump();
     } else if (event.code === "KeyR") {
       event.preventDefault();
       resetGame();
     }
   }
 
-  startButton.addEventListener("click", resetGame);
   canvas.addEventListener("pointerdown", (event) => {
     event.preventDefault();
-    jump();
+    requestJump();
   });
   window.addEventListener("keydown", handleKey);
   document.addEventListener("visibilitychange", () => {
     lastTime = performance.now();
   });
 
-  setMessage("idle");
   requestAnimationFrame(frame);
 })();
