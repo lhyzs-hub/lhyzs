@@ -1,13 +1,12 @@
 (() => {
   const CONFIG = window.LHYZS_SUPABASE || {};
+  const security = window.LHYZS_SECURITY;
   const isConfigured = Boolean(CONFIG.url && CONFIG.publishableKey && window.supabase?.createClient);
   const client = isConfigured
     ? window.supabase.createClient(CONFIG.url, CONFIG.publishableKey, {
         auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
       })
     : null;
-
-  const escapeSelector = (value) => window.CSS?.escape ? CSS.escape(value) : value.replace(/["\\]/g, "\\$&");
 
   const pageKeyFromLocation = () => {
     const parts = location.pathname.replace(/index\.html$/, "").split("/").filter(Boolean);
@@ -100,7 +99,25 @@
     }
 
     renderComments(panel, data || []);
-    setStatus(panel, "云端同步已开启", "ready");
+    setStatus(panel, security?.configured ? "安全同步已开启" : "只读模式", security?.configured ? "ready" : "warning");
+  };
+
+  const mountVerification = async (form) => {
+    const host = form.querySelector("[data-turnstile]");
+    const submitButton = form.querySelector("button[type='submit']");
+    const formMessage = form.querySelector("[data-form-message]");
+    if (!security?.configured) {
+      submitButton.disabled = true;
+      formMessage.textContent = "安全服务待启用";
+      return;
+    }
+    try {
+      await security.mount(host, "comment");
+    } catch (error) {
+      console.error("Unable to load Turnstile", error);
+      submitButton.disabled = true;
+      formMessage.textContent = "人机验证加载失败，请刷新重试";
+    }
   };
 
   const createPanel = (pageKey, compact = false) => {
@@ -115,7 +132,7 @@
       <form class="comments-form">
         <div class="comments-form__meta">
           <label>昵称<input name="author" maxlength="32" autocomplete="nickname" placeholder="怎么称呼你" required></label>
-          <span>无需登录，即时发布</span>
+          <span>匿名发布 · 已启用防刷保护</span>
         </div>
         <label class="comments-form__content">
           <span class="sr-only">评论内容</span>
@@ -123,7 +140,8 @@
           <small><b data-character-count>0</b> / 500</small>
         </label>
         <label class="comments-form__trap" aria-hidden="true">网址<input name="website" tabindex="-1" autocomplete="off"></label>
-        <div class="comments-form__actions"><span data-form-message></span><button type="submit">发表评论</button></div>
+        <div class="human-check" data-turnstile aria-label="人机验证"></div>
+        <div class="comments-form__actions"><span data-form-message aria-live="polite"></span><button type="submit">发表评论</button></div>
       </form>
       <div class="comments-panel__list" data-comments-list><p class="comments-panel__empty">正在读取评论…</p></div>`;
 
@@ -132,10 +150,12 @@
     const contentInput = form.elements.content;
     const submitButton = form.querySelector("button[type='submit']");
     const formMessage = form.querySelector("[data-form-message]");
+    const turnstileHost = form.querySelector("[data-turnstile]");
     authorInput.value = localStorage.getItem("lhyzs-comment-author") || "";
+
     if (!client) {
       submitButton.disabled = true;
-      formMessage.textContent = "站长正在连接 Supabase";
+      formMessage.textContent = "评论服务待连接";
     }
 
     contentInput.addEventListener("input", () => {
@@ -144,37 +164,37 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      if (!client || form.elements.website.value) return;
+      if (!client || !security?.configured || form.elements.website.value) return;
       const author = authorInput.value.trim();
       const content = contentInput.value.trim();
       if (!author || !content) return;
-
-      const lastSubmit = Number(sessionStorage.getItem("lhyzs-comment-last-submit") || 0);
-      if (Date.now() - lastSubmit < 12000) {
-        formMessage.textContent = "请稍等几秒再发表评论";
+      const turnstileToken = security.token(turnstileHost);
+      if (!turnstileToken) {
+        formMessage.textContent = "请先完成人机验证";
         return;
       }
 
       submitButton.disabled = true;
       submitButton.textContent = "发送中…";
       formMessage.textContent = "";
-      const { error } = await client.from("site_comments").insert({ page_key: pageKey, author, content });
-      submitButton.disabled = false;
-      submitButton.textContent = "发表评论";
-      if (error) {
+      try {
+        await security.submit("comment", { pageKey, author, content, turnstileToken });
+        localStorage.setItem("lhyzs-comment-author", author);
+        contentInput.value = "";
+        form.querySelector("[data-character-count]").textContent = "0";
+        formMessage.textContent = "已发布";
+        await loadComments(panel);
+      } catch (error) {
         console.error("Unable to create comment", error);
-        formMessage.textContent = "发送失败，请稍后再试";
-        return;
+        formMessage.textContent = error.message || "发送失败，请稍后再试";
+      } finally {
+        security.reset(turnstileHost);
+        submitButton.disabled = false;
+        submitButton.textContent = "发表评论";
       }
-
-      localStorage.setItem("lhyzs-comment-author", author);
-      sessionStorage.setItem("lhyzs-comment-last-submit", String(Date.now()));
-      contentInput.value = "";
-      form.querySelector("[data-character-count]").textContent = "0";
-      formMessage.textContent = "已发布";
-      await loadComments(panel);
     });
 
+    requestAnimationFrame(() => mountVerification(form));
     loadComments(panel);
     return panel;
   };

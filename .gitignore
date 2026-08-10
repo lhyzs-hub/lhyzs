@@ -5,3 +5,6 @@ test-results/
 exports/
 .mkdocs-preview.*.log
 __pycache__/
+supabase/.env*.local
+supabase/.temp/
+supabase/functions/node_modules/

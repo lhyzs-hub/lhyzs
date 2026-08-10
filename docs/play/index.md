@@ -52,6 +52,7 @@ hide:
           <input id="player-name" name="name" maxlength="12" placeholder="旅人" autocomplete="nickname" required>
           <button type="submit">登记</button>
         </div>
+        <div class="human-check human-check--score" data-score-turnstile aria-label="人机验证"></div>
       </form>
     </aside>
   </div>

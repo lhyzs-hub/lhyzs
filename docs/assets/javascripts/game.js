@@ -1,7 +1,6 @@
 (() => {
   const STORAGE_BEST = "lhyzs-yuumi-best";
   const STORAGE_NAME = "lhyzs-yuumi-player-name";
-  const SUBMIT_COOLDOWN_KEY = "lhyzs-yuumi-last-submit";
 
   const initGame = () => {
     const root = document.querySelector("#yuumi-flight-game");
@@ -27,6 +26,8 @@
     const scoreForm = root.querySelector("#score-form");
     const scoreSubmitButton = scoreForm.querySelector("button[type='submit']");
     const playerNameInput = scoreForm.elements.name;
+    const scoreTurnstile = scoreForm.querySelector("[data-score-turnstile]");
+    const security = window.LHYZS_SECURITY;
 
     const config = window.LHYZS_SUPABASE || {};
     const isConfigured = Boolean(config.url && config.publishableKey && window.supabase?.createClient);
@@ -73,6 +74,8 @@
     let obstacles = [];
     let lastGapY = H / 2;
     let submitted = false;
+    let currentRunId = "";
+    let isArming = false;
     let audioContext;
     let boardEntries = [];
 
@@ -83,6 +86,37 @@
     const setBoardStatus = (text, tone = "ready") => {
       boardStatus.textContent = text;
       boardStatus.dataset.tone = tone;
+    };
+
+    const armSecureRun = async () => {
+      currentRunId = "";
+      if (!security?.configured) {
+        setBoardStatus("只读模式", "warning");
+        return;
+      }
+      try {
+        const result = await security.submit("start_game");
+        currentRunId = result.runId || "";
+      } catch (error) {
+        console.error("Unable to create secure game run", error);
+        setBoardStatus("登记暂停", "warning");
+      }
+    };
+
+    const mountScoreVerification = async () => {
+      if (!security?.configured || !scoreTurnstile || !currentRunId) {
+        scoreSubmitButton.disabled = true;
+        return;
+      }
+      try {
+        security.reset(scoreTurnstile);
+        await security.mount(scoreTurnstile, "score");
+        scoreSubmitButton.disabled = false;
+      } catch (error) {
+        console.error("Unable to load score verification", error);
+        scoreSubmitButton.disabled = true;
+        setBoardStatus("验证失败", "error");
+      }
     };
 
     const renderBoard = () => {
@@ -179,6 +213,8 @@
       player.y = H / 2 - 20;
       player.velocity = 0;
       submitted = false;
+      currentRunId = "";
+      isArming = false;
       resetObstacles();
       distanceLabel.textContent = "0 m";
       bestLabel.textContent = `${best} m`;
@@ -189,9 +225,15 @@
       pauseButton.textContent = "暂停";
     };
 
-    const start = () => {
-      if (state === "playing") return;
+    const start = async () => {
+      if (state === "playing" || isArming) return;
       if (state === "gameover") reset();
+      isArming = true;
+      state = "arming";
+      statusLabel.textContent = "正在建立安全赛局…";
+      startButton.textContent = "准备中…";
+      await armSecureRun();
+      isArming = false;
       state = "playing";
       curtain.hidden = true;
       player.velocity = -270;
@@ -220,6 +262,7 @@
       startButton.textContent = "再飞一次";
       curtain.hidden = false;
       scoreForm.hidden = false;
+      mountScoreVerification();
       beep(130, 0.18);
     };
 
@@ -459,7 +502,7 @@
         flap();
       } else if (event.key.toLowerCase() === "p") {
         togglePause();
-      } else if (event.key.toLowerCase() === "r") {
+      } else if (event.key.toLowerCase() === "r" && !isArming) {
         reset();
         start();
       }
@@ -467,7 +510,7 @@
     scoreForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (submitted) return;
-      if (!supabaseClient) {
+      if (!supabaseClient || !security?.configured || !currentRunId) {
         setBoardStatus("未连接", "error");
         return;
       }
@@ -475,32 +518,38 @@
       const name = playerNameInput.value.trim().slice(0, 12);
       const score = Math.floor(distance);
       if (!name || score < 1) return;
-
-      const lastSubmit = Number(sessionStorage.getItem(SUBMIT_COOLDOWN_KEY) || 0);
-      if (Date.now() - lastSubmit < 10000) {
-        setBoardStatus("请稍候", "warning");
+      const turnstileToken = security.token(scoreTurnstile);
+      if (!turnstileToken) {
+        setBoardStatus("请完成人机验证", "warning");
         return;
       }
 
       scoreSubmitButton.disabled = true;
       scoreSubmitButton.textContent = "提交中…";
       setBoardStatus("提交中", "loading");
-      const { error } = await supabaseClient
-        .from("game_scores")
-        .insert({ player_name: name, score });
-      scoreSubmitButton.disabled = false;
-      scoreSubmitButton.textContent = "登记";
-
-      if (error) {
+      try {
+        await security.submit("score", {
+          playerName: name,
+          score,
+          runId: currentRunId,
+          turnstileToken
+        });
+      } catch (error) {
         console.error("Unable to submit game score", error);
-        setBoardStatus("提交失败", "error");
+        setBoardStatus(error.message || "提交失败", error.code === "rate_limited" ? "warning" : "error");
+        if (error.code === "score_rejected") scoreForm.hidden = true;
+        security.reset(scoreTurnstile);
+        scoreSubmitButton.disabled = false;
+        scoreSubmitButton.textContent = "登记";
         return;
       }
 
       localStorage.setItem(STORAGE_NAME, name);
-      sessionStorage.setItem(SUBMIT_COOLDOWN_KEY, String(Date.now()));
       submitted = true;
       scoreForm.hidden = true;
+      security.reset(scoreTurnstile);
+      scoreSubmitButton.disabled = false;
+      scoreSubmitButton.textContent = "登记";
       await loadBoard();
     });
 

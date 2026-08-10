@@ -1,0 +1,4 @@
+project_id = "mdgkqgkeqyqzmeztmioi"
+
+[functions.public-submit]
+verify_jwt = false

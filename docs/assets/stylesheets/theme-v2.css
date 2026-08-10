@@ -1776,13 +1776,28 @@ body:has(.jungle-404) .md-content__inner {
   cursor: pointer;
 }
 
-.comments-form__actions button { min-width: 7.5rem; min-height: 2.5rem; padding: 0.65rem 1rem; }
+.comments-form__actions button { min-width: 7.5rem; min-height: 2.75rem; padding: 0.65rem 1rem; }
 .comments-form__actions button:hover,
 .comments-form__actions button:focus-visible,
 .daily-card__comments-toggle:hover,
 .daily-card__comments-toggle:focus-visible { background: rgba(201, 155, 61, 0.16); }
 .comments-form__actions button:disabled { cursor: not-allowed; opacity: 0.48; }
 .comments-form__trap { position: absolute !important; left: -9999px !important; }
+
+.human-check {
+  width: 100%;
+  min-height: 0;
+  margin-top: 0.75rem;
+  overflow: hidden;
+}
+
+.human-check:not(:empty) {
+  min-height: 4.25rem;
+  border-left: 2px solid rgba(42, 101, 115, 0.62);
+  padding: 0.25rem 0 0.25rem 0.65rem;
+}
+
+.human-check iframe { max-width: 100%; }
 
 .comments-panel__list { margin-top: 1.4rem; }
 .comments-panel__empty {
@@ -1996,6 +2011,10 @@ html[data-lhyzs-theme="light"] .comments-form textarea {
   color: #172129;
 }
 
+html[data-lhyzs-theme="light"] .human-check:not(:empty) {
+  border-left-color: rgba(54, 125, 139, 0.52);
+}
+
 html[data-lhyzs-theme="light"] .site-comment p { color: #36444d; }
 html[data-lhyzs-theme="light"] .site-comment__avatar { background: #e5eff2; }
 
@@ -2066,7 +2085,7 @@ body:has(.yuumi-game) .md-content__inner > h1 {
 .yuumi-game__hud,
 .yuumi-leaderboard__head,
 .yuumi-leaderboard li,
-.yuumi-leaderboard__form > div {
+.yuumi-leaderboard__form > div:not(.human-check) {
   display: flex;
   align-items: center;
 }
@@ -2395,6 +2414,7 @@ body:has(.yuumi-game) .md-content__inner > h1 {
 }
 
 .yuumi-leaderboard__form input {
+  min-height: 2.75rem;
   min-width: 0;
   flex: 1;
   border: 1px solid #3e5e69;
@@ -2406,12 +2426,18 @@ body:has(.yuumi-game) .md-content__inner > h1 {
 }
 
 .yuumi-leaderboard__form button {
+  min-height: 2.75rem;
   border: 1px solid var(--game-gold);
   padding: 0.5rem 0.65rem;
   background: #172936;
   color: var(--game-gold-soft);
   font-size: 0.68rem;
   cursor: pointer;
+}
+
+.yuumi-leaderboard__form .human-check--score {
+  display: block;
+  margin-top: 0.65rem;
 }
 
 .yuumi-leaderboard__form button:disabled {
