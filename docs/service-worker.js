@@ -1,4 +1,4 @@
-const CACHE_VERSION = "lhyzs-site-v8";
+const CACHE_VERSION = "lhyzs-site-v9";
 const CACHE_NAME = `lhyzs-offline-${CACHE_VERSION}`;
 const SCOPE_URL = new URL(self.registration.scope);
 const OFFLINE_PAGE = new URL("404.html", SCOPE_URL).href;
@@ -73,7 +73,7 @@ self.addEventListener("fetch", (event) => {
   event.respondWith((async () => {
     try {
       const networkResponse = await fetch(event.request, { cache: "no-cache" });
-      if (networkResponse.ok) {
+      if (networkResponse.status === 200) {
         const copy = networkResponse.clone();
         const cache = await caches.open(CACHE_NAME);
         await cache.put(event.request, copy);

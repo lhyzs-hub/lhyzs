@@ -16,10 +16,12 @@
   registerOfflineSupport();
 
   const THEME_STORAGE_KEY = "lhyzs-theme";
+  const MUSIC_ENABLED_STORAGE_KEY = "lhyzs-background-music-enabled";
   const MOON_ASSET_URL = new URL("../images/theme-moon-skill.png", scriptUrl || document.baseURI).href;
   const SEARCH_EASTER_EGG_ASSET_URL = new URL("../images/search-easter-egg-lhyzs.webp", scriptUrl || document.baseURI).href;
   const NAVIGATION_CLICK_ASSET_URL = new URL("../audio/navigation-metal-click.ogg", scriptUrl || document.baseURI).href;
   const PLAY_CLICK_ASSET_URL = new URL("../audio/play-heavy-metal.ogg", scriptUrl || document.baseURI).href;
+  const BACKGROUND_MUSIC_ASSET_URL = new URL("../audio/background-rock.ogg", scriptUrl || document.baseURI).href;
   const SUN_ICON = `
     <svg class="theme-glyph theme-glyph--sun" viewBox="0 0 32 32" aria-hidden="true">
       <circle cx="16" cy="16" r="5.2"/>
@@ -28,6 +30,20 @@
     </svg>`;
   const MOON_ICON = `
     <img class="theme-glyph theme-glyph--moon" src="${MOON_ASSET_URL}" alt="" aria-hidden="true">`;
+  const MUSIC_ICON = `
+    <svg class="music-switch__glyph" viewBox="0 0 34 32" aria-hidden="true">
+      <g class="music-switch__record">
+        <circle cx="13.5" cy="16" r="8.2"/>
+        <circle cx="13.5" cy="16" r="5.25"/>
+        <circle class="music-switch__hub" cx="13.5" cy="16" r="1.7"/>
+        <path class="music-switch__notch" d="M13.5 7.8v2.4"/>
+      </g>
+      <g class="music-switch__bars">
+        <path d="M24 19v5"/>
+        <path d="M27.5 15.5V24"/>
+        <path d="M31 18v6"/>
+      </g>
+    </svg>`;
 
   const createSoundTemplate = (source, volume) => {
     const sound = new Audio(source);
@@ -38,6 +54,9 @@
 
   const navigationClickTemplate = createSoundTemplate(NAVIGATION_CLICK_ASSET_URL, 0.34);
   const playClickTemplate = createSoundTemplate(PLAY_CLICK_ASSET_URL, 0.34);
+  const backgroundMusic = createSoundTemplate(BACKGROUND_MUSIC_ASSET_URL, 0.28);
+  backgroundMusic.loop = true;
+  backgroundMusic.preload = "none";
   const activeClickSounds = new Set();
   const MAX_ACTIVE_CLICK_SOUNDS = 16;
 
@@ -131,6 +150,76 @@
       nav.setAttribute("aria-label", "主导航");
       nav.append(tabsList);
       headerInner.append(nav);
+    }
+
+    const musicSwitch = document.createElement("button");
+    musicSwitch.className = "music-switch";
+    musicSwitch.type = "button";
+    musicSwitch.innerHTML = MUSIC_ICON;
+    backgroundMusic.className = "lhyzs-background-music";
+    backgroundMusic.hidden = true;
+    document.body.append(backgroundMusic);
+    headerInner.append(musicSwitch);
+
+    let musicState = "paused";
+
+    const updateMusicSwitch = (state) => {
+      musicState = state;
+      const isPlaying = state === "playing";
+      musicSwitch.setAttribute("aria-pressed", String(isPlaying));
+      musicSwitch.classList.toggle("is-loading", state === "loading");
+      musicSwitch.classList.toggle("is-awaiting", state === "awaiting");
+      musicSwitch.dataset.musicState = state;
+
+      const label = isPlaying
+        ? "关闭背景音乐"
+        : state === "awaiting"
+          ? "继续播放背景音乐"
+          : "播放背景音乐";
+      musicSwitch.setAttribute("aria-label", label);
+      musicSwitch.title = label;
+    };
+
+    const startBackgroundMusic = async ({ keepPreferenceOnFailure = false } = {}) => {
+      localStorage.setItem(MUSIC_ENABLED_STORAGE_KEY, "true");
+      updateMusicSwitch("loading");
+      try {
+        await backgroundMusic.play();
+        updateMusicSwitch("playing");
+      } catch {
+        if (!keepPreferenceOnFailure) {
+          localStorage.setItem(MUSIC_ENABLED_STORAGE_KEY, "false");
+        }
+        updateMusicSwitch(keepPreferenceOnFailure ? "awaiting" : "paused");
+      }
+    };
+
+    const stopBackgroundMusic = () => {
+      localStorage.setItem(MUSIC_ENABLED_STORAGE_KEY, "false");
+      backgroundMusic.pause();
+      updateMusicSwitch("paused");
+    };
+
+    updateMusicSwitch("paused");
+    musicSwitch.addEventListener("click", () => {
+      if (!backgroundMusic.paused || musicState === "playing") {
+        stopBackgroundMusic();
+      } else {
+        startBackgroundMusic();
+      }
+    });
+
+    backgroundMusic.addEventListener("play", () => updateMusicSwitch("playing"));
+    backgroundMusic.addEventListener("pause", () => {
+      if (musicState === "playing") updateMusicSwitch("paused");
+    });
+    backgroundMusic.addEventListener("error", () => {
+      localStorage.setItem(MUSIC_ENABLED_STORAGE_KEY, "false");
+      updateMusicSwitch("paused");
+    });
+
+    if (localStorage.getItem(MUSIC_ENABLED_STORAGE_KEY) === "true") {
+      startBackgroundMusic({ keepPreferenceOnFailure: true });
     }
 
     const themeSwitch = document.createElement("button");
@@ -254,6 +343,7 @@
       ".play-launcher",
       ".game-nav .md-tabs__link",
       ".md-header__button",
+      ".music-switch",
       ".theme-switch",
       ".player-profile__trigger",
       ".hero-home__action",

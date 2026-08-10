@@ -374,6 +374,7 @@ body {
 
 .game-nav .md-tabs__link:active,
 .md-header__button.md-icon[for="__search"]:active,
+.music-switch:active,
 .theme-switch:active,
 .player-profile__trigger:active {
   transform: translateY(1px) scale(0.97);
@@ -393,6 +394,7 @@ body {
 .play-launcher.is-press-glow,
 .game-nav .md-tabs__link.is-press-glow,
 .md-header__button.md-icon[for="__search"].is-press-glow,
+.music-switch.is-press-glow,
 .theme-switch.is-press-glow,
 .player-profile__trigger.is-press-glow {
   animation: lhyzs-press-glow 360ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -1503,12 +1505,22 @@ html[data-lhyzs-theme="light"] .note-row:focus-visible .note-row__main strong {
 }
 
 @media (max-width: 34rem) {
-  .md-header__inner { padding-inline: 0.85rem !important; }
+  .md-header__inner {
+    gap: 0.3rem;
+    padding-inline: 0.85rem !important;
+  }
   .play-launcher {
-    width: 7rem;
-    padding-inline: 1.2rem 1rem;
+    width: 6rem;
+    padding-inline: 1.05rem 0.75rem;
   }
   .play-launcher__steps { left: 0.6rem; }
+  .player-profile {
+    margin-left: 0;
+  }
+  .player-profile__trigger {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
   .game-nav .md-tabs__list { justify-content: flex-start; }
   .hero-home__copy h1 { font-size: clamp(3rem, 17vw, 4.6rem); }
 
@@ -1644,6 +1656,7 @@ body:has(.jungle-404) [data-md-component="skip"] {
 body:has(.jungle-404) .player-profile,
 body:has(.jungle-404) .player-profile__card,
 body:has(.jungle-404) .play-launcher,
+body:has(.jungle-404) .music-switch,
 body:has(.jungle-404) .theme-switch,
 body:has(.jungle-404) .game-nav {
   display: none !important;
@@ -1954,6 +1967,137 @@ body:has(.jungle-404) .md-content__inner {
   .comments-panel--compact { padding-inline: 0.85rem; }
 }
 
+/* Header music switch: a compact etched record with a live equalizer. */
+.music-switch {
+  position: relative;
+  order: 24;
+  display: grid;
+  width: 2.55rem;
+  height: 2.55rem;
+  flex: 0 0 2.55rem;
+  place-items: center;
+  margin: 0 0.15rem;
+  padding: 0;
+  color: #8c9aa8;
+  background: linear-gradient(145deg, #15212d, #09111a 72%);
+  border: 1px solid rgba(201, 155, 61, 0.48);
+  border-radius: 0.3rem;
+  box-shadow: inset 0 0 0 1px rgba(5, 9, 14, 0.78), 0 4px 12px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  transition: color 180ms ease-out, border-color 180ms ease-out, background 180ms ease-out, box-shadow 180ms ease-out, transform 180ms ease-out;
+}
+
+.music-switch::after {
+  content: "";
+  position: absolute;
+  top: 0.32rem;
+  right: 0.32rem;
+  width: 0.24rem;
+  height: 0.24rem;
+  background: #596673;
+  border-radius: 50%;
+  box-shadow: 0 0 0 rgba(91, 210, 241, 0);
+  transition: background 180ms ease-out, box-shadow 180ms ease-out;
+}
+
+.music-switch__glyph {
+  display: block;
+  width: 1.65rem;
+  height: 1.55rem;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.music-switch__record {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.music-switch__hub {
+  fill: currentColor;
+  stroke: none;
+}
+
+.music-switch__notch {
+  stroke-width: 1.75;
+}
+
+.music-switch__bars path {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: scaleY(0.38);
+  opacity: 0.52;
+}
+
+.music-switch:hover,
+.music-switch:focus-visible {
+  color: #d6effa;
+  border-color: var(--lhyzs-gold-light);
+  box-shadow: inset 0 0 0 1px rgba(5, 9, 14, 0.78), 0 0 13px rgba(64, 177, 211, 0.2);
+  outline: 2px solid rgba(42, 101, 115, 0.34);
+  outline-offset: 2px;
+  transform: translateY(-1px);
+}
+
+.music-switch[aria-pressed="true"] {
+  color: #aeeaff;
+  background: linear-gradient(145deg, #132a38, #08131c 72%);
+  border-color: rgba(105, 207, 237, 0.82);
+  box-shadow: inset 0 0 0 1px rgba(5, 9, 14, 0.86), 0 0 15px rgba(64, 190, 224, 0.3), inset 0 0 12px rgba(70, 188, 221, 0.1);
+}
+
+.music-switch[aria-pressed="true"]::after {
+  background: #8be6ff;
+  box-shadow: 0 0 8px rgba(91, 210, 241, 0.92);
+}
+
+.music-switch[aria-pressed="true"] .music-switch__record {
+  animation: lhyzs-record-spin 4.8s linear infinite;
+}
+
+.music-switch[aria-pressed="true"] .music-switch__bars path {
+  opacity: 1;
+  animation: lhyzs-equalizer 760ms ease-in-out infinite alternate;
+}
+
+.music-switch[aria-pressed="true"] .music-switch__bars path:nth-child(2) {
+  animation-delay: -420ms;
+  animation-duration: 920ms;
+}
+
+.music-switch[aria-pressed="true"] .music-switch__bars path:nth-child(3) {
+  animation-delay: -180ms;
+  animation-duration: 640ms;
+}
+
+.music-switch.is-loading .music-switch__record,
+.music-switch.is-awaiting .music-switch__record {
+  animation: lhyzs-record-pulse 900ms ease-in-out infinite alternate;
+}
+
+.music-switch.is-awaiting::after {
+  background: var(--lhyzs-gold-light);
+  box-shadow: 0 0 6px rgba(201, 155, 61, 0.54);
+}
+
+@keyframes lhyzs-record-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes lhyzs-equalizer {
+  from { transform: scaleY(0.32); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes lhyzs-record-pulse {
+  from { opacity: 0.48; }
+  to { opacity: 1; }
+}
+
 /* Header theme switch: the icon mirrors the active theme. */
 .theme-switch {
   order: 25;
@@ -2045,6 +2189,22 @@ html[data-lhyzs-theme="light"] .md-header {
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.99), rgba(239, 244, 246, 0.98) 52%, rgba(255, 255, 255, 0.99)) !important;
   border-bottom-color: rgba(154, 110, 30, 0.4);
   box-shadow: 0 8px 24px rgba(22, 34, 43, 0.1) !important;
+}
+
+html[data-lhyzs-theme="light"] .music-switch {
+  color: #66747c;
+  background: linear-gradient(145deg, #ffffff, #e8eef0 76%);
+  border-color: rgba(154, 110, 30, 0.48);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.88), 0 4px 12px rgba(39, 53, 61, 0.1);
+}
+
+html[data-lhyzs-theme="light"] .music-switch:hover,
+html[data-lhyzs-theme="light"] .music-switch:focus-visible,
+html[data-lhyzs-theme="light"] .music-switch[aria-pressed="true"] {
+  color: #176f86;
+  border-color: rgba(54, 125, 139, 0.72);
+  background: linear-gradient(145deg, #ffffff, #e0f0f3 76%);
+  box-shadow: inset 0 0 0 1px #ffffff, 0 0 13px rgba(54, 125, 139, 0.2);
 }
 
 html[data-lhyzs-theme="light"] .play-launcher {
@@ -3694,6 +3854,16 @@ body:has(.jungle-404) .md-content__inner::before {
   }
 }
 
+@media (max-width: 34rem) {
+  .music-switch,
+  .theme-switch {
+    width: 2.2rem;
+    height: 2.2rem;
+    flex-basis: 2.2rem;
+    margin-inline: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .jungle-runner__curtain,
   .jungle-404__home,
@@ -3763,7 +3933,10 @@ body.search-easter-egg-open {
 
 @media (prefers-reduced-motion: reduce) {
   .search-easter-egg,
-  .search-easter-egg img {
+  .search-easter-egg img,
+  .music-switch__record,
+  .music-switch__bars path {
     transition: none;
+    animation: none !important;
   }
 }
