@@ -28,27 +28,36 @@
   const MOON_ICON = `
     <img class="theme-glyph theme-glyph--moon" src="${MOON_ASSET_URL}" alt="" aria-hidden="true">`;
 
-  const createSoundPool = (source, volume, count) => Array.from({ length: count }, () => {
+  const createSoundTemplate = (source, volume) => {
     const sound = new Audio(source);
     sound.preload = "auto";
     sound.volume = volume;
     return sound;
-  });
+  };
 
-  const navigationClickSounds = createSoundPool(NAVIGATION_CLICK_ASSET_URL, 0.34, 4);
-  const playClickSounds = createSoundPool(PLAY_CLICK_ASSET_URL, 0.34, 2);
-  let navigationClickIndex = 0;
-  let playClickIndex = 0;
+  const navigationClickTemplate = createSoundTemplate(NAVIGATION_CLICK_ASSET_URL, 0.34);
+  const playClickTemplate = createSoundTemplate(PLAY_CLICK_ASSET_URL, 0.34);
+  const activeClickSounds = new Set();
+  const MAX_ACTIVE_CLICK_SOUNDS = 16;
 
   const playNavigationClick = (isPlayLauncher = false) => {
-    const pool = isPlayLauncher ? playClickSounds : navigationClickSounds;
-    const index = isPlayLauncher ? playClickIndex : navigationClickIndex;
-    const sound = pool[index % pool.length];
-    if (isPlayLauncher) playClickIndex += 1;
-    else navigationClickIndex += 1;
-    sound.pause();
-    if (sound.readyState > 0) sound.currentTime = 0;
+    const template = isPlayLauncher ? playClickTemplate : navigationClickTemplate;
+    const sound = template.cloneNode();
+    sound.preload = "auto";
+    sound.volume = template.volume;
+
+    if (activeClickSounds.size >= MAX_ACTIVE_CLICK_SOUNDS) {
+      const oldestSound = activeClickSounds.values().next().value;
+      oldestSound.pause();
+      activeClickSounds.delete(oldestSound);
+    }
+
+    const releaseSound = () => activeClickSounds.delete(sound);
+    sound.addEventListener("ended", releaseSound, { once: true });
+    sound.addEventListener("error", releaseSound, { once: true });
+    activeClickSounds.add(sound);
     sound.play().catch(() => {
+      releaseSound();
       // Browsers may suppress sound before the first trusted user interaction.
     });
   };
