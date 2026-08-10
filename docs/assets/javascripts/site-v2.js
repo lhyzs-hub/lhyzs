@@ -15,8 +15,18 @@
   registerOfflineSupport();
 
   const THEME_STORAGE_KEY = "lhyzs-theme";
-  const SUN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-5h1v3h-1V2Zm0 17h1v3h-1v-3ZM2 12h3v1H2v-1Zm17 0h3v1h-3v-1ZM4.22 4.93l.71-.71 2.12 2.12-.71.71-2.12-2.12Zm12.73 12.73.71-.71 2.12 2.12-.71.71-2.12-2.12Zm0-11.32 2.12-2.12.71.71-2.12 2.12-.71-.71ZM4.22 19.07l2.12-2.12.71.71-2.12 2.12-.71-.71Z"/></svg>';
-  const MOON_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.4A8.5 8.5 0 0 1 8.6 3.8 9 9 0 1 0 20.2 15.4Z"/></svg>';
+  const SUN_ICON = `
+    <svg class="theme-glyph theme-glyph--sun" viewBox="0 0 32 32" aria-hidden="true">
+      <circle cx="16" cy="16" r="5.2"/>
+      <circle cx="16" cy="16" r="2.15"/>
+      <path d="M16 2.2v6M16 23.8v6M2.2 16h6M23.8 16h6M6.25 6.25l4.2 4.2M21.55 21.55l4.2 4.2M25.75 6.25l-4.2 4.2M10.45 21.55l-4.2 4.2"/>
+    </svg>`;
+  const MOON_ICON = `
+    <svg class="theme-glyph theme-glyph--moon" viewBox="0 0 32 32" aria-hidden="true">
+      <circle cx="16" cy="9.3" r="5.15"/>
+      <path d="M5.15 6.8C6.35 19.6 11.05 27.75 16 29c4.95-1.25 9.65-9.4 10.85-22.2-2.85 5.5-6.65 8.35-10.85 8.35S8 12.3 5.15 6.8Z"/>
+      <path d="M8.6 15.9C10.45 20.55 12.9 23 16 23.8c3.1-.8 5.55-3.25 7.4-7.9"/>
+    </svg>`;
 
   const preferredTheme = () => {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
