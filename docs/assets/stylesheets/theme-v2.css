@@ -1970,16 +1970,21 @@ body:has(.jungle-404) .md-content__inner {
   transition: border-color 180ms ease-out, background 180ms ease-out, transform 180ms ease-out;
 }
 
-.theme-switch svg {
+.theme-switch svg,
+.theme-switch img {
   width: 1.45rem;
   height: 1.45rem;
   overflow: visible;
+  display: block;
+  transition: color 180ms ease-out, filter 180ms ease-out, transform 180ms ease-out;
+}
+
+.theme-switch svg {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.65;
   stroke-linecap: round;
   stroke-linejoin: round;
-  transition: color 180ms ease-out, filter 180ms ease-out, transform 180ms ease-out;
 }
 
 .theme-glyph--sun .theme-glyph__rays {
@@ -1987,15 +1992,9 @@ body:has(.jungle-404) .md-content__inner {
 }
 
 .theme-glyph--moon {
-  stroke-width: 1.65;
-}
-
-.theme-glyph--moon .theme-glyph__crescent {
-  stroke-width: 1.5;
-}
-
-.theme-glyph--moon .theme-glyph__core {
-  stroke-width: 1.8;
+  width: 1.72rem !important;
+  height: 1.72rem !important;
+  object-fit: contain;
 }
 
 .theme-switch--sun {
@@ -2014,8 +2013,8 @@ body:has(.jungle-404) .md-content__inner {
   filter: drop-shadow(0 0 4px rgba(199, 131, 24, 0.28));
 }
 
-.theme-switch--moon:hover svg,
-.theme-switch--moon:focus-visible svg {
+.theme-switch--moon:hover .theme-glyph--moon,
+.theme-switch--moon:focus-visible .theme-glyph--moon {
   color: #e4f5ff;
   filter: drop-shadow(0 0 5px rgba(132, 203, 255, 0.38));
 }

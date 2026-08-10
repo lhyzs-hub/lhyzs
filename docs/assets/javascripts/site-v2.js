@@ -1,8 +1,9 @@
 (() => {
+  const scriptUrl = document.currentScript?.src;
+
   const registerOfflineSupport = () => {
     if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
 
-    const scriptUrl = document.currentScript?.src;
     if (!scriptUrl) return;
 
     const siteRoot = new URL("../../", scriptUrl);
@@ -15,6 +16,7 @@
   registerOfflineSupport();
 
   const THEME_STORAGE_KEY = "lhyzs-theme";
+  const MOON_ASSET_URL = new URL("../images/theme-moon-skill.png", scriptUrl || document.baseURI).href;
   const SUN_ICON = `
     <svg class="theme-glyph theme-glyph--sun" viewBox="0 0 32 32" aria-hidden="true">
       <circle cx="16" cy="16" r="5.2"/>
@@ -22,11 +24,7 @@
       <path class="theme-glyph__rays" d="M16 1.5 17.65 8.5h-3.3L16 1.5ZM16 30.5l-1.65-7h3.3l-1.65 7ZM1.5 16l7-1.65v3.3L1.5 16ZM30.5 16l-7 1.65v-3.3l7 1.65ZM4.4 4.4l6.8 4.3-2.5 2.5-4.3-6.8ZM27.6 27.6l-6.8-4.3 2.5-2.5 4.3 6.8ZM27.6 4.4l-4.3 6.8-2.5-2.5 6.8-4.3ZM4.4 27.6l4.3-6.8 2.5 2.5-6.8 4.3Z"/>
     </svg>`;
   const MOON_ICON = `
-    <svg class="theme-glyph theme-glyph--moon" viewBox="0 0 32 32" aria-hidden="true">
-      <circle class="theme-glyph__core" cx="16" cy="8.9" r="5"/>
-      <path class="theme-glyph__crescent theme-glyph__crescent--outer" d="M4.6 5.7A14.1 14.1 0 1 0 27.4 5.7"/>
-      <path class="theme-glyph__crescent theme-glyph__crescent--inner" d="M9 8.3A8.6 8.6 0 1 0 23 8.3"/>
-    </svg>`;
+    <img class="theme-glyph theme-glyph--moon" src="${MOON_ASSET_URL}" alt="" aria-hidden="true">`;
 
   const preferredTheme = () => {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
