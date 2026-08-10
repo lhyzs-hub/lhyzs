@@ -198,9 +198,9 @@ body {
 }
 
 .play-launcher::after {
-  inset: 0.3rem 0.42rem;
+  inset: 0.27rem 0.38rem;
   background: linear-gradient(90deg, rgba(42, 101, 115, 0.03), rgba(42, 101, 115, 0.13));
-  clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
+  clip-path: polygon(0 0, calc(100% - 1.04rem) 0, 100% 50%, calc(100% - 1.04rem) 100%, 0 100%);
   box-shadow: inset 0 0 12px rgba(42, 101, 115, 0.12);
   transition: box-shadow 180ms ease-out, background 180ms ease-out;
 }
@@ -217,21 +217,41 @@ body {
 
 .play-launcher__frame {
   position: absolute;
-  inset: 0.34rem 0.48rem;
+  inset: 0.27rem 0.38rem;
   z-index: 1;
+  overflow: hidden;
   pointer-events: none;
-  background: linear-gradient(120deg, #247f91, #42b7c8 48%, #1c6576);
-  clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%);
-  filter: drop-shadow(0 0 2px rgba(56, 190, 211, 0.18));
-  transition: background 180ms ease-out, filter 180ms ease-out;
+  background: linear-gradient(120deg, #277f91, #49c4d8 48%, #206f82);
+  clip-path: polygon(0 0, calc(100% - 1.04rem) 0, 100% 50%, calc(100% - 1.04rem) 100%, 0 100%);
+  filter: drop-shadow(0 0 3px rgba(56, 190, 211, 0.26));
+  transition: background 160ms ease-out, filter 160ms ease-out;
 }
 
+.play-launcher__frame::before,
 .play-launcher__frame::after {
   content: "";
   position: absolute;
-  inset: 1px;
+  pointer-events: none;
+}
+
+.play-launcher__frame::before {
+  z-index: 2;
+  top: -45%;
+  bottom: -45%;
+  left: -44%;
+  width: 34%;
+  opacity: 0;
+  transform: skewX(-22deg) translateX(-180%);
+  background: linear-gradient(90deg, transparent, rgba(150, 245, 255, 0.28) 22%, #d9fdff 50%, rgba(90, 224, 245, 0.34) 72%, transparent);
+  filter: blur(0.5px);
+}
+
+.play-launcher__frame::after {
+  z-index: 1;
+  inset: 2px;
   background: linear-gradient(90deg, #08131c, #10202b 58%, #08131c);
   clip-path: polygon(0 0, calc(100% - 0.96rem) 0, 100% 50%, calc(100% - 0.96rem) 100%, 0 100%);
+  transition: background 160ms ease-out;
 }
 
 .play-launcher__steps {
@@ -258,14 +278,27 @@ body {
 
 .play-launcher:hover::after,
 .play-launcher:focus-visible::after {
-  background: linear-gradient(90deg, rgba(42, 101, 115, 0.12), rgba(42, 101, 115, 0.3));
-  box-shadow: inset 0 0 16px rgba(42, 170, 193, 0.22);
+  background: linear-gradient(90deg, rgba(44, 159, 181, 0.22), rgba(74, 215, 236, 0.38));
+  box-shadow: inset 0 0 18px rgba(66, 214, 239, 0.3), 0 0 10px rgba(58, 203, 229, 0.3);
 }
 
 .play-launcher:hover .play-launcher__frame,
 .play-launcher:focus-visible .play-launcher__frame {
-  background: linear-gradient(120deg, #38a7b9, #63d8e6 48%, #278398);
-  filter: drop-shadow(0 0 5px rgba(56, 190, 211, 0.46));
+  background: linear-gradient(90deg, #32b9d2, #83eff9 22%, #e3feff 42%, #42cde1 60%, #9af4fb 78%, #32b9d2);
+  background-size: 240% 100%;
+  filter: drop-shadow(0 0 3px rgba(150, 245, 255, 0.94)) drop-shadow(0 0 8px rgba(42, 194, 224, 0.76));
+  animation: play-border-flow 1.35s linear infinite;
+}
+
+.play-launcher:hover .play-launcher__frame::before,
+.play-launcher:focus-visible .play-launcher__frame::before {
+  opacity: 1;
+  animation: play-cyan-sweep 1.55s ease-in-out infinite;
+}
+
+.play-launcher:hover .play-launcher__frame::after,
+.play-launcher:focus-visible .play-launcher__frame::after {
+  background: linear-gradient(90deg, #07151f, #12303d 58%, #071720);
 }
 
 .play-launcher:hover .play-launcher__label,
@@ -278,13 +311,67 @@ body {
 .play-launcher:hover,
 .play-launcher:focus-visible {
   color: #fff !important;
-  filter: brightness(1.12);
-  transform: translateY(-1px);
-  outline: 2px solid rgba(56, 190, 211, 0.22);
+  filter: drop-shadow(0 0 7px rgba(48, 203, 230, 0.24));
+  transform: translateY(0);
+  outline: 2px solid rgba(103, 226, 244, 0.2);
   outline-offset: 2px;
 }
 
+@keyframes play-cyan-sweep {
+  0%, 16% { transform: skewX(-22deg) translateX(-180%); }
+  65%, 100% { transform: skewX(-22deg) translateX(620%); }
+}
+
+@keyframes play-border-flow {
+  from { background-position: 100% 50%; }
+  to { background-position: -140% 50%; }
+}
+
 .play-launcher:active,
+.play-launcher.is-play-pressed,
+.play-launcher.is-play-current {
+  color: #54595d !important;
+  filter: none;
+  transform: translateY(1px) scale(0.985);
+  outline-color: transparent;
+}
+
+.play-launcher:active::after,
+.play-launcher.is-play-pressed::after,
+.play-launcher.is-play-current::after {
+  background: linear-gradient(90deg, rgba(66, 70, 73, 0.1), rgba(91, 96, 100, 0.16));
+  box-shadow: inset 0 0 0 1px rgba(116, 121, 124, 0.12);
+}
+
+.play-launcher:active .play-launcher__frame,
+.play-launcher.is-play-pressed .play-launcher__frame,
+.play-launcher.is-play-current .play-launcher__frame {
+  background: linear-gradient(120deg, #555b5f, #777d80 48%, #484e52);
+  filter: none;
+  animation: none;
+}
+
+.play-launcher:active .play-launcher__frame::before,
+.play-launcher.is-play-pressed .play-launcher__frame::before,
+.play-launcher.is-play-current .play-launcher__frame::before {
+  opacity: 0;
+  animation: none;
+}
+
+.play-launcher:active .play-launcher__frame::after,
+.play-launcher.is-play-pressed .play-launcher__frame::after,
+.play-launcher.is-play-current .play-launcher__frame::after {
+  background: linear-gradient(90deg, #171b1e, #202529 58%, #171b1e);
+}
+
+.play-launcher:active .play-launcher__label,
+.play-launcher.is-play-pressed .play-launcher__label,
+.play-launcher.is-play-current .play-launcher__label {
+  color: #4b5054;
+  -webkit-text-stroke-color: #2b2f32;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
 .game-nav .md-tabs__link:active,
 .md-header__button.md-icon[for="__search"]:active,
 .theme-switch:active,

@@ -61,6 +61,10 @@
       <span class="play-launcher__frame" aria-hidden="true"></span>
       <span class="play-launcher__label" data-text="PLAY">PLAY</span>`;
     launcher.setAttribute("aria-label", "打开小游戏入口");
+    const normalizePath = (pathname) => pathname.replace(/index\.html$/, "").replace(/\/+$/, "/");
+    const isPlayPage = normalizePath(window.location.pathname) === normalizePath(new URL(playUrl).pathname);
+    launcher.classList.toggle("is-play-current", isPlayPage);
+    if (isPlayPage) launcher.setAttribute("aria-current", "page");
     headerInner.prepend(launcher);
 
     const tabsList = document.querySelector(".md-tabs__list");
@@ -144,6 +148,17 @@
 
     const flashPressable = (pressable) => {
       if (!pressable) return;
+      if (pressable.classList.contains("play-launcher")) {
+        pressable.classList.remove("is-play-pressed");
+        void pressable.offsetWidth;
+        pressable.classList.add("is-play-pressed");
+        window.setTimeout(() => {
+          if (!pressable.classList.contains("is-play-current")) {
+            pressable.classList.remove("is-play-pressed");
+          }
+        }, 520);
+        return;
+      }
       pressable.classList.remove("is-press-glow");
       void pressable.offsetWidth;
       pressable.classList.add("is-press-glow");
