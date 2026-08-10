@@ -24,8 +24,8 @@
   const MOON_ICON = `
     <svg class="theme-glyph theme-glyph--moon" viewBox="0 0 32 32" aria-hidden="true">
       <circle class="theme-glyph__core" cx="16" cy="8.9" r="5"/>
-      <path class="theme-glyph__crescent theme-glyph__crescent--outer" d="M4.4 4.7C5.4 18.2 9.7 26 16 27.4c6.3-1.4 10.6-9.2 11.6-22.7"/>
-      <path class="theme-glyph__crescent theme-glyph__crescent--inner" d="M9 8c1.2 7.3 3.8 11.7 7 12.7 3.2-1 5.8-5.4 7-12.7"/>
+      <path class="theme-glyph__crescent theme-glyph__crescent--outer" d="M4.6 5.7A14.1 14.1 0 1 0 27.4 5.7"/>
+      <path class="theme-glyph__crescent theme-glyph__crescent--inner" d="M9 8.3A8.6 8.6 0 1 0 23 8.3"/>
     </svg>`;
 
   const preferredTheme = () => {
