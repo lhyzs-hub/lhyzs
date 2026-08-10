@@ -17,11 +17,12 @@
 
   const THEME_STORAGE_KEY = "lhyzs-theme";
   const MUSIC_ENABLED_STORAGE_KEY = "lhyzs-background-music-enabled";
+  const MUSIC_TIME_STORAGE_KEY = "lhyzs-background-music-time";
   const MOON_ASSET_URL = new URL("../images/theme-moon-skill.png", scriptUrl || document.baseURI).href;
   const SEARCH_EASTER_EGG_ASSET_URL = new URL("../images/search-easter-egg-lhyzs.webp", scriptUrl || document.baseURI).href;
   const NAVIGATION_CLICK_ASSET_URL = new URL("../audio/navigation-metal-click.ogg", scriptUrl || document.baseURI).href;
   const PLAY_CLICK_ASSET_URL = new URL("../audio/play-heavy-metal.ogg", scriptUrl || document.baseURI).href;
-  const BACKGROUND_MUSIC_ASSET_URL = new URL("../audio/background-rock.ogg", scriptUrl || document.baseURI).href;
+  const BACKGROUND_MUSIC_ASSET_URL = new URL("../audio/background-rock.mp3", scriptUrl || document.baseURI).href;
   const SUN_ICON = `
     <svg class="theme-glyph theme-glyph--sun" viewBox="0 0 32 32" aria-hidden="true">
       <circle cx="16" cy="16" r="5.2"/>
@@ -31,18 +32,16 @@
   const MOON_ICON = `
     <img class="theme-glyph theme-glyph--moon" src="${MOON_ASSET_URL}" alt="" aria-hidden="true">`;
   const MUSIC_ICON = `
-    <svg class="music-switch__glyph" viewBox="0 0 34 32" aria-hidden="true">
+    <svg class="music-switch__glyph" viewBox="0 0 32 32" aria-hidden="true">
       <g class="music-switch__record">
-        <circle cx="13.5" cy="16" r="8.2"/>
-        <circle cx="13.5" cy="16" r="5.25"/>
-        <circle class="music-switch__hub" cx="13.5" cy="16" r="1.7"/>
-        <path class="music-switch__notch" d="M13.5 7.8v2.4"/>
+        <circle class="music-switch__disc" cx="11.5" cy="21" r="6.8"/>
+        <circle cx="11.5" cy="21" r="4.35"/>
+        <path class="music-switch__axes" d="m8.45 17.95 6.1 6.1m0-6.1-6.1 6.1"/>
+        <circle class="music-switch__hub" cx="11.5" cy="21" r="1.45"/>
+        <path class="music-switch__notch" d="M11.5 14.2v2"/>
       </g>
-      <g class="music-switch__bars">
-        <path d="M24 19v5"/>
-        <path d="M27.5 15.5V24"/>
-        <path d="M31 18v6"/>
-      </g>
+      <path class="music-switch__stem" d="M18.3 20.6V6.1"/>
+      <path class="music-switch__flag" d="M18.3 6.1c4.9.1 7.9 2.2 7.55 5.75-.2 2.1-1.7 3.75-3.8 4.35 1.25-1.35 1.15-3.2-.05-4.4-.8-.8-2.1-1.2-3.7-1.2"/>
     </svg>`;
 
   const createSoundTemplate = (source, volume) => {
@@ -54,9 +53,11 @@
 
   const navigationClickTemplate = createSoundTemplate(NAVIGATION_CLICK_ASSET_URL, 0.34);
   const playClickTemplate = createSoundTemplate(PLAY_CLICK_ASSET_URL, 0.34);
-  const backgroundMusic = createSoundTemplate(BACKGROUND_MUSIC_ASSET_URL, 0.28);
+  const backgroundMusic = new Audio();
+  backgroundMusic.preload = "metadata";
+  backgroundMusic.volume = 0.28;
   backgroundMusic.loop = true;
-  backgroundMusic.preload = "none";
+  backgroundMusic.src = BACKGROUND_MUSIC_ASSET_URL;
   const activeClickSounds = new Set();
   const MAX_ACTIVE_CLICK_SOUNDS = 16;
 
@@ -162,6 +163,8 @@
     headerInner.append(musicSwitch);
 
     let musicState = "paused";
+    let musicProgressRestored = false;
+    let lastSavedMusicSecond = -1;
 
     const updateMusicSwitch = (state) => {
       musicState = state;
@@ -180,10 +183,71 @@
       musicSwitch.title = label;
     };
 
+    const saveMusicProgress = (force = false) => {
+      const currentTime = backgroundMusic.currentTime;
+      if (!Number.isFinite(currentTime) || currentTime <= 0.25) return;
+      const wholeSecond = Math.floor(currentTime);
+      if (!force && wholeSecond === lastSavedMusicSecond) return;
+      lastSavedMusicSecond = wholeSecond;
+      sessionStorage.setItem(MUSIC_TIME_STORAGE_KEY, String(currentTime));
+    };
+
+    const loadSeekableMusicSource = async () => {
+      const response = await fetch(BACKGROUND_MUSIC_ASSET_URL, { cache: "force-cache" });
+      if (!response.ok) throw new Error("Background music failed to load.");
+      const objectUrl = URL.createObjectURL(await response.blob());
+
+      await new Promise((resolve, reject) => {
+        const cleanup = () => {
+          backgroundMusic.removeEventListener("loadedmetadata", handleReady);
+          backgroundMusic.removeEventListener("error", handleError);
+        };
+        const handleReady = () => {
+          cleanup();
+          resolve();
+        };
+        const handleError = () => {
+          cleanup();
+          reject(new Error("Background music metadata failed to load."));
+        };
+        backgroundMusic.addEventListener("loadedmetadata", handleReady, { once: true });
+        backgroundMusic.addEventListener("error", handleError, { once: true });
+        backgroundMusic.preload = "auto";
+        backgroundMusic.src = objectUrl;
+        backgroundMusic.load();
+      });
+    };
+
+    const restoreMusicProgress = async () => {
+      if (musicProgressRestored) return;
+      const savedTime = Number(sessionStorage.getItem(MUSIC_TIME_STORAGE_KEY));
+      if (!Number.isFinite(savedTime) || savedTime <= 0.25) {
+        musicProgressRestored = true;
+        return;
+      }
+
+      await loadSeekableMusicSource();
+      const duration = Number.isFinite(backgroundMusic.duration) ? backgroundMusic.duration : 0;
+      const targetTime = duration > 0 ? savedTime % duration : savedTime;
+      await new Promise((resolve) => {
+        let seekTimeout;
+        const finishSeek = () => {
+          window.clearTimeout(seekTimeout);
+          backgroundMusic.removeEventListener("seeked", finishSeek);
+          resolve();
+        };
+        backgroundMusic.addEventListener("seeked", finishSeek, { once: true });
+        seekTimeout = window.setTimeout(finishSeek, 1600);
+        backgroundMusic.currentTime = targetTime;
+      });
+      musicProgressRestored = true;
+    };
+
     const startBackgroundMusic = async ({ keepPreferenceOnFailure = false } = {}) => {
       localStorage.setItem(MUSIC_ENABLED_STORAGE_KEY, "true");
       updateMusicSwitch("loading");
       try {
+        await restoreMusicProgress();
         await backgroundMusic.play();
         updateMusicSwitch("playing");
       } catch {
@@ -195,6 +259,7 @@
     };
 
     const stopBackgroundMusic = () => {
+      saveMusicProgress(true);
       localStorage.setItem(MUSIC_ENABLED_STORAGE_KEY, "false");
       backgroundMusic.pause();
       updateMusicSwitch("paused");
@@ -213,10 +278,12 @@
     backgroundMusic.addEventListener("pause", () => {
       if (musicState === "playing") updateMusicSwitch("paused");
     });
+    backgroundMusic.addEventListener("timeupdate", () => saveMusicProgress());
     backgroundMusic.addEventListener("error", () => {
       localStorage.setItem(MUSIC_ENABLED_STORAGE_KEY, "false");
       updateMusicSwitch("paused");
     });
+    window.addEventListener("pagehide", () => saveMusicProgress(true));
 
     if (localStorage.getItem(MUSIC_ENABLED_STORAGE_KEY) === "true") {
       startBackgroundMusic({ keepPreferenceOnFailure: true });
