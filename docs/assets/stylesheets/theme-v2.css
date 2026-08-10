@@ -1982,6 +1982,14 @@ body:has(.jungle-404) .md-content__inner {
   transition: color 180ms ease-out, filter 180ms ease-out, transform 180ms ease-out;
 }
 
+.theme-glyph--sun .theme-glyph__rays {
+  stroke-width: 1.35;
+}
+
+.theme-glyph--moon {
+  stroke-width: 1.75;
+}
+
 .theme-switch--sun {
   background: #f4f1e8;
   color: #a76d18;
