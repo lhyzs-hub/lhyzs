@@ -1987,7 +1987,16 @@ body:has(.jungle-404) .md-content__inner {
 }
 
 .theme-glyph--moon {
-  stroke-width: 1.75;
+  stroke-width: 1.6;
+}
+
+.theme-glyph--moon .theme-glyph__orbit {
+  stroke-width: 1.35;
+  opacity: 0.82;
+}
+
+.theme-glyph--moon .theme-glyph__core {
+  stroke-width: 1.8;
 }
 
 .theme-switch--sun {

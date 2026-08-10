@@ -23,10 +23,10 @@
     </svg>`;
   const MOON_ICON = `
     <svg class="theme-glyph theme-glyph--moon" viewBox="0 0 32 32" aria-hidden="true">
-      <circle cx="16" cy="10.2" r="5.1"/>
-      <path d="M5.4 8.1A11.8 11.8 0 1 0 26.6 8.1"/>
-      <path d="M8.35 12.1A8.45 8.45 0 1 0 23.65 12.1"/>
-      <path d="M5.4 8.1C7.95 12.95 11.45 15.4 16 15.4s8.05-2.45 10.6-7.3"/>
+      <circle class="theme-glyph__orbit" cx="16" cy="16" r="10.65"/>
+      <circle class="theme-glyph__core" cx="16" cy="11.2" r="3.85"/>
+      <path d="M7.45 13.05C8.8 18.65 11.95 21.95 16 21.95s7.2-3.3 8.55-8.9"/>
+      <path d="M9.85 15.65C11.3 18.3 13.3 19.7 16 19.7s4.7-1.4 6.15-4.05"/>
     </svg>`;
 
   const preferredTheme = () => {
