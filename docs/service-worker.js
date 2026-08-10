@@ -1,4 +1,4 @@
-const CACHE_VERSION = "lhyzs-site-v4";
+const CACHE_VERSION = "lhyzs-site-v5";
 const CACHE_NAME = `lhyzs-offline-${CACHE_VERSION}`;
 const SCOPE_URL = new URL(self.registration.scope);
 const OFFLINE_PAGE = new URL("404.html", SCOPE_URL).href;
@@ -8,6 +8,8 @@ const CORE_ASSETS = [
   new URL("assets/javascripts/site-v2.js", SCOPE_URL).href,
   new URL("assets/javascripts/notes-hub.js", SCOPE_URL).href,
   new URL("assets/javascripts/not-found-game.js", SCOPE_URL).href,
+  new URL("assets/audio/navigation-metal-click.ogg", SCOPE_URL).href,
+  new URL("assets/audio/play-heavy-metal.ogg", SCOPE_URL).href,
   new URL("assets/images/theme-moon-skill.png", SCOPE_URL).href,
   new URL("assets/images/game/daisy-run-spritesheet-v2.png", SCOPE_URL).href,
 ];
