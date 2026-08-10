@@ -838,18 +838,19 @@ body {
   width: min(31rem, 38vw);
   aspect-ratio: 1;
   overflow: hidden;
-  opacity: 0.92;
+  opacity: 0.88;
   background:
-    radial-gradient(circle, transparent 0 29%, rgba(96, 191, 218, 0.14) 29.3% 29.8%, transparent 30.1%),
-    radial-gradient(circle, transparent 0 49%, rgba(96, 191, 218, 0.11) 49.3% 49.8%, transparent 50.1%),
-    conic-gradient(from 218deg, #122839 0 13%, #091925 13% 37%, #17364b 37% 49%, #0b1d2b 49% 73%, #142e42 73% 87%, #07141f 87% 100%);
-  border: 2px solid rgba(213, 171, 76, 0.66);
+    radial-gradient(circle at 38% 30%, rgba(228, 231, 234, 0.12), transparent 0 43%),
+    radial-gradient(circle, transparent 0 29%, rgba(198, 203, 208, 0.11) 29.3% 29.8%, transparent 30.1%),
+    radial-gradient(circle, transparent 0 49%, rgba(198, 203, 208, 0.08) 49.3% 49.8%, transparent 50.1%),
+    conic-gradient(from 218deg, #3b3f45 0 13%, #25292e 13% 37%, #484d53 37% 49%, #2b2f34 49% 73%, #40444a 73% 87%, #202429 87% 100%);
+  border: 2px solid rgba(213, 171, 76, 0.5);
   border-radius: 50%;
   box-shadow:
-    inset 0 0 0 0.42rem #030b12,
-    inset 0 0 0 0.58rem rgba(72, 154, 181, 0.12),
-    0.7rem 0.85rem 0 #03080d,
-    0 0 2.6rem rgba(50, 164, 198, 0.12);
+    inset 0 0 0 0.42rem rgba(8, 10, 13, 0.92),
+    inset 0 0 1.4rem rgba(224, 228, 232, 0.09),
+    0.55rem 0.7rem 1.2rem rgba(0, 0, 0, 0.48),
+    0 0 3.4rem rgba(183, 190, 197, 0.1);
   animation: lhyzs-vinyl-sync-spin 14s linear infinite;
   animation-play-state: paused;
 }
@@ -864,17 +865,17 @@ body {
 
 .hero-home__sigil::before {
   inset: 4%;
-  background: repeating-radial-gradient(circle, transparent 0 8.2%, rgba(99, 195, 221, 0.17) 8.5% 8.9%, transparent 9.2% 17%);
-  border: 1px solid rgba(101, 199, 226, 0.22);
-  box-shadow: inset 0 0 0 1px rgba(4, 13, 20, 0.82);
+  background: repeating-radial-gradient(circle, transparent 0 8.2%, rgba(205, 210, 215, 0.13) 8.5% 8.9%, transparent 9.2% 17%);
+  border: 1px solid rgba(213, 218, 223, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(10, 12, 15, 0.62), inset 0 0 2.4rem rgba(229, 232, 235, 0.04);
 }
 
 .hero-home__sigil::after {
   inset: 5%;
   z-index: 1;
-  background: repeating-conic-gradient(from -0.75deg, rgba(240, 213, 138, 0.78) 0 1.5deg, transparent 1.7deg 60deg);
+  background: repeating-conic-gradient(from -0.75deg, rgba(240, 213, 138, 0.66) 0 1.5deg, transparent 1.7deg 60deg);
   mask-image: radial-gradient(circle, transparent 0 31%, #000 31.5% 94%, transparent 94.5%);
-  filter: drop-shadow(0 0 0.2rem rgba(240, 213, 138, 0.18));
+  filter: drop-shadow(0 0 0.32rem rgba(240, 213, 138, 0.16));
 }
 
 .hero-home__sigil span:nth-child(1) {
