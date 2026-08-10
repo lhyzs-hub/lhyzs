@@ -8,7 +8,7 @@
     <span></span>
     <span></span>
     <span></span>
-    <span></span>
+    <span class="hero-home__vinyl-halo"></span>
   </div>
 </section>
 
