@@ -205,6 +205,42 @@ body {
   transition: box-shadow 180ms ease-out, background 180ms ease-out;
 }
 
+/* Champagne-gold cursor and a canvas-rendered rune-dust trail. */
+@media (pointer: fine) {
+  html.lhyzs-golden-cursor,
+  html.lhyzs-golden-cursor body,
+  html.lhyzs-golden-cursor body * {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M4 2.8 21.4 14l-7.9 1.6-4.1 8.2Z' fill='%23d9ab49' stroke='%23040a10' stroke-width='1.8' stroke-linejoin='round'/%3E%3Cpath d='m6.9 6.4 10.1 6.5-5.2 1-2.6 5.3Z' fill='%23f0d58a' opacity='.72'/%3E%3C/svg%3E") 4 3, auto;
+  }
+
+  html.lhyzs-golden-cursor input[type="text"],
+  html.lhyzs-golden-cursor input[type="search"],
+  html.lhyzs-golden-cursor input[type="email"],
+  html.lhyzs-golden-cursor input[type="url"],
+  html.lhyzs-golden-cursor input[type="password"],
+  html.lhyzs-golden-cursor textarea,
+  html.lhyzs-golden-cursor [contenteditable="true"] {
+    cursor: text;
+  }
+}
+
+.lhyzs-cursor-trail {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  contain: strict;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .lhyzs-cursor-trail {
+    display: none !important;
+  }
+}
+
 .play-launcher__label {
   position: relative;
   z-index: 2;

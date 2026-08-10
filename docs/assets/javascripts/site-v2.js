@@ -105,6 +105,128 @@
 
   applyTheme(preferredTheme());
 
+  const initGoldenCursor = () => {
+    const finePointer = window.matchMedia("(pointer: fine)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!finePointer.matches || reducedMotion.matches || document.documentElement.dataset.lhyzsCursorReady === "true") return;
+
+    document.documentElement.dataset.lhyzsCursorReady = "true";
+    document.documentElement.classList.add("lhyzs-golden-cursor");
+
+    const canvas = document.createElement("canvas");
+    canvas.className = "lhyzs-cursor-trail";
+    canvas.setAttribute("aria-hidden", "true");
+    document.body.append(canvas);
+
+    const context = canvas.getContext("2d", { alpha: true });
+    if (!context) {
+      canvas.remove();
+      return;
+    }
+
+    const particles = [];
+    const maxParticles = 40;
+    let frameId = 0;
+    let previousFrame = performance.now();
+    let lastPoint;
+    let pixelRatio = 1;
+
+    const resize = () => {
+      pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(window.innerWidth * pixelRatio);
+      canvas.height = Math.round(window.innerHeight * pixelRatio);
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+    };
+
+    const requestFrame = () => {
+      if (!frameId) frameId = window.requestAnimationFrame(render);
+    };
+
+    const addParticle = (x, y, intensity = 1) => {
+      particles.push({
+        x,
+        y,
+        age: 0,
+        life: 330 + Math.random() * 90,
+        size: (1.25 + Math.random() * 1.45) * intensity
+      });
+      if (particles.length > maxParticles) particles.splice(0, particles.length - maxParticles);
+    };
+
+    const render = (now) => {
+      frameId = 0;
+      const elapsed = Math.min(now - previousFrame, 34);
+      previousFrame = now;
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+      const isLight = document.documentElement.dataset.lhyzsTheme === "light";
+      const color = isLight ? "154, 105, 28" : "224, 181, 78";
+      const glow = isLight ? "177, 125, 38" : "240, 202, 112";
+
+      for (let index = particles.length - 1; index >= 0; index -= 1) {
+        const particle = particles[index];
+        particle.age += elapsed;
+        if (particle.age >= particle.life) {
+          particles.splice(index, 1);
+          continue;
+        }
+
+        const progress = particle.age / particle.life;
+        const opacity = Math.pow(1 - progress, 1.7) * 0.72;
+        const radius = Math.max(0.35, particle.size * (1 - progress * 0.68));
+        context.beginPath();
+        context.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
+        context.fillStyle = `rgba(${color}, ${opacity})`;
+        context.shadowColor = `rgba(${glow}, ${opacity * 0.72})`;
+        context.shadowBlur = 7;
+        context.fill();
+      }
+
+      context.shadowBlur = 0;
+      if (particles.length) requestFrame();
+    };
+
+    const handlePointerMove = (event) => {
+      if (event.pointerType && event.pointerType !== "mouse") return;
+      const point = { x: event.clientX, y: event.clientY };
+      if (!lastPoint) {
+        lastPoint = point;
+        addParticle(point.x, point.y, 0.85);
+        requestFrame();
+        return;
+      }
+
+      const deltaX = point.x - lastPoint.x;
+      const deltaY = point.y - lastPoint.y;
+      const distance = Math.hypot(deltaX, deltaY);
+      if (distance < 2.5) return;
+
+      const steps = Math.min(6, Math.max(1, Math.floor(distance / 5)));
+      for (let step = 1; step <= steps; step += 1) {
+        const ratio = step / steps;
+        addParticle(lastPoint.x + deltaX * ratio, lastPoint.y + deltaY * ratio, 0.78 + ratio * 0.22);
+      }
+      lastPoint = point;
+      requestFrame();
+    };
+
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    document.addEventListener("pointerleave", () => { lastPoint = undefined; });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        particles.length = 0;
+        lastPoint = undefined;
+      }
+    });
+  };
+
+  initGoldenCursor();
+
   const initHeader = () => {
     document.body.classList.toggle("lhyzs-home", Boolean(document.querySelector(".hero-home")));
     document.body.classList.toggle("lhyzs-notes-hub", Boolean(document.querySelector("[data-notes-hub]")));
