@@ -33,15 +33,10 @@
     <img class="theme-glyph theme-glyph--moon" src="${MOON_ASSET_URL}" alt="" aria-hidden="true">`;
   const MUSIC_ICON = `
     <svg class="music-switch__glyph" viewBox="0 0 32 32" aria-hidden="true">
-      <g class="music-switch__record">
-        <circle class="music-switch__disc" cx="11.5" cy="21" r="6.8"/>
-        <circle cx="11.5" cy="21" r="4.35"/>
-        <path class="music-switch__axes" d="m8.45 17.95 6.1 6.1m0-6.1-6.1 6.1"/>
-        <circle class="music-switch__hub" cx="11.5" cy="21" r="1.45"/>
-        <path class="music-switch__notch" d="M11.5 14.2v2"/>
-      </g>
-      <path class="music-switch__stem" d="M18.3 20.6V6.1"/>
-      <path class="music-switch__flag" d="M18.3 6.1c4.9.1 7.9 2.2 7.55 5.75-.2 2.1-1.7 3.75-3.8 4.35 1.25-1.35 1.15-3.2-.05-4.4-.8-.8-2.1-1.2-3.7-1.2"/>
+      <path class="music-switch__beam" d="M11.5 8.5 24 5.8v4.1l-12.5 2.7Z"/>
+      <path class="music-switch__stems" d="M11.5 10.4v12.2M24 7.8v10.4"/>
+      <ellipse class="music-switch__note-head" cx="7.7" cy="23.3" rx="4.2" ry="3" transform="rotate(-15 7.7 23.3)"/>
+      <ellipse class="music-switch__note-head" cx="20.2" cy="18.9" rx="4.2" ry="3" transform="rotate(-15 20.2 18.9)"/>
     </svg>`;
 
   const createSoundTemplate = (source, volume) => {
@@ -173,6 +168,7 @@
       musicSwitch.classList.toggle("is-loading", state === "loading");
       musicSwitch.classList.toggle("is-awaiting", state === "awaiting");
       musicSwitch.dataset.musicState = state;
+      document.body.classList.toggle("lhyzs-music-playing", isPlaying);
 
       const label = isPlaying
         ? "关闭背景音乐"
