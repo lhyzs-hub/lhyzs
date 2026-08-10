@@ -1,0 +1,22 @@
+Navigation UI audio sources
+===========================
+
+navigation-metal-click.ogg
+--------------------------
+"Button Click" by DeWildAshDev
+Source: https://freesound.org/people/DeWildAshDev/sounds/858919/
+License: Creative Commons Zero (CC0 1.0)
+https://creativecommons.org/publicdomain/zero/1.0/
+
+The author describes this as an original Foley recording made with everyday
+objects, with no AI generation.
+
+play-heavy-metal.ogg
+--------------------
+"Industrial switch #2" from BigSoundBank / La Sonotheque
+Source: https://bigsoundbank.com/sound-3062-interrupteur-industriel-2.html
+License: Creative Commons Zero (CC0 1.0)
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Both samples may be copied, modified and redistributed, including for
+commercial use, without required attribution.

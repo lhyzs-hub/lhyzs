@@ -35,8 +35,8 @@
     return sound;
   });
 
-  const navigationClickSounds = createSoundPool(NAVIGATION_CLICK_ASSET_URL, 0.3, 4);
-  const playClickSounds = createSoundPool(PLAY_CLICK_ASSET_URL, 0.48, 2);
+  const navigationClickSounds = createSoundPool(NAVIGATION_CLICK_ASSET_URL, 0.34, 4);
+  const playClickSounds = createSoundPool(PLAY_CLICK_ASSET_URL, 0.34, 2);
   let navigationClickIndex = 0;
   let playClickIndex = 0;
 
