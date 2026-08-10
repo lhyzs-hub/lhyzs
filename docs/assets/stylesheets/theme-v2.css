@@ -838,18 +838,19 @@ body {
   width: min(31rem, 38vw);
   aspect-ratio: 1;
   overflow: hidden;
-  opacity: 0.9;
+  opacity: 0.92;
   background:
-    repeating-radial-gradient(circle, transparent 0 7px, rgba(100, 178, 202, 0.055) 8px, transparent 9px 14px),
-    radial-gradient(circle at 45% 41%, #172631 0, #0b151e 48%, #040a10 76%, #020509 100%);
-  border: 1px solid rgba(201, 155, 61, 0.18);
+    radial-gradient(circle, transparent 0 29%, rgba(96, 191, 218, 0.14) 29.3% 29.8%, transparent 30.1%),
+    radial-gradient(circle, transparent 0 49%, rgba(96, 191, 218, 0.11) 49.3% 49.8%, transparent 50.1%),
+    conic-gradient(from 218deg, #122839 0 13%, #091925 13% 37%, #17364b 37% 49%, #0b1d2b 49% 73%, #142e42 73% 87%, #07141f 87% 100%);
+  border: 2px solid rgba(213, 171, 76, 0.66);
   border-radius: 50%;
   box-shadow:
-    inset 0 0 0 0.4rem rgba(1, 5, 9, 0.62),
-    inset 0 0 5rem rgba(0, 0, 0, 0.72),
-    0 1.8rem 4rem rgba(0, 0, 0, 0.24),
-    0 0 3rem rgba(42, 101, 115, 0.08);
-  animation: lhyzs-home-vinyl-spin 18s linear infinite;
+    inset 0 0 0 0.42rem #030b12,
+    inset 0 0 0 0.58rem rgba(72, 154, 181, 0.12),
+    0.7rem 0.85rem 0 #03080d,
+    0 0 2.6rem rgba(50, 164, 198, 0.12);
+  animation: lhyzs-vinyl-sync-spin 14s linear infinite;
   animation-play-state: paused;
 }
 
@@ -862,52 +863,50 @@ body {
 }
 
 .hero-home__sigil::before {
-  inset: 3%;
-  background:
-    conic-gradient(from 208deg, transparent 0 9%, rgba(142, 222, 239, 0.08) 12%, transparent 19% 58%, rgba(240, 213, 138, 0.045) 63%, transparent 70%),
-    repeating-radial-gradient(circle, transparent 0 1.2rem, rgba(201, 155, 61, 0.045) 1.23rem, transparent 1.28rem 2.35rem);
-  border: 1px solid rgba(90, 163, 184, 0.13);
-  box-shadow: inset 0 0 2.8rem rgba(95, 199, 223, 0.035);
+  inset: 4%;
+  background: repeating-radial-gradient(circle, transparent 0 8.2%, rgba(99, 195, 221, 0.17) 8.5% 8.9%, transparent 9.2% 17%);
+  border: 1px solid rgba(101, 199, 226, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(4, 13, 20, 0.82);
 }
 
 .hero-home__sigil::after {
-  inset: 8%;
-  background: conic-gradient(from 34deg, transparent 0 10%, rgba(149, 219, 236, 0.07) 15%, transparent 21% 52%, rgba(255, 232, 175, 0.035) 57%, transparent 64%);
-  border: 1px solid rgba(42, 101, 115, 0.15);
-  mask-image: radial-gradient(circle, transparent 0 31%, #000 32% 91%, transparent 92%);
+  inset: 5%;
+  z-index: 1;
+  background: repeating-conic-gradient(from -0.75deg, rgba(240, 213, 138, 0.78) 0 1.5deg, transparent 1.7deg 60deg);
+  mask-image: radial-gradient(circle, transparent 0 31%, #000 31.5% 94%, transparent 94.5%);
+  filter: drop-shadow(0 0 0.2rem rgba(240, 213, 138, 0.18));
 }
 
 .hero-home__sigil span:nth-child(1) {
   inset: 35.5%;
-  z-index: 1;
-  background: linear-gradient(145deg, #463517, #8f6b29 52%, #392a12);
-  border: 1px solid rgba(240, 213, 138, 0.48);
-  box-shadow: 0 0 1.6rem rgba(0, 0, 0, 0.58), inset 0 0 1.2rem rgba(0, 0, 0, 0.28);
+  z-index: 2;
+  background: #75551d;
+  border: 3px solid #d6ad4e;
+  box-shadow: 0.38rem 0.42rem 0 #03080d, inset 0 0 0 0.2rem #32240e;
 }
 
 .hero-home__sigil span:nth-child(2) {
   inset: 38.5%;
-  z-index: 2;
-  background:
-    repeating-radial-gradient(circle, transparent 0 0.52rem, rgba(79, 52, 11, 0.16) 0.56rem, transparent 0.61rem 1rem),
-    radial-gradient(circle at 42% 37%, #d8b558, #ad8431 66%, #76551d 100%);
-  border: 1px solid rgba(253, 226, 151, 0.58);
-  box-shadow: inset 0 0 1rem rgba(255, 236, 178, 0.13);
+  z-index: 3;
+  background: conic-gradient(from 32deg, #e1be62 0 24%, #af7f2a 24% 55%, #cf9f3e 55% 82%, #8f641f 82% 100%);
+  border: 2px solid #f0d58a;
+  box-shadow: inset 0 0 0 0.2rem rgba(87, 58, 13, 0.36);
 }
 
 .hero-home__sigil span:nth-child(3) {
   inset: 48.8%;
-  z-index: 3;
+  z-index: 4;
   background: #02060a;
   border: 2px solid #e1be69;
-  box-shadow: 0 0 0 0.22rem rgba(4, 9, 14, 0.9), 0 0 0.7rem rgba(240, 213, 138, 0.34);
+  box-shadow: 0 0 0 0.2rem #5d4318;
 }
 
-body.lhyzs-music-playing .hero-home__sigil {
+body.lhyzs-music-playing .hero-home__sigil,
+body.lhyzs-music-playing .music-switch__record {
   animation-play-state: running;
 }
 
-@keyframes lhyzs-home-vinyl-spin {
+@keyframes lhyzs-vinyl-sync-spin {
   to { transform: rotate(360deg); }
 }
 
@@ -2040,14 +2039,36 @@ body:has(.jungle-404) .md-content__inner {
   stroke-linejoin: round;
 }
 
-.music-switch__beam,
-.music-switch__note-head {
-  fill: currentColor;
+.music-switch__record {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lhyzs-vinyl-sync-spin 14s linear infinite;
+  animation-play-state: paused;
+}
+
+.music-switch__hub {
+  fill: var(--lhyzs-gold-light);
   stroke: none;
 }
 
-.music-switch__stems {
-  stroke-width: 1.75;
+.music-switch__disc {
+  fill: var(--lhyzs-gold-light);
+  fill-opacity: 0.08;
+}
+
+.music-switch__axes {
+  stroke: var(--lhyzs-gold-light);
+  opacity: 0.42;
+  stroke-width: 0.72;
+}
+
+.music-switch__notch {
+  stroke-width: 1.55;
+}
+
+.music-switch__stem,
+.music-switch__flag {
+  stroke-width: 1.65;
 }
 
 .music-switch:hover,
@@ -3924,6 +3945,7 @@ body.search-easter-egg-open {
   .search-easter-egg,
   .search-easter-egg img,
   .music-switch__glyph,
+  .music-switch__record,
   .hero-home__sigil {
     transition: none;
     animation: none !important;
