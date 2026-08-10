@@ -1852,7 +1852,7 @@ body:has(.jungle-404) .md-content__inner {
   .comments-panel--compact { padding-inline: 0.85rem; }
 }
 
-/* Header theme switch: sun opens the white theme, moon returns to black. */
+/* Header theme switch: the icon mirrors the active theme. */
 .theme-switch {
   order: 25;
   display: grid;
@@ -1875,13 +1875,13 @@ body:has(.jungle-404) .md-content__inner {
 }
 
 .theme-switch--sun {
-  background: #1b2a3d;
-  color: #fff;
+  background: #f3f5f7;
+  color: #9a6e1e;
 }
 
 .theme-switch--moon {
-  background: #f3f5f7;
-  color: #111820;
+  background: #172537;
+  color: #e8eef3;
 }
 
 .theme-switch:hover,

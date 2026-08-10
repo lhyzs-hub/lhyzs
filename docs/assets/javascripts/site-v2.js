@@ -27,11 +27,13 @@
     document.documentElement.dataset.lhyzsTheme = theme;
     document.documentElement.style.colorScheme = theme;
     if (!button) return;
-    const switchesToLight = theme === "dark";
+    const isLight = theme === "light";
+    const switchesToLight = !isLight;
+    button.dataset.currentTheme = theme;
     button.dataset.nextTheme = switchesToLight ? "light" : "dark";
-    button.classList.toggle("theme-switch--sun", switchesToLight);
-    button.classList.toggle("theme-switch--moon", !switchesToLight);
-    button.innerHTML = switchesToLight ? SUN_ICON : MOON_ICON;
+    button.classList.toggle("theme-switch--sun", isLight);
+    button.classList.toggle("theme-switch--moon", !isLight);
+    button.innerHTML = isLight ? SUN_ICON : MOON_ICON;
     button.setAttribute("aria-label", switchesToLight ? "切换到白色主题" : "切换到黑色主题");
     button.title = switchesToLight ? "白色主题" : "黑色主题";
   };
