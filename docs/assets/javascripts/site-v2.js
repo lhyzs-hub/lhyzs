@@ -17,6 +17,7 @@
 
   const THEME_STORAGE_KEY = "lhyzs-theme";
   const MOON_ASSET_URL = new URL("../images/theme-moon-skill.png", scriptUrl || document.baseURI).href;
+  const SEARCH_EASTER_EGG_ASSET_URL = new URL("../images/search-easter-egg-lhyzs.webp", scriptUrl || document.baseURI).href;
   const NAVIGATION_CLICK_ASSET_URL = new URL("../audio/navigation-metal-click.ogg", scriptUrl || document.baseURI).href;
   const PLAY_CLICK_ASSET_URL = new URL("../audio/play-heavy-metal.ogg", scriptUrl || document.baseURI).href;
   const SUN_ICON = `
@@ -191,6 +192,63 @@
         trigger.focus();
       }
     });
+
+    const searchEasterEgg = document.createElement("button");
+    searchEasterEgg.className = "search-easter-egg";
+    searchEasterEgg.type = "button";
+    searchEasterEgg.hidden = true;
+    searchEasterEgg.setAttribute("aria-label", "关闭彩蛋");
+    searchEasterEgg.innerHTML = `<img src="${SEARCH_EASTER_EGG_ASSET_URL}" alt="">`;
+    document.body.append(searchEasterEgg);
+
+    let easterEggTrigger;
+    let easterEggCloseTimer;
+
+    const closeSearchEasterEgg = () => {
+      if (searchEasterEgg.hidden) return;
+      searchEasterEgg.classList.remove("is-visible");
+      document.body.classList.remove("search-easter-egg-open");
+      window.clearTimeout(easterEggCloseTimer);
+      easterEggCloseTimer = window.setTimeout(() => {
+        searchEasterEgg.hidden = true;
+        easterEggTrigger?.focus({ preventScroll: true });
+      }, 220);
+    };
+
+    const openSearchEasterEgg = (searchInput) => {
+      window.clearTimeout(easterEggCloseTimer);
+      easterEggTrigger = searchInput;
+      searchEasterEgg.hidden = false;
+      document.body.classList.add("search-easter-egg-open");
+      window.requestAnimationFrame(() => {
+        searchEasterEgg.classList.add("is-visible");
+        searchEasterEgg.focus({ preventScroll: true });
+      });
+    };
+
+    searchEasterEgg.addEventListener("click", closeSearchEasterEgg);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !searchEasterEgg.hidden) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        closeSearchEasterEgg();
+        return;
+      }
+
+      const searchInput = event.target.closest?.(".md-search__input");
+      if (
+        !searchInput
+        || event.key !== "Enter"
+        || event.isComposing
+        || searchInput.value.trim().toLowerCase() !== "lhyzs"
+      ) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      playNavigationClick(false);
+      openSearchEasterEgg(searchInput);
+    }, true);
 
     const pressableSelector = [
       ".play-launcher",
