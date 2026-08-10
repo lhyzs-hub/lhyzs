@@ -9,10 +9,6 @@
 
     const canvas = root.querySelector("#yuumi-game-canvas");
     const ctx = canvas.getContext("2d");
-    const backgroundCanvas = document.createElement("canvas");
-    backgroundCanvas.width = 240;
-    backgroundCanvas.height = 135;
-    const bg = backgroundCanvas.getContext("2d");
     const curtain = root.querySelector("#game-curtain");
     const startButton = root.querySelector("#game-start");
     const pauseButton = root.querySelector("#game-pause");
@@ -41,12 +37,18 @@
     const H = canvas.height;
     const isDay = new Date().getHours() >= 6 && new Date().getHours() < 18;
     const sprite = new Image();
-    sprite.src = new URL(root.dataset.sprite, document.baseURI).href;
     const sceneBackground = new Image();
-    sceneBackground.src = new URL(
-      isDay ? root.dataset.dayBackground : root.dataset.nightBackground,
-      document.baseURI
-    ).href;
+    const loadImage = (image, source) => new Promise((resolve, reject) => {
+      image.decoding = "async";
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", reject, { once: true });
+      image.src = new URL(source, document.baseURI).href;
+      if (image.complete && image.naturalWidth) resolve();
+    });
+    const assetsPromise = Promise.all([
+      loadImage(sprite, root.dataset.sprite),
+      loadImage(sceneBackground, isDay ? root.dataset.dayBackground : root.dataset.nightBackground)
+    ]);
     ctx.imageSmoothingEnabled = false;
     themeLabel.textContent = isDay ? "白昼 · 雪林" : "夜晚 · 冰洞";
     root.classList.toggle("is-night", !isDay);
@@ -65,7 +67,8 @@
       speed: 12 + (index % 5) * 4
     }));
 
-    let state = "ready";
+    let state = "loading";
+    let assetsReady = false;
     let soundOn = true;
     let lastTime = performance.now();
     let distance = 0;
@@ -226,7 +229,7 @@
     };
 
     const start = async () => {
-      if (state === "playing" || isArming) return;
+      if (!assetsReady || state === "playing" || isArming) return;
       if (state === "gameover") reset();
       isArming = true;
       state = "arming";
@@ -280,88 +283,10 @@
       }
     };
 
-    const drawMountain = (x, baseY, width, height, color, cap) => {
-      const center = Math.round(x + width / 2);
-      for (let row = 0; row < height; row += 1) {
-        const progress = row / height;
-        const half = Math.max(1, Math.floor(progress * width / 2));
-        bg.fillStyle = row < height * 0.34 ? cap : color;
-        bg.fillRect(center - half, baseY - height + row, half * 2, 1);
-      }
-      bg.fillStyle = isDay ? "#a9cfdb" : "#31566a";
-      bg.fillRect(center - 2, baseY - Math.round(height * 0.56), 4, Math.round(height * 0.2));
-    };
-
-    const drawTree = (x, y, scale, color) => {
-      const trunk = Math.max(1, Math.round(2 * scale));
-      bg.fillStyle = isDay ? "#463b40" : "#182633";
-      bg.fillRect(Math.round(x - trunk / 2), Math.round(y - 8 * scale), trunk, Math.round(12 * scale));
-      for (let tier = 0; tier < 3; tier += 1) {
-        const height = Math.round((10 + tier * 2) * scale);
-        const top = Math.round(y - (29 - tier * 9) * scale);
-        for (let row = 0; row < height; row += 1) {
-          const half = Math.max(1, Math.floor((row / height) * (7 + tier * 3) * scale));
-          bg.fillStyle = color;
-          bg.fillRect(Math.round(x - half), top + row, half * 2, 1);
-        }
-      }
-      bg.fillStyle = isDay ? "#dff5f1" : "#6b98a4";
-      bg.fillRect(Math.round(x - 5 * scale), Math.round(y - 16 * scale), Math.round(10 * scale), Math.max(1, Math.round(scale)));
-    };
-
     const drawBackground = (dt) => {
       worldOffset += (state === "playing" ? 34 : 8) * dt;
-      bg.imageSmoothingEnabled = false;
-      bg.fillStyle = isDay ? "#68c5e5" : "#071321";
-      bg.fillRect(0, 0, 240, 135);
-      bg.fillStyle = isDay ? "#89d6e9" : "#0d2131";
-      bg.fillRect(0, 25, 240, 42);
-      bg.fillStyle = isDay ? "#b5e7ee" : "#163444";
-      bg.fillRect(0, 54, 240, 24);
-
-      if (isDay) {
-        const cloudShift = -Math.floor((worldOffset * 0.03) % 70);
-        for (let x = cloudShift - 35; x < 260; x += 70) {
-          bg.fillStyle = "#dff5f4";
-          bg.fillRect(x, 17, 14, 3);
-          bg.fillRect(x + 4, 14, 15, 5);
-          bg.fillRect(x + 12, 18, 12, 3);
-        }
-      } else {
-        bg.fillStyle = "#a7d4dc";
-        bg.fillRect(194, 13, 10, 10);
-        bg.fillRect(191, 16, 16, 4);
-        bg.fillStyle = "#071321";
-        bg.fillRect(190, 11, 9, 9);
-        for (let x = 12; x < 230; x += 27) bg.fillRect(x, 8 + (x % 19), 1, 1);
-      }
-
-      const mountainShift = -Math.floor((worldOffset * 0.02) % 82);
-      for (let x = mountainShift - 82; x < 260; x += 68) {
-        drawMountain(x, 91, 84, 48, isDay ? "#6f9eb8" : "#203b4d", isDay ? "#e4f4f2" : "#668f99");
-      }
-
-      bg.fillStyle = isDay ? "#356d73" : "#102b38";
-      bg.fillRect(0, 89, 240, 46);
-      const treeShift = -Math.floor((worldOffset * 0.07) % 24);
-      for (let x = treeShift - 24; x < 252; x += 19) {
-        drawTree(x, 116 + ((Math.floor(x / 19) & 1) ? 4 : 0), 1.15, isDay ? "#1e5960" : "#102b36");
-      }
-
-      bg.fillStyle = isDay ? "#a9dfe4" : "#28596a";
-      bg.fillRect(0, 117, 240, 18);
-      bg.fillStyle = isDay ? "#eef8f5" : "#729da7";
-      bg.fillRect(0, 117, 240, 2);
-      const lakeShift = -Math.floor((worldOffset * 0.2) % 20);
-      bg.fillStyle = isDay ? "#72bfd0" : "#1b4d60";
-      for (let x = lakeShift - 20; x < 240; x += 20) bg.fillRect(x, 124, 9, 1);
-
       ctx.imageSmoothingEnabled = false;
-      if (sceneBackground.complete && sceneBackground.naturalWidth) {
-        ctx.drawImage(sceneBackground, 0, 0, W, H);
-      } else {
-        ctx.drawImage(backgroundCanvas, 0, 0, W, H);
-      }
+      ctx.drawImage(sceneBackground, 0, 0, W, H);
 
       const hazeShift = -Math.round((worldOffset * 0.22) % 190);
       ctx.fillStyle = isDay ? "rgba(214, 245, 244, 0.1)" : "rgba(72, 142, 166, 0.09)";
@@ -428,14 +353,7 @@
       ctx.save();
       ctx.translate(player.x + player.width / 2, player.y + player.height / 2 + bob);
       ctx.rotate(Math.max(-0.24, Math.min(0.42, player.velocity / 1050)));
-      if (sprite.complete && sprite.naturalWidth) {
-        ctx.drawImage(sprite, ...frame, -player.width / 2 - 10, -player.height / 2 - 10, player.width + 20, player.height + 20);
-      } else {
-        ctx.fillStyle = "#8268c7";
-        ctx.fillRect(-32, -22, 62, 44);
-        ctx.fillStyle = "#d8bc54";
-        ctx.fillRect(-42, 16, 84, 10);
-      }
+      ctx.drawImage(sprite, ...frame, -player.width / 2 - 10, -player.height / 2 - 10, player.width + 20, player.height + 20);
       ctx.restore();
     };
 
@@ -502,7 +420,7 @@
         flap();
       } else if (event.key.toLowerCase() === "p") {
         togglePause();
-      } else if (event.key.toLowerCase() === "r" && !isArming) {
+      } else if (event.key.toLowerCase() === "r" && assetsReady && !isArming) {
         reset();
         start();
       }
@@ -562,8 +480,25 @@
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden && root.isConnected) loadBoard(true);
     });
-    reset();
-    requestAnimationFrame(loop);
+    assetsPromise.then(() => {
+      if (!root.isConnected) return;
+      assetsReady = true;
+      startButton.disabled = false;
+      reset();
+      lastTime = performance.now();
+      drawBackground(0);
+      obstacles.forEach(drawPillar);
+      drawPlayer(lastTime);
+      root.dataset.assets = "ready";
+      requestAnimationFrame(loop);
+    }).catch((error) => {
+      console.error("Unable to load game artwork", error);
+      state = "error";
+      root.dataset.assets = "error";
+      statusLabel.textContent = "冬境素材加载失败，请刷新重试";
+      startButton.textContent = "无法开始";
+      startButton.disabled = true;
+    });
   };
 
   if (document.readyState === "loading") {

@@ -4,7 +4,7 @@ hide:
   - toc
 ---
 
-<section class="yuumi-game" id="yuumi-flight-game"
+<section class="yuumi-game" id="yuumi-flight-game" data-assets="loading"
   data-sprite="../assets/images/game/yuumi-winter-spritesheet-v2.png"
   data-day-background="../assets/images/game/winter-day-background.png"
   data-night-background="../assets/images/game/winter-night-cave-background.png">
@@ -28,8 +28,8 @@ hide:
       <div class="yuumi-game__canvas-shell">
         <canvas id="yuumi-game-canvas" width="960" height="540" tabindex="0" aria-label="悠米冬日飞行小游戏。按空格、点击或触摸控制悠米起飞。"></canvas>
         <div class="yuumi-game__curtain" id="game-curtain">
-          <p class="yuumi-game__status" id="game-status">冰柱高低错落，找准节奏穿过去</p>
-          <button class="yuumi-game__start" id="game-start" type="button">开始飞行</button>
+          <p class="yuumi-game__status" id="game-status">冬境素材加载中…</p>
+          <button class="yuumi-game__start" id="game-start" type="button" disabled>准备中…</button>
           <small>空格 / 点击 / 触摸起飞</small>
         </div>
       </div>

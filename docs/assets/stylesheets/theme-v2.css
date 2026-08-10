@@ -2143,7 +2143,11 @@ body:has(.yuumi-game) .md-content__inner > h1 {
   position: relative;
   overflow: hidden;
   border: 1px solid #557985;
-  background: #08131d;
+  background:
+    linear-gradient(rgba(95, 151, 166, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(95, 151, 166, 0.045) 1px, transparent 1px),
+    #08131d;
+  background-size: 12px 12px;
   box-shadow: inset 0 0 0 1px rgba(215, 170, 70, 0.18), 0 1.2rem 3rem rgba(0, 0, 0, 0.3);
   line-height: 0;
 }
@@ -2177,10 +2181,24 @@ body:has(.yuumi-game) .md-content__inner > h1 {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
+  opacity: 1;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   cursor: pointer;
   touch-action: manipulation;
+}
+
+.yuumi-game[data-assets="loading"] #yuumi-game-canvas,
+.yuumi-game[data-assets="error"] #yuumi-game-canvas {
+  visibility: hidden;
+}
+
+.yuumi-game[data-assets="loading"] .yuumi-game__season span {
+  animation: yuumi-asset-pulse 1.2s steps(2, end) infinite;
+}
+
+@keyframes yuumi-asset-pulse {
+  50% { opacity: 0.35; }
 }
 
 #yuumi-game-canvas:focus-visible {
@@ -2273,6 +2291,12 @@ body:has(.yuumi-game) .md-content__inner > h1 {
 .yuumi-game__start:focus-visible {
   background: #173143;
   box-shadow: 0 0 1.2rem rgba(215, 170, 70, 0.24);
+}
+
+.yuumi-game__start:disabled {
+  cursor: wait;
+  opacity: 0.58;
+  box-shadow: none;
 }
 
 .yuumi-game__curtain small {
