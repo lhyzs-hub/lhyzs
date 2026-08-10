@@ -14,8 +14,8 @@ aliases:
 
 # STM32 Keysking 教程索引
 
-> [!abstract] 使用说明
-> 这是 Keysking STM32 视频教程的重组笔记。课程知识点保持不变，工程实现统一改为 **STM32CubeMX 生成 CMake 工程 + VSCode 编译、下载和调试**。默认芯片为 `STM32F103C8T6`、HAL 库、ST-LINK；其他 STM32 型号只需按数据手册调整引脚、时钟和外设实例。
+!!! abstract "使用说明"
+    这是 Keysking STM32 视频教程的重组笔记。课程知识点保持不变，工程实现统一改为 **STM32CubeMX 生成 CMake 工程 + VSCode 编译、下载和调试**。默认芯片为 `STM32F103C8T6`、HAL 库、ST-LINK；其他 STM32 型号只需按数据手册调整引脚、时钟和外设实例。
 
 >  [半小时学完单片机基础](半小时学完单片机基础.md)
 
@@ -74,8 +74,8 @@ flowchart LR
 - ST-LINK、USB 转串口、杜邦线、面包板
 - LED 与限流电阻、按键；后续按实验添加 AHT20、OLED、舵机等
 
-> [!warning] 电气安全
-> STM32F103 GPIO 通常是 3.3 V 逻辑。接 5 V 模块前查引脚是否容忍 5 V；舵机、电机和灯带使用独立电源并与 STM32 共地，禁止由 GPIO 直接供电。
+!!! warning "电气安全"
+    STM32F103 GPIO 通常是 3.3 V 逻辑。接 5 V 模块前查引脚是否容忍 5 V；舵机、电机和灯带使用独立电源并与 STM32 共地，禁止由 GPIO 直接供电。
 
 ## 主要资料
 

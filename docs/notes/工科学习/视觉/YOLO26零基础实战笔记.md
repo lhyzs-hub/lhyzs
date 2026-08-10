@@ -19,16 +19,16 @@ aliases:
 
 >
 
-> [!summary] 学完后能做什么
-> 1. 用 YOLO26 识别图片、视频和摄像头中的目标。
-> 2. 用自己的图片训练一个专用检测模型。
-> 3. 把模型导出成适合 ARM 设备的 NCNN 格式。
-> 4. 在树莓派 5 上接入摄像头运行，并配置开机自启动。
+!!! abstract "学完后能做什么"
+    1. 用 YOLO26 识别图片、视频和摄像头中的目标。
+    2. 用自己的图片训练一个专用检测模型。
+    3. 把模型导出成适合 ARM 设备的 NCNN 格式。
+    4. 在树莓派 5 上接入摄像头运行，并配置开机自启动。
 
 资料核对日期：2026-08-08。
 
-> [!info] 教程参考与版本说明
-> 本笔记按 B 站“手把手带你实战 YOLOv8”合集的实操顺序重排：环境安装 → 模型预测 → 数据集构建 → 模型训练。教程讲的是 YOLOv8，本文已将命令和模型替换为当前 Ultralytics YOLO26。参考入口：[YOLOv8 环境安装（BV13V4y1S7MK）](https://www.bilibili.com/video/BV13V4y1S7MK)。
+!!! info "教程参考与版本说明"
+    本笔记按 B 站“手把手带你实战 YOLOv8”合集的实操顺序重排：环境安装 → 模型预测 → 数据集构建 → 模型训练。教程讲的是 YOLOv8，本文已将命令和模型替换为当前 Ultralytics YOLO26。参考入口：[YOLOv8 环境安装（BV13V4y1S7MK）](https://www.bilibili.com/video/BV13V4y1S7MK)。
 
 ---
 
@@ -59,8 +59,8 @@ flowchart LR
 - USB 摄像头，或树莓派 Camera Module 3。
 - 需要长期运行时，推荐使用 SSD 或 NVMe，而不是长期频繁写入 microSD 卡。
 
-> [!tip] 模型选择
-> 树莓派 5 首选 `yolo26n.pt`。`n` 表示 nano，速度最快、占用最低。先不要使用 `m/l/x`；即使能运行，帧率通常也不适合实时应用。
+!!! tip "模型选择"
+    树莓派 5 首选 `yolo26n.pt`。`n` 表示 nano，速度最快、占用最低。先不要使用 `m/l/x`；即使能运行，帧率通常也不适合实时应用。
 
 ---
 
@@ -286,8 +286,8 @@ labelImg
 5. 按 `D` 下一张、`A` 上一张、`Del` 删除选中的框。
 6. 完成训练集后再打开 `raw\val`，类别名称和顺序必须完全一致。
 
-> [!warning] 类别顺序不能中途修改
-> LabelImg 会生成 `classes.txt`。例如第 1 行是 `gear`、第 2 行是 `bearing`，那么标签编号固定为 `0` 和 `1`；这必须与后面的 `dataset.yaml` 一致。LabelImg 官方也提醒：标注过程中更改类别列表，不会自动修正已经保存的标签。
+!!! warning "类别顺序不能中途修改"
+    LabelImg 会生成 `classes.txt`。例如第 1 行是 `gear`、第 2 行是 `bearing`，那么标签编号固定为 `0` 和 `1`；这必须与后面的 `dataset.yaml` 一致。LabelImg 官方也提醒：标注过程中更改类别列表，不会自动修正已经保存的标签。
 
 每张图片会有一个同名标签：
 
@@ -391,8 +391,8 @@ yolo detect train model=yolo26n.pt data=dataset.yaml epochs=1 imgsz=640 batch=8 
 yolo detect train model=yolo26n.pt data=dataset.yaml epochs=1 imgsz=640 batch=4 device=cpu workers=2 project=runs/detect name=smoke
 ```
 
-> [!warning] 不建议在树莓派上训练
-> 树莓派适合部署和推理，不适合常规训练。训练请放在电脑、服务器或云端完成。
+!!! warning "不建议在树莓派上训练"
+    树莓派适合部署和推理，不适合常规训练。训练请放在电脑、服务器或云端完成。
 
 ### 3.7 正式训练：命令行模板
 
@@ -512,8 +512,8 @@ sudo reboot
 
 关机并拔掉电源后再接 CSI 排线。
 
-> [!warning] 树莓派 5 的接口
-> 树莓派 5 使用较小的 22 针 MIPI 接口；部分官方相机使用 15 针接口，需要对应的 22 针转 15 针排线。不要用力反插。
+!!! warning "树莓派 5 的接口"
+    树莓派 5 使用较小的 22 针 MIPI 接口；部分官方相机使用 15 针接口，需要对应的 22 针转 15 针排线。不要用力反插。
 
 重新开机后测试：
 
@@ -635,8 +635,8 @@ best_ncnn_model/
 └─ metadata.yaml
 ```
 
-> [!tip] 为什么在树莓派上导出
-> NCNN 模型本身可以从其他电脑导出，但在目标树莓派上安装 `ultralytics[export]` 后直接导出，最容易避免版本和依赖差异。
+!!! tip "为什么在树莓派上导出"
+    NCNN 模型本身可以从其他电脑导出，但在目标树莓派上安装 `ultralytics[export]` 后直接导出，最容易避免版本和依赖差异。
 
 ### 7.2 图片推理
 
@@ -908,8 +908,8 @@ vcgencmd measure_temp
 top
 ```
 
-> [!note] 对帧率的合理预期
-> 帧率会随模型、输入尺寸、相机、散热、系统负载和目标数量变化。官方基准中，YOLO26n 的 640×640 ONNX 推理在树莓派 5 上约为 128 ms/张；NCNN 是官方推荐的 ARM 高性能格式。实际项目应在自己的相机和数据上测试，而不是只参考单一基准。
+!!! note "对帧率的合理预期"
+    帧率会随模型、输入尺寸、相机、散热、系统负载和目标数量变化。官方基准中，YOLO26n 的 640×640 ONNX 推理在树莓派 5 上约为 128 ms/张；NCNN 是官方推荐的 ARM 高性能格式。实际项目应在自己的相机和数据上测试，而不是只参考单一基准。
 
 ---
 
@@ -1075,5 +1075,5 @@ frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 - [Ultralytics 树莓派部署指南](https://docs.ultralytics.com/guides/raspberry-pi/)
 - [Raspberry Pi 相机软件](https://www.raspberrypi.com/documentation/computers/camera_software.html)
 
-> [!warning] 商业项目注意许可证
-> Ultralytics YOLO26 的代码与模型涉及 AGPL-3.0 和企业许可证。个人学习、开源项目与闭源商业产品的义务不同，正式发布或商业部署前应核对当前许可证要求。
+!!! warning "商业项目注意许可证"
+    Ultralytics YOLO26 的代码与模型涉及 AGPL-3.0 和企业许可证。个人学习、开源项目与闭源商业产品的义务不同，正式发布或商业部署前应核对当前许可证要求。

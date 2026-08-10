@@ -26,8 +26,8 @@ aliases:
 | `uint32_t Timeout` | 最长阻塞时间，通常 ms | `100`、`HAL_MAX_DELAY` |
 | `HAL_StatusTypeDef` | 调用结果 | `HAL_OK/BUSY/TIMEOUT/ERROR` |
 
-> [!warning] 返回值
-> “函数调用了”不等于“操作成功”。通信、ADC 等函数应检查 `HAL_StatusTypeDef`；中断/DMA 启动函数返回 OK 只表示成功启动，真正完成看回调。
+!!! warning "返回值"
+    “函数调用了”不等于“操作成功”。通信、ADC 等函数应检查 `HAL_StatusTypeDef`；中断/DMA 启动函数返回 OK 只表示成功启动，真正完成看回调。
 
 ## GPIO
 

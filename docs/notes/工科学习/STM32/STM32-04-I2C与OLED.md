@@ -129,8 +129,8 @@ OLED_ShowFrame();
 3. OLED 每 200 ms 更新一次数值，但传感器每 1 s 采样一次。
 4. 拔掉传感器，程序不死机并显示 `SENSOR ERROR`。
 
-> [!note] SPI 补充
-> Keysking 主线没有单独的硬件 SPI 章节。理解 I²C 后可补做 SPI：SCK/MOSI/MISO/CS，重点比较“寻址方式、全双工、速度、片选”。
+!!! note "SPI 补充"
+    Keysking 主线没有单独的硬件 SPI 章节。理解 I²C 后可补做 SPI：SCK/MOSI/MISO/CS，重点比较“寻址方式、全双工、速度、片选”。
 
 资料：[AHT20例程](https://docs.keysking.com/docs/stm32/example/I2C_AHT20/) · [OLED例程](https://docs.keysking.com/docs/stm32/example/I2C_OLED/)
 

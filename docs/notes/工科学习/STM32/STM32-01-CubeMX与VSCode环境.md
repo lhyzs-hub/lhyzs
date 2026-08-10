@@ -23,8 +23,8 @@ tags:
 | VSCode + ST 官方扩展包 | 编辑、CMake 构建、下载、调试、串口终端 | 图形化修改 `.ioc` |
 | ST-LINK | SWD 下载与调试 | 给大功率负载供电 |
 
-> [!info] 版本说明
-> ST 当前的 VSCode 扩展采用模块化工具包、CMake 和 ST 自己的调试适配器；旧教程中的 CubeCLT“一体包”工作流已被新版 Bundle Manager 逐步替代。若学校电脑安装的是旧版扩展，也可继续用 CubeMX 生成 CMake 工程，核心代码不变。
+!!! info "版本说明"
+    ST 当前的 VSCode 扩展采用模块化工具包、CMake 和 ST 自己的调试适配器；旧教程中的 CubeCLT“一体包”工作流已被新版 Bundle Manager 逐步替代。若学校电脑安装的是旧版扩展，也可继续用 CubeMX 生成 CMake 工程，核心代码不变。
 
 ## 一、安装
 

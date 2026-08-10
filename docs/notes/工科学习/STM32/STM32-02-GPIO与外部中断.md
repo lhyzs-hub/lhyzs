@@ -116,8 +116,8 @@ EXTI0–15 与 GPIO 引脚编号对应，而不是与端口一一对应。因此
 | `EXTI_SWIER` | 软件中断事件 | 写 1 软件触发对应 EXTI 线 |
 | `EXTI_PR` | 请求挂起寄存器 | 读 1 表示挂起；**写 1 清除** |
 
-> [!danger] PR 是 W1C
-> `EXTI_PR` 属于 Write 1 to Clear。要清 EXTI12，应向 bit12 写 1；写 0 不会清除。不要对这类寄存器随意使用普通读改写。
+!!! danger "PR 是 W1C"
+    `EXTI_PR` 属于 Write 1 to Clear。要清 EXTI12，应向 bit12 写 1；写 0 不会清除。不要对这类寄存器随意使用普通读改写。
 
 ### 3. 中断屏蔽和请求挂起不是一回事
 
@@ -140,8 +140,8 @@ EXTI 产生的是外设中断请求，Cortex-M3 的 NVIC 决定 CPU 是否以及
 | `IABR` / `NVIC_GetActive()` | 查询 IRQ 是否正在执行 |
 | `IPR` / `NVIC_SetPriority()` | 配置中断优先级 |
 
-> [!important] 两级屏蔽
-> `EXTI_IMR` 控制“EXTI 请求能否离开 EXTI”；`NVIC_DisableIRQ()` 控制“NVIC 是否把该 IRQ 交给 CPU”。二者位置不同，挂起位也不同。
+!!! warning "两级屏蔽"
+    `EXTI_IMR` 控制“EXTI 请求能否离开 EXTI”；`NVIC_DisableIRQ()` 控制“NVIC 是否把该 IRQ 交给 CPU”。二者位置不同，挂起位也不同。
 
 全局 `__disable_irq()` 会通过 CPU 的 PRIMASK 屏蔽绝大多数可配置中断，只应在极短的临界区使用，并尽快执行 `__enable_irq()`。不要用它代替单个外设中断的正常管理。
 
@@ -224,8 +224,8 @@ if (key_event) {
 }
 ```
 
-> [!warning] 中断规则
-> 回调要短：不要在中断中等待按键松开、打印长串口、执行长延时或复杂浮点计算。共享变量用 `volatile`；读取多字节共享数据时考虑临界区。
+!!! warning "中断规则"
+    回调要短：不要在中断中等待按键松开、打印长串口、执行长延时或复杂浮点计算。共享变量用 `volatile`；读取多字节共享数据时考虑临界区。
 
 ## 七、容易混淆
 

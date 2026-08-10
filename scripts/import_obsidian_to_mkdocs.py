@@ -31,6 +31,10 @@ SKIPPED_WIKILINK_PATTERN = re.compile(
     + r")(?:[#|][^\]]*)?\]\]"
 )
 WIKILINK_PATTERN = re.compile(r"(!?)\[\[([^\[\]\n]+)\]\]")
+CALLOUT_START_PATTERN = re.compile(
+    r"^(?P<indent>\s*)>\s*\[!(?P<kind>[A-Za-z-]+)\][+-]?\s*(?P<title>.*)$"
+)
+CALLOUT_BODY_PATTERN = re.compile(r"^(?P<indent>\s*)>\s?(?P<body>.*)$")
 ATX_HEADING_PATTERN = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
 FENCE_PATTERN = re.compile(r"^\s*(`{3,}|~{3,})")
 NAV_START = "<!-- lhyzs-note-nav:start -->"
@@ -39,6 +43,10 @@ NAV_PATTERN = re.compile(
     rf"\n*{re.escape(NAV_START)}.*?{re.escape(NAV_END)}\n*",
     re.DOTALL,
 )
+CALLOUT_KIND_MAP = {
+    "summary": "abstract",
+    "important": "warning",
+}
 
 
 def fail(message: str) -> None:
@@ -295,6 +303,47 @@ def convert_wikilinks(
     return WIKILINK_PATTERN.sub(replace, markdown)
 
 
+def convert_obsidian_callouts(markdown: str, stats: dict[str, int]) -> str:
+    """将 Obsidian 的 > [!type] Callout 转为 MkDocs admonition。"""
+    lines = markdown.splitlines()
+    converted: list[str] = []
+    index = 0
+
+    while index < len(lines):
+        start = CALLOUT_START_PATTERN.match(lines[index])
+        if not start:
+            converted.append(lines[index])
+            index += 1
+            continue
+
+        indent = start.group("indent")
+        kind = CALLOUT_KIND_MAP.get(start.group("kind").casefold(), start.group("kind").casefold())
+        title = start.group("title").strip()
+        escaped_title = title.replace('"', '\\"')
+        declaration = f'{indent}!!! {kind}'
+        if escaped_title:
+            declaration += f' "{escaped_title}"'
+        converted.append(declaration)
+        index += 1
+
+        body_found = False
+        while index < len(lines):
+            body = CALLOUT_BODY_PATTERN.match(lines[index])
+            if not body:
+                break
+            body_text = body.group("body")
+            converted.append(f"{indent}    {body_text}" if body_text else "")
+            body_found = True
+            index += 1
+
+        if not body_found:
+            converted.append(f'{indent}    <span aria-hidden="true"></span>')
+        stats["callouts"] += 1
+
+    result = "\n".join(converted)
+    return result + ("\n" if markdown.endswith("\n") else "")
+
+
 def copy_vault() -> tuple[list[Path], int, dict[str, int], list[str]]:
     if STAGING_ROOT.exists():
         shutil.rmtree(STAGING_ROOT)
@@ -309,7 +358,14 @@ def copy_vault() -> tuple[list[Path], int, dict[str, int], list[str]]:
         assets_by_name,
     ) = build_vault_index()
     heading_index = build_heading_index(note_paths)
-    stats = {"notes": 0, "anchors": 0, "embeds": 0, "assets": 0, "unresolved": 0}
+    stats = {
+        "notes": 0,
+        "anchors": 0,
+        "embeds": 0,
+        "assets": 0,
+        "callouts": 0,
+        "unresolved": 0,
+    }
     unresolved: list[str] = []
 
     for relative in [*note_paths, *asset_paths]:
@@ -333,6 +389,7 @@ def copy_vault() -> tuple[list[Path], int, dict[str, int], list[str]]:
             stats,
             unresolved,
         )
+        converted = convert_obsidian_callouts(converted, stats)
         target.write_text(converted, encoding="utf-8")
 
     return note_paths, len(asset_paths), stats, unresolved
@@ -405,7 +462,8 @@ def write_directory_index(directory: Path, title: str) -> None:
         lines.append("")
 
     if markdown_files:
-        lines.extend(["## 笔记", ""])
+        section_title = "创业启程" if title == "大学课程学习" else "笔记"
+        lines.extend([f"## {section_title}", ""])
         for note in markdown_files:
             lines.append(f"- [{note.stem}]({note.name})")
         lines.append("")
@@ -458,12 +516,25 @@ def collect_note_catalog(note_paths: list[Path]) -> list[dict[str, object]]:
         updated = fields.get("updated") or fields.get("created")
         if not updated or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", updated):
             updated = datetime.fromtimestamp((STAGING_ROOT / relative).stat().st_mtime).strftime("%Y-%m-%d")
+        title = fields.get("title") or extract_note_title(STAGING_ROOT / relative)
+        category = relative.parts[0] if len(relative.parts) > 1 else "未分类"
+        if len(relative.parts) > 2:
+            subgroup = relative.parts[1]
+            subgroup_href = f"{category}/{subgroup}/"
+        elif category == "大学课程学习" and "创业启程" in title:
+            subgroup = "创业启程"
+            subgroup_href = f"{relative.with_suffix('').as_posix()}/"
+        else:
+            subgroup = "未分类"
+            subgroup_href = f"{relative.with_suffix('').as_posix()}/"
+
         catalog.append(
             {
                 "path": relative,
-                "title": fields.get("title") or extract_note_title(STAGING_ROOT / relative),
-                "category": relative.parts[0] if len(relative.parts) > 1 else "未分类",
-                "subgroup": relative.parts[1] if len(relative.parts) > 2 else "直属笔记",
+                "title": title,
+                "category": category,
+                "subgroup": subgroup,
+                "subgroup_href": subgroup_href,
                 "updated": updated,
                 "minutes": estimate_reading_minutes(body),
                 "tags": tags,
@@ -514,13 +585,17 @@ def write_notes_index(note_paths: list[Path]) -> None:
         notes = [note for note in catalog if note["category"] == category]
         if not notes:
             continue
-        subgroups: dict[str, int] = defaultdict(int)
+        subgroups: dict[str, dict[str, object]] = {}
         for note in notes:
-            subgroups[str(note["subgroup"])] += 1
+            subgroup = str(note["subgroup"])
+            if subgroup not in subgroups:
+                subgroups[subgroup] = {"count": 0, "href": str(note["subgroup_href"])}
+            subgroups[subgroup]["count"] = int(subgroups[subgroup]["count"]) + 1
         subgroup_total += len(subgroups)
         subgroup_rows = []
-        for subgroup, count in sorted(subgroups.items(), key=lambda item: item[0].casefold()):
-            href = f"{category}/" if subgroup == "直属笔记" else f"{category}/{subgroup}/"
+        for subgroup, details in sorted(subgroups.items(), key=lambda item: item[0].casefold()):
+            href = str(details["href"])
+            count = int(details["count"])
             subgroup_rows.append(
                 f'<li><a href="{html.escape(href, quote=True)}">{html.escape(subgroup)}</a>'
                 f'<span>{count} 篇</span></li>'
@@ -626,7 +701,8 @@ def main() -> None:
         f"{stats['notes']} 个笔记链接，"
         f"{stats['anchors']} 个标题锚点，"
         f"{stats['embeds']} 个图片嵌入，"
-        f"{stats['assets']} 个附件链接。"
+        f"{stats['assets']} 个附件链接，"
+        f"{stats['callouts']} 个提示框。"
     )
     print(f"目标目录：{NOTES_ROOT}")
 
