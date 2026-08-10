@@ -26,6 +26,97 @@
   const MOON_ICON = `
     <img class="theme-glyph theme-glyph--moon" src="${MOON_ASSET_URL}" alt="" aria-hidden="true">`;
 
+  let navigationAudioContext;
+  let navigationNoiseBuffer;
+
+  const getNavigationAudioContext = () => {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    navigationAudioContext ||= new AudioContextClass();
+    if (navigationAudioContext.state === "suspended") {
+      navigationAudioContext.resume().catch(() => {});
+    }
+    return navigationAudioContext;
+  };
+
+  const getNavigationNoise = (context) => {
+    if (navigationNoiseBuffer) return navigationNoiseBuffer;
+    const length = Math.ceil(context.sampleRate * 0.2);
+    navigationNoiseBuffer = context.createBuffer(1, length, context.sampleRate);
+    const samples = navigationNoiseBuffer.getChannelData(0);
+    for (let index = 0; index < length; index += 1) {
+      const fade = 1 - index / length;
+      samples[index] = (Math.random() * 2 - 1) * fade;
+    }
+    return navigationNoiseBuffer;
+  };
+
+  const addClickTone = (context, output, options) => {
+    const start = context.currentTime + (options.delay || 0);
+    const oscillator = context.createOscillator();
+    const envelope = context.createGain();
+    oscillator.type = options.type;
+    oscillator.frequency.setValueAtTime(options.from, start);
+    oscillator.frequency.exponentialRampToValueAtTime(options.to, start + options.duration);
+    envelope.gain.setValueAtTime(options.gain, start);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, start + options.duration);
+    oscillator.connect(envelope).connect(output);
+    oscillator.start(start);
+    oscillator.stop(start + options.duration + 0.01);
+  };
+
+  const addClickNoise = (context, output, options) => {
+    const start = context.currentTime + (options.delay || 0);
+    const noise = context.createBufferSource();
+    const filter = context.createBiquadFilter();
+    const envelope = context.createGain();
+    noise.buffer = getNavigationNoise(context);
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(options.frequency, start);
+    filter.Q.setValueAtTime(options.q, start);
+    envelope.gain.setValueAtTime(options.gain, start);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, start + options.duration);
+    noise.connect(filter).connect(envelope).connect(output);
+    noise.start(start);
+    noise.stop(start + options.duration);
+  };
+
+  const playNavigationClick = (isPlayLauncher = false) => {
+    const context = getNavigationAudioContext();
+    if (!context) return;
+
+    const master = context.createGain();
+    const limiter = context.createDynamicsCompressor();
+    master.gain.setValueAtTime(isPlayLauncher ? 0.58 : 0.38, context.currentTime);
+    limiter.threshold.setValueAtTime(-14, context.currentTime);
+    limiter.knee.setValueAtTime(12, context.currentTime);
+    limiter.ratio.setValueAtTime(8, context.currentTime);
+    limiter.attack.setValueAtTime(0.002, context.currentTime);
+    limiter.release.setValueAtTime(0.12, context.currentTime);
+    master.connect(limiter).connect(context.destination);
+
+    if (isPlayLauncher) {
+      addClickTone(context, master, { type: "sine", from: 132, to: 48, gain: 0.28, duration: 0.18 });
+      addClickTone(context, master, { type: "triangle", from: 340, to: 112, gain: 0.13, duration: 0.14 });
+      addClickTone(context, master, { type: "square", from: 880, to: 420, gain: 0.035, duration: 0.07, delay: 0.012 });
+      addClickTone(context, master, { type: "sine", from: 640, to: 510, gain: 0.038, duration: 0.2, delay: 0.025 });
+      addClickNoise(context, master, { frequency: 520, q: 1.4, gain: 0.11, duration: 0.09 });
+      window.setTimeout(() => {
+        master.disconnect();
+        limiter.disconnect();
+      }, 280);
+      return;
+    }
+
+    addClickTone(context, master, { type: "triangle", from: 1040, to: 650, gain: 0.1, duration: 0.058 });
+    addClickTone(context, master, { type: "sine", from: 2180, to: 1480, gain: 0.04, duration: 0.045, delay: 0.004 });
+    addClickNoise(context, master, { frequency: 3600, q: 5.5, gain: 0.06, duration: 0.035 });
+    window.setTimeout(() => {
+      master.disconnect();
+      limiter.disconnect();
+    }, 120);
+  };
+
   const preferredTheme = () => {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
     return saved === "light" || saved === "dark" ? saved : "dark";
@@ -73,6 +164,18 @@
     const isPlayPage = normalizePath(window.location.pathname) === normalizePath(new URL(playUrl).pathname);
     launcher.classList.toggle("is-play-current", isPlayPage);
     if (isPlayPage) launcher.setAttribute("aria-current", "page");
+    launcher.addEventListener("click", (event) => {
+      if (
+        event.defaultPrevented
+        || event.button !== 0
+        || event.metaKey
+        || event.ctrlKey
+        || event.shiftKey
+        || event.altKey
+      ) return;
+      event.preventDefault();
+      window.setTimeout(() => window.location.assign(launcher.href), 150);
+    });
     headerInner.prepend(launcher);
 
     const tabsList = document.querySelector(".md-tabs__list");
@@ -147,7 +250,7 @@
     const pressableSelector = [
       ".play-launcher",
       ".game-nav .md-tabs__link",
-      '.md-header__button.md-icon[for="__search"]',
+      ".md-header__button",
       ".theme-switch",
       ".player-profile__trigger",
       ".hero-home__action",
@@ -172,13 +275,20 @@
       pressable.classList.add("is-press-glow");
     };
 
+    const activatePressable = (pressable) => {
+      if (!pressable || pressable.matches(":disabled, [aria-disabled='true']")) return;
+      flashPressable(pressable);
+      playNavigationClick(pressable.classList.contains("play-launcher"));
+    };
+
     document.addEventListener("pointerdown", (event) => {
-      flashPressable(event.target.closest(pressableSelector));
+      if (event.button !== 0) return;
+      activatePressable(event.target.closest(pressableSelector));
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      flashPressable(event.target.closest(pressableSelector));
+      if (event.repeat || (event.key !== "Enter" && event.key !== " ")) return;
+      activatePressable(event.target.closest(pressableSelector));
     });
 
     document.addEventListener("animationend", (event) => {
