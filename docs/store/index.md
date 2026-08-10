@@ -91,6 +91,11 @@
 
   <footer class="store-note">
     <span aria-hidden="true">◆</span>
-    <div><strong>取书说明</strong><p>长期三折出书，zjg东区可送。具体书况可当面确认。</p></div>
+    <div class="store-note__copy"><strong>取书说明</strong><p>长期三折出书，zjg东区可送。具体书况可当面确认。</p></div>
+    <address class="store-contact" aria-label="购买联系方式">
+      <span>有意者联系</span>
+      <span class="store-contact__channel">微信</span>
+      <strong>15757006476</strong>
+    </address>
   </footer>
 </section>
