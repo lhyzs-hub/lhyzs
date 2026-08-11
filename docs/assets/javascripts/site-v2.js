@@ -127,7 +127,7 @@
     const trail = [];
     const maxTrailPoints = 38;
     const trailLifetime = 380;
-    const cursorTailOffset = { x: 10.8, y: 26.4 };
+    const cursorTailOffset = { x: 15.8, y: 16.3 };
     let frameId = 0;
     let lastPoint;
     let pixelRatio = 1;
