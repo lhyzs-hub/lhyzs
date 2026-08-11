@@ -3,6 +3,7 @@ site_url: https://lhyzs-hub.github.io/lhyzs/
 theme:
   name: material
   custom_dir: overrides
+  favicon: assets/images/avatar.png
   language: zh
   features:
     - navigation.tabs
