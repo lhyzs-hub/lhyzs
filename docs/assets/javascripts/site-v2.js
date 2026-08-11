@@ -127,7 +127,7 @@
     const trail = [];
     const maxTrailPoints = 38;
     const trailLifetime = 380;
-    const cursorTailOffset = { x: 10.8, y: 26.4 };
+    const cursorTailOffset = { x: 13.3, y: 18.8 };
     let frameId = 0;
     let lastPoint;
     let pixelRatio = 1;
@@ -153,7 +153,7 @@
       if (trail.length < 2) return;
       const isLight = document.documentElement.dataset.lhyzsTheme === "light";
       const color = isLight ? "145, 94, 20" : "220, 172, 64";
-      const highlight = isLight ? "44, 119, 143" : "99, 205, 227";
+      const highlight = isLight ? "181, 126, 37" : "245, 216, 142";
       const glow = isLight ? "159, 105, 24" : "232, 190, 92";
       const newest = trail[trail.length - 1];
       const idleFade = Math.max(0, 1 - (now - newest.time) / trailLifetime);
