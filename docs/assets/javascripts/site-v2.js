@@ -124,10 +124,15 @@
       return;
     }
 
-    const particles = [];
-    const maxParticles = 40;
+    const trail = [];
+    const maxTrailPoints = 38;
+    const trailLifetime = 380;
+    const cursorTailOffset = { x: 14.2, y: 26.2 };
+    const forkOffsets = [
+      { x: -5, y: 0.3 },
+      { x: 5, y: 1 }
+    ];
     let frameId = 0;
-    let previousFrame = performance.now();
     let lastPoint;
     let pixelRatio = 1;
 
@@ -143,58 +148,101 @@
       if (!frameId) frameId = window.requestAnimationFrame(render);
     };
 
-    const addParticle = (x, y, intensity = 1) => {
-      particles.push({
-        x,
-        y,
-        age: 0,
-        life: 330 + Math.random() * 90,
-        size: (1.25 + Math.random() * 1.45) * intensity
+    const addTrailPoint = (x, y, time) => {
+      trail.push({ x, y, time });
+      if (trail.length > maxTrailPoints) trail.splice(0, trail.length - maxTrailPoints);
+    };
+
+    const drawRibbon = (now, forkOffset) => {
+      if (trail.length < 2) return;
+      const isLight = document.documentElement.dataset.lhyzsTheme === "light";
+      const color = isLight ? "145, 94, 20" : "220, 172, 64";
+      const highlight = isLight ? "181, 126, 37" : "245, 216, 142";
+      const glow = isLight ? "159, 105, 24" : "232, 190, 92";
+      const newest = trail[trail.length - 1];
+      const idleFade = Math.max(0, 1 - (now - newest.time) / trailLifetime);
+      const lastIndex = trail.length - 1;
+      const points = trail.map((point, index) => {
+        const progress = lastIndex ? index / lastIndex : 1;
+        const forkAmount = Math.pow(progress, 1.75);
+        return {
+          x: point.x + forkOffset.x * forkAmount,
+          y: point.y + forkOffset.y * forkAmount,
+          progress
+        };
       });
-      if (particles.length > maxParticles) particles.splice(0, particles.length - maxParticles);
+
+      const leftEdge = [];
+      const rightEdge = [];
+      points.forEach((point, index) => {
+        const previous = points[Math.max(0, index - 1)];
+        const next = points[Math.min(lastIndex, index + 1)];
+        const tangentX = next.x - previous.x;
+        const tangentY = next.y - previous.y;
+        const tangentLength = Math.hypot(tangentX, tangentY) || 1;
+        const normalX = -tangentY / tangentLength;
+        const normalY = tangentX / tangentLength;
+        const halfWidth = 0.18 + 1.5 * Math.pow(point.progress, 1.35);
+        leftEdge.push({ x: point.x + normalX * halfWidth, y: point.y + normalY * halfWidth });
+        rightEdge.push({ x: point.x - normalX * halfWidth, y: point.y - normalY * halfWidth });
+      });
+
+      const oldest = points[0];
+      const gradient = context.createLinearGradient(oldest.x, oldest.y, newest.x, newest.y);
+      gradient.addColorStop(0, `rgba(${color}, 0)`);
+      gradient.addColorStop(0.32, `rgba(${color}, ${0.16 * idleFade})`);
+      gradient.addColorStop(0.76, `rgba(${color}, ${0.5 * idleFade})`);
+      gradient.addColorStop(1, `rgba(${highlight}, ${0.8 * idleFade})`);
+
+      context.beginPath();
+      context.moveTo(leftEdge[0].x, leftEdge[0].y);
+      for (let index = 1; index < leftEdge.length; index += 1) context.lineTo(leftEdge[index].x, leftEdge[index].y);
+      for (let index = rightEdge.length - 1; index >= 0; index -= 1) context.lineTo(rightEdge[index].x, rightEdge[index].y);
+      context.closePath();
+      context.fillStyle = gradient;
+      context.shadowColor = `rgba(${glow}, ${0.42 * idleFade})`;
+      context.shadowBlur = 9;
+      context.fill();
+
+      context.shadowBlur = 3;
+      context.lineCap = "round";
+      context.lineJoin = "round";
+      for (let index = 1; index < points.length; index += 1) {
+        const start = points[index - 1];
+        const end = points[index];
+        const flow = 0.52 + 0.48 * Math.sin(now * 0.015 - index * 0.62);
+        const opacity = (0.12 + flow * 0.24) * end.progress * idleFade;
+        context.beginPath();
+        context.moveTo(start.x, start.y);
+        context.lineTo(end.x, end.y);
+        context.strokeStyle = `rgba(${highlight}, ${opacity})`;
+        context.lineWidth = 0.42 + end.progress * 0.42;
+        context.stroke();
+      }
     };
 
     const render = (now) => {
       frameId = 0;
-      const elapsed = Math.min(now - previousFrame, 34);
-      previousFrame = now;
+      while (trail.length && now - trail[0].time >= trailLifetime) trail.shift();
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-      const isLight = document.documentElement.dataset.lhyzsTheme === "light";
-      const color = isLight ? "154, 105, 28" : "224, 181, 78";
-      const glow = isLight ? "177, 125, 38" : "240, 202, 112";
-
-      for (let index = particles.length - 1; index >= 0; index -= 1) {
-        const particle = particles[index];
-        particle.age += elapsed;
-        if (particle.age >= particle.life) {
-          particles.splice(index, 1);
-          continue;
-        }
-
-        const progress = particle.age / particle.life;
-        const opacity = Math.pow(1 - progress, 1.7) * 0.72;
-        const radius = Math.max(0.35, particle.size * (1 - progress * 0.68));
-        context.beginPath();
-        context.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
-        context.fillStyle = `rgba(${color}, ${opacity})`;
-        context.shadowColor = `rgba(${glow}, ${opacity * 0.72})`;
-        context.shadowBlur = 7;
-        context.fill();
-      }
-
+      forkOffsets.forEach((offset) => drawRibbon(now, offset));
       context.shadowBlur = 0;
-      if (particles.length) requestFrame();
+      if (trail.length) requestFrame();
     };
 
     const handlePointerMove = (event) => {
       if (event.pointerType && event.pointerType !== "mouse") return;
-      const point = { x: event.clientX, y: event.clientY };
+      const point = {
+        x: event.clientX + cursorTailOffset.x,
+        y: event.clientY + cursorTailOffset.y
+      };
+      const time = performance.now();
       if (!lastPoint) {
         lastPoint = point;
-        addParticle(point.x, point.y, 0.85);
+        addTrailPoint(point.x, point.y, time);
         requestFrame();
         return;
       }
@@ -202,12 +250,12 @@
       const deltaX = point.x - lastPoint.x;
       const deltaY = point.y - lastPoint.y;
       const distance = Math.hypot(deltaX, deltaY);
-      if (distance < 2.5) return;
+      if (distance < 2) return;
 
-      const steps = Math.min(6, Math.max(1, Math.floor(distance / 5)));
+      const steps = Math.min(8, Math.max(1, Math.floor(distance / 5)));
       for (let step = 1; step <= steps; step += 1) {
         const ratio = step / steps;
-        addParticle(lastPoint.x + deltaX * ratio, lastPoint.y + deltaY * ratio, 0.78 + ratio * 0.22);
+        addTrailPoint(lastPoint.x + deltaX * ratio, lastPoint.y + deltaY * ratio, time);
       }
       lastPoint = point;
       requestFrame();
@@ -219,7 +267,7 @@
     document.addEventListener("pointerleave", () => { lastPoint = undefined; });
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
-        particles.length = 0;
+        trail.length = 0;
         lastPoint = undefined;
       }
     });
