@@ -34,12 +34,72 @@
     return avatar;
   };
 
+  let dailyCountSyncId = 0;
+
+  const updateDailyToggleCount = (toggle, value, state = "ready") => {
+    const count = toggle.querySelector("[data-comments-count]");
+    if (!count) return;
+    count.textContent = String(value);
+    toggle.dataset.commentsCountState = state;
+    if (state === "ready") {
+      toggle.setAttribute("aria-label", `查看 ${value} 条评论`);
+      toggle.title = `${value} 条评论`;
+    } else if (state === "error") {
+      toggle.setAttribute("aria-label", "评论数暂时无法同步，点击后重试");
+      toggle.title = "评论数暂时无法同步，点击后重试";
+    } else {
+      toggle.setAttribute("aria-label", "正在同步评论数");
+      toggle.removeAttribute("title");
+    }
+  };
+
+  const syncDailyCommentCounts = async (scope = document) => {
+    const toggles = [...scope.querySelectorAll("[data-comments-toggle][data-page-key]")];
+    if (!toggles.length) return;
+    const syncId = ++dailyCountSyncId;
+    toggles.forEach((toggle) => updateDailyToggleCount(toggle, "…", "loading"));
+
+    if (!client) {
+      toggles.forEach((toggle) => updateDailyToggleCount(toggle, "—", "error"));
+      return;
+    }
+
+    const pageKeys = [...new Set(toggles.map((toggle) => toggle.dataset.pageKey).filter(Boolean))];
+    const counts = new Map(pageKeys.map((pageKey) => [pageKey, 0]));
+
+    try {
+      for (let index = 0; index < pageKeys.length; index += 50) {
+        const batch = pageKeys.slice(index, index + 50);
+        const { data, error } = await client
+          .from("site_comments")
+          .select("page_key")
+          .in("page_key", batch)
+          .limit(1000);
+        if (error) throw error;
+        (data || []).forEach(({ page_key: pageKey }) => {
+          if (counts.has(pageKey)) counts.set(pageKey, counts.get(pageKey) + 1);
+        });
+      }
+
+      if (syncId !== dailyCountSyncId) return;
+      toggles.forEach((toggle) => {
+        if (toggle.isConnected) updateDailyToggleCount(toggle, counts.get(toggle.dataset.pageKey) || 0);
+      });
+    } catch (error) {
+      console.error("Unable to sync daily comment counts", error);
+      if (syncId !== dailyCountSyncId) return;
+      toggles.forEach((toggle) => {
+        if (toggle.isConnected) updateDailyToggleCount(toggle, "—", "error");
+      });
+    }
+  };
+
   const renderComments = (panel, comments) => {
     const list = panel.querySelector("[data-comments-list]");
     const count = panel.querySelector("[data-panel-count]");
     const toggleCount = panel.closest(".daily-card")?.querySelector("[data-comments-count]");
     count.textContent = String(comments.length);
-    if (toggleCount) toggleCount.textContent = String(comments.length);
+    if (toggleCount) updateDailyToggleCount(toggleCount.closest("[data-comments-toggle]"), comments.length);
     list.replaceChildren();
 
     if (!comments.length) {
@@ -207,6 +267,10 @@
   };
 
   const initDailyComments = () => {
+    document.addEventListener("lhyzs:daily-rendered", (event) => {
+      syncDailyCommentCounts(event.detail?.root || document);
+    });
+
     document.addEventListener("click", (event) => {
       const toggle = event.target.closest("[data-comments-toggle]");
       if (!toggle) return;
@@ -224,6 +288,11 @@
       host.hidden = !willOpen;
       toggle.setAttribute("aria-expanded", String(willOpen));
       if (willOpen && !host.firstElementChild) host.append(createPanel(toggle.dataset.pageKey, true));
+    });
+
+    syncDailyCommentCounts();
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) syncDailyCommentCounts();
     });
   };
 

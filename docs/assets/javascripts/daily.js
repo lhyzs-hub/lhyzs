@@ -79,12 +79,13 @@
           <footer>
             <span>${escapeHtml(entry.type || "日常")}</span>
             <button class="daily-card__comments-toggle" type="button" data-comments-toggle data-page-key="daily/${escapeHtml(entry.id)}" aria-expanded="false">
-              评论 <span data-comments-count>0</span>
+              评论 <span data-comments-count aria-live="polite">…</span>
             </button>
           </footer>
           <div class="daily-card__comments" data-comments-host hidden></div>
         </article>`;
       }).join("");
+      document.dispatchEvent(new CustomEvent("lhyzs:daily-rendered", { detail: { root } }));
     };
 
     const clearForm = () => {
