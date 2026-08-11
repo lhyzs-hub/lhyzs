@@ -1792,7 +1792,44 @@ html[data-lhyzs-theme="light"] .note-row:focus-visible .note-row__main strong {
   }
 }
 
-@media (max-width: 56rem) {
+/* Laptop header: reserve separate lanes for centered navigation and right tools. */
+@media (min-width: 60rem) and (max-width: 120rem) {
+  .md-header__inner {
+    gap: 0.65rem;
+  }
+
+  .game-nav .md-tabs__list {
+    gap: 0.75rem;
+  }
+
+  .game-nav .md-tabs__link {
+    min-width: 3.25rem;
+    padding-inline: 0.45rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.075em;
+  }
+
+  .md-search {
+    flex-basis: 8.5rem !important;
+    width: 8.5rem !important;
+  }
+}
+
+@media (min-width: 60rem) and (max-width: 80rem) {
+  .md-search {
+    display: none !important;
+  }
+
+  .md-header__button.md-icon[for="__search"] {
+    display: inline-flex !important;
+    flex: 0 0 2.5rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 60rem) {
   .md-header {
     height: 7.5rem;
   }
