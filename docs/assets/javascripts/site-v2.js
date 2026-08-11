@@ -127,11 +127,7 @@
     const trail = [];
     const maxTrailPoints = 38;
     const trailLifetime = 380;
-    const cursorTailOffset = { x: 14.2, y: 26.2 };
-    const forkOffsets = [
-      { x: -5, y: 0.3 },
-      { x: 5, y: 1 }
-    ];
+    const cursorTailOffset = { x: 10.8, y: 26.4 };
     let frameId = 0;
     let lastPoint;
     let pixelRatio = 1;
@@ -153,24 +149,20 @@
       if (trail.length > maxTrailPoints) trail.splice(0, trail.length - maxTrailPoints);
     };
 
-    const drawRibbon = (now, forkOffset) => {
+    const drawRibbon = (now) => {
       if (trail.length < 2) return;
       const isLight = document.documentElement.dataset.lhyzsTheme === "light";
       const color = isLight ? "145, 94, 20" : "220, 172, 64";
-      const highlight = isLight ? "181, 126, 37" : "245, 216, 142";
+      const highlight = isLight ? "44, 119, 143" : "99, 205, 227";
       const glow = isLight ? "159, 105, 24" : "232, 190, 92";
       const newest = trail[trail.length - 1];
       const idleFade = Math.max(0, 1 - (now - newest.time) / trailLifetime);
       const lastIndex = trail.length - 1;
-      const points = trail.map((point, index) => {
-        const progress = lastIndex ? index / lastIndex : 1;
-        const forkAmount = Math.pow(progress, 1.75);
-        return {
-          x: point.x + forkOffset.x * forkAmount,
-          y: point.y + forkOffset.y * forkAmount,
-          progress
-        };
-      });
+      const points = trail.map((point, index) => ({
+        x: point.x,
+        y: point.y,
+        progress: lastIndex ? index / lastIndex : 1
+      }));
 
       const leftEdge = [];
       const rightEdge = [];
@@ -228,7 +220,7 @@
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-      forkOffsets.forEach((offset) => drawRibbon(now, offset));
+      drawRibbon(now);
       context.shadowBlur = 0;
       if (trail.length) requestFrame();
     };
