@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
+import argparse
 import html
+import json
 import math
 import os
 import posixpath
@@ -16,10 +18,12 @@ from datetime import datetime
 from pathlib import Path, PurePosixPath
 
 
-SRC = Path("D:/obsidian/repositiries/note")
-DOCS_ROOT = Path("D:/个人网站/docs")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC = Path(os.environ.get("OBSIDIAN_VAULT", "D:/obsidian/repositiries/note"))
+DOCS_ROOT = PROJECT_ROOT / "docs"
 NOTES_ROOT = DOCS_ROOT / "notes"
 STAGING_ROOT = DOCS_ROOT / ".notes-import-staging"
+MANIFEST_NAME = "content-manifest.json"
 
 SKIPPED_SUFFIXES = {".base"}
 SKIPPED_DIRS = {".obsidian", ".trash"}
@@ -568,7 +572,7 @@ def render_note_row(note: dict[str, object], recent: bool = False) -> str:
     )
 
 
-def write_notes_index(note_paths: list[Path]) -> None:
+def write_notes_index(note_paths: list[Path]) -> list[dict[str, object]]:
     catalog = collect_note_catalog(note_paths)
     category_order = ["工科学习", "大学课程学习"]
     order = {category: index for index, category in enumerate(category_order)}
@@ -651,9 +655,38 @@ def write_notes_index(note_paths: list[Path]) -> None:
         '',
     ]
     (STAGING_ROOT / "index.md").write_text("\n".join(lines), encoding="utf-8")
+    return catalog
 
 
-def generate_indexes() -> None:
+def write_content_manifest(catalog: list[dict[str, object]]) -> None:
+    categories: dict[str, int] = defaultdict(int)
+    for note in catalog:
+        categories[str(note["category"])] += 1
+    payload = {
+        "version": 1,
+        "note_count": len(catalog),
+        "latest_updated": max((str(note["updated"]) for note in catalog), default=None),
+        "categories": dict(sorted(categories.items())),
+        "notes": [
+            {
+                "path": note["path"].as_posix(),
+                "title": note["title"],
+                "category": note["category"],
+                "subgroup": note["subgroup"],
+                "updated": note["updated"],
+                "reading_minutes": note["minutes"],
+                "tags": note["tags"],
+            }
+            for note in sorted(catalog, key=lambda item: item["path"].as_posix().casefold())
+        ],
+    }
+    (STAGING_ROOT / MANIFEST_NAME).write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def generate_indexes() -> list[dict[str, object]]:
     for directory in sorted(
         (path for path in STAGING_ROOT.rglob("*") if path.is_dir()),
         key=lambda path: len(path.parts),
@@ -669,7 +702,9 @@ def generate_indexes() -> None:
         for path in STAGING_ROOT.rglob("*.md")
         if path.name.lower() != "index.md"
     )
-    write_notes_index(note_paths)
+    catalog = write_notes_index(note_paths)
+    write_content_manifest(catalog)
+    return catalog
 
 
 def replace_notes_tree() -> None:
@@ -682,11 +717,38 @@ def replace_notes_tree() -> None:
         shutil.rmtree(STAGING_ROOT)
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="同步 Obsidian 笔记到 MkDocs。")
+    parser.add_argument(
+        "--source",
+        type=Path,
+        default=SRC,
+        help="Obsidian 仓库目录（默认读取 OBSIDIAN_VAULT 或本机默认路径）。",
+    )
+    parser.add_argument(
+        "--docs-root",
+        type=Path,
+        default=DOCS_ROOT,
+        help="MkDocs docs 目录。",
+    )
+    return parser.parse_args()
+
+
+def configure_paths(source: Path, docs_root: Path) -> None:
+    global SRC, DOCS_ROOT, NOTES_ROOT, STAGING_ROOT
+    SRC = source.expanduser().resolve()
+    DOCS_ROOT = docs_root.expanduser().resolve()
+    NOTES_ROOT = DOCS_ROOT / "notes"
+    STAGING_ROOT = DOCS_ROOT / ".notes-import-staging"
+
+
 def main() -> None:
+    args = parse_args()
+    configure_paths(args.source, args.docs_root)
     validate_paths()
     note_paths, asset_count, stats, unresolved = copy_vault()
     generate_note_navigation(note_paths)
-    generate_indexes()
+    catalog = generate_indexes()
 
     if unresolved:
         print("以下 Obsidian 链接无法解析：", file=sys.stderr)
@@ -705,6 +767,10 @@ def main() -> None:
         f"{stats['callouts']} 个提示框。"
     )
     print(f"目标目录：{NOTES_ROOT}")
+    print(
+        f"内容清单：{len(catalog)} 篇，"
+        f"最近更新 {max((str(note['updated']) for note in catalog), default='—')}。"
+    )
 
 
 if __name__ == "__main__":

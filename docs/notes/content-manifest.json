@@ -1,0 +1,468 @@
+{
+  "version": 1,
+  "note_count": 30,
+  "latest_updated": "2026-08-13",
+  "categories": {
+    "大学课程学习": 3,
+    "工科学习": 27
+  },
+  "notes": [
+    {
+      "path": "大学课程学习/军事理论/26期末卷_答案.md",
+      "title": "26期末卷答案",
+      "category": "大学课程学习",
+      "subgroup": "军事理论",
+      "updated": "2026-08-09",
+      "reading_minutes": 16,
+      "tags": [
+        "大学课程学习",
+        "军事理论",
+        "期末复习"
+      ]
+    },
+    {
+      "path": "大学课程学习/军事理论/军事理论期末卷_答案解析_修正版.md",
+      "title": "军事理论期末卷答案解析（修正版）",
+      "category": "大学课程学习",
+      "subgroup": "军事理论",
+      "updated": "2026-08-09",
+      "reading_minutes": 22,
+      "tags": [
+        "大学课程学习",
+        "军事理论",
+        "期末复习"
+      ]
+    },
+    {
+      "path": "大学课程学习/创业启程_期末复习知识点_Obsidian.md",
+      "title": "创业启程期末复习知识点",
+      "category": "大学课程学习",
+      "subgroup": "创业启程",
+      "updated": "2026-08-13",
+      "reading_minutes": 32,
+      "tags": [
+        "创业启程",
+        "创业管理学",
+        "期末复习",
+        "Obsidian"
+      ]
+    },
+    {
+      "path": "工科学习/koala考核期/PID控制笔记.md",
+      "title": "PID 控制实战笔记",
+      "category": "工科学习",
+      "subgroup": "koala考核期",
+      "updated": "2026-07-30",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/自动控制",
+        "主题/PID",
+        "主题/电机控制",
+        "类型/实践笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/koala考核期/机械任务笔记.md",
+      "title": "机械任务与项目推进笔记",
+      "category": "工科学习",
+      "subgroup": "koala考核期",
+      "updated": "2026-07-30",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/机械工程",
+        "主题/机械设计",
+        "主题/项目管理",
+        "类型/项目笔记"
+      ]
+    },
+    {
+      "path": "工科学习/koala考核期/步进电机笔记.md",
+      "title": "步进电机实战笔记",
+      "category": "工科学习",
+      "subgroup": "koala考核期",
+      "updated": "2026-07-30",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/机电控制",
+        "主题/步进电机",
+        "主题/运动控制",
+        "平台/Arduino",
+        "类型/实践笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/koala考核期/面包板笔记.md",
+      "title": "面包板与常用模块实战笔记",
+      "category": "工科学习",
+      "subgroup": "koala考核期",
+      "updated": "2026-07-30",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/电子电路",
+        "主题/面包板",
+        "主题/传感器",
+        "平台/Arduino",
+        "类型/实践笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/SolidWorks/SolidWorks-00-阿奇教程学习索引.md",
+      "title": "SolidWorks 阿奇教程学习索引",
+      "category": "工科学习",
+      "subgroup": "SolidWorks",
+      "updated": "2026-08-09",
+      "reading_minutes": 3,
+      "tags": [
+        "领域/机械设计",
+        "软件/SolidWorks",
+        "类型/索引",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/SolidWorks/SolidWorks-01-界面与基础操作.md",
+      "title": "SolidWorks 01 界面与基础操作",
+      "category": "工科学习",
+      "subgroup": "SolidWorks",
+      "updated": "2026-08-09",
+      "reading_minutes": 4,
+      "tags": [
+        "领域/机械设计",
+        "软件/SolidWorks",
+        "主题/CAD基础",
+        "类型/学习笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/SolidWorks/SolidWorks-02-草图绘制与完全定义.md",
+      "title": "SolidWorks 02 草图绘制与完全定义",
+      "category": "工科学习",
+      "subgroup": "SolidWorks",
+      "updated": "2026-08-09",
+      "reading_minutes": 5,
+      "tags": [
+        "领域/机械设计",
+        "软件/SolidWorks",
+        "主题/草图",
+        "类型/学习笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/SolidWorks/SolidWorks-03-零件特征与设计树.md",
+      "title": "SolidWorks 03 零件特征与设计树",
+      "category": "工科学习",
+      "subgroup": "SolidWorks",
+      "updated": "2026-08-09",
+      "reading_minutes": 6,
+      "tags": [
+        "领域/机械设计",
+        "软件/SolidWorks",
+        "主题/零件建模",
+        "类型/学习笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/SolidWorks/SolidWorks-04-装配体与配合.md",
+      "title": "SolidWorks 04 装配体与配合",
+      "category": "工科学习",
+      "subgroup": "SolidWorks",
+      "updated": "2026-08-09",
+      "reading_minutes": 5,
+      "tags": [
+        "领域/机械设计",
+        "软件/SolidWorks",
+        "主题/装配体",
+        "类型/学习笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/SolidWorks/SolidWorks-05-工程图与交付.md",
+      "title": "SolidWorks 05 工程图与交付",
+      "category": "工科学习",
+      "subgroup": "SolidWorks",
+      "updated": "2026-08-09",
+      "reading_minutes": 5,
+      "tags": [
+        "领域/机械设计",
+        "软件/SolidWorks",
+        "主题/工程图",
+        "类型/学习笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/SolidWorks/SolidWorks-06-综合实战与排错.md",
+      "title": "SolidWorks 06 综合实战与排错",
+      "category": "工科学习",
+      "subgroup": "SolidWorks",
+      "updated": "2026-08-09",
+      "reading_minutes": 4,
+      "tags": [
+        "领域/机械设计",
+        "软件/SolidWorks",
+        "主题/建模实战",
+        "类型/实践笔记",
+        "难度/进阶"
+      ]
+    },
+    {
+      "path": "工科学习/SolidWorks/SolidWorks-07-快捷键与复习清单.md",
+      "title": "SolidWorks 07 快捷键与复习清单",
+      "category": "工科学习",
+      "subgroup": "SolidWorks",
+      "updated": "2026-08-09",
+      "reading_minutes": 6,
+      "tags": [
+        "领域/机械设计",
+        "软件/SolidWorks",
+        "类型/速查",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-00-Keysking教程索引.md",
+      "title": "STM32 Keysking 教程索引",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 3,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "类型/索引",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-01-CubeMX与VSCode环境.md",
+      "title": "STM32 CubeMX 与 VSCode 环境",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 3,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "工具/STM32CubeMX",
+        "工具/VSCode",
+        "类型/实践笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-02-GPIO与外部中断.md",
+      "title": "STM32 GPIO 与外部中断",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-11",
+      "reading_minutes": 9,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "外设/GPIO",
+        "外设/EXTI",
+        "类型/学习笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-03-UART与DMA.md",
+      "title": "STM32 UART 与 DMA",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "外设/UART",
+        "外设/DMA",
+        "类型/学习笔记",
+        "难度/进阶"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-04-I2C与OLED.md",
+      "title": "STM32 I2C 与 OLED",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 1,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "外设/I2C",
+        "模块/OLED",
+        "类型/学习笔记",
+        "难度/进阶"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-05-时钟树与定时器.md",
+      "title": "STM32 时钟树与定时器",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "外设/Timer",
+        "主题/时钟树",
+        "类型/学习笔记",
+        "难度/进阶"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-06-PWM与电机控制.md",
+      "title": "STM32 PWM 与电机控制",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "外设/PWM",
+        "主题/电机控制",
+        "类型/实践笔记",
+        "难度/进阶"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-07-ADC与RTC.md",
+      "title": "STM32 ADC 与 RTC",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "外设/ADC",
+        "外设/RTC",
+        "类型/学习笔记",
+        "难度/进阶"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-08-工程化专题与综合项目.md",
+      "title": "STM32 工程化专题与综合项目",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "主题/工程实践",
+        "类型/实践笔记",
+        "难度/进阶"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-09-内部结构与总线架构.md",
+      "title": "STM32 内部结构与总线架构",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-08",
+      "reading_minutes": 4,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "主题/MCU架构",
+        "主题/总线",
+        "主题/时钟树",
+        "类型/学习笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-10-GPIO内部结构与模式.md",
+      "title": "STM32 GPIO 内部结构与模式",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-08",
+      "reading_minutes": 6,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "外设/GPIO",
+        "主题/电气基础",
+        "类型/学习笔记",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-11-输入输出方式总览.md",
+      "title": "STM32 输入输出方式总览",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 5,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "主题/输入输出",
+        "类型/速查表",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/STM32-HAL函数速查.md",
+      "title": "STM32 HAL 函数速查",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-08-07",
+      "reading_minutes": 2,
+      "tags": [
+        "领域/嵌入式",
+        "主题/STM32",
+        "类型/速查表",
+        "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/STM32/半小时学完单片机基础.md",
+      "title": "半小时学完单片机基础",
+      "category": "工科学习",
+      "subgroup": "STM32",
+      "updated": "2026-07-30",
+      "reading_minutes": 18,
+      "tags": [
+        "领域/嵌入式",
+        "主题/单片机",
+        "类型/学习笔记",
+        "难度/入门",
+        "GPIO",
+        "PWM",
+        "ADC",
+        "通信协议"
+      ]
+    },
+    {
+      "path": "工科学习/视觉/YOLO26零基础实战笔记.md",
+      "title": "YOLO26 零基础实战笔记",
+      "category": "工科学习",
+      "subgroup": "视觉",
+      "updated": "2026-08-08",
+      "reading_minutes": 11,
+      "tags": [
+        "领域/人工智能",
+        "主题/计算机视觉",
+        "主题/目标检测",
+        "平台/树莓派",
+        "类型/学习笔记",
+        "难度/入门",
+        "YOLO26"
+      ]
+    }
+  ]
+}

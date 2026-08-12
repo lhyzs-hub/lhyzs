@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <marker id="arrowW" markerWidth="14" markerHeight="14" refX="12" refY="5" orient="auto"><path d="M0,0 L0,10 L13,5 z" fill="#f4f7fb"/></marker>
+    <marker id="arrowG" markerWidth="14" markerHeight="14" refX="12" refY="5" orient="auto"><path d="M0,0 L0,10 L13,5 z" fill="#62e887"/></marker>
+    <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1600" height="900" fill="#080b0f"/>
+  <rect x="28" y="28" width="1544" height="844" rx="18" fill="#0c1117" stroke="#e8edf2" stroke-width="3"/>
+  <text x="800" y="82" text-anchor="middle" fill="#ffffff" font-size="30" font-weight="700" font-family="Microsoft YaHei">外部中断控制器（EXTI）：从引脚边沿到嵌套向量中断控制器（NVIC）</text>
+  <text x="800" y="122" text-anchor="middle" fill="#9fb0c0" font-size="22" font-family="Microsoft YaHei">阅读方向：从右向左；绿色表示本例中被置 1 或正在起作用的位</text>
+
+  <!-- input and detector -->
+  <text x="1510" y="525" text-anchor="end" fill="#ffffff" font-size="25" font-family="Microsoft YaHei">外部中断输入线（EXTIx）</text>
+  <line x1="1490" y1="405" x2="1370" y2="405" stroke="#f4f7fb" stroke-width="5" marker-end="url(#arrowW)"/>
+  <rect x="1120" y="325" width="250" height="160" rx="12" fill="#111a23" stroke="#f4f7fb" stroke-width="3"/>
+  <text x="1245" y="377" text-anchor="middle" fill="#ffffff" font-size="27" font-weight="700" font-family="Microsoft YaHei">边沿检测电路</text>
+  <line x1="1150" y1="405" x2="1340" y2="405" stroke="#67798a" stroke-width="3"/>
+  <path d="M1160 430 L1200 430 L1200 380 L1240 380 L1240 430 L1280 430" fill="none" stroke="#62e887" stroke-width="4"/>
+
+  <!-- trigger registers -->
+  <rect x="1090" y="165" width="210" height="92" rx="10" fill="#0d2015" stroke="#62e887" stroke-width="3"/>
+  <text x="1195" y="201" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="700" font-family="Microsoft YaHei">RTSR[x]</text>
+  <text x="1195" y="232" text-anchor="middle" fill="#a9f6bd" font-size="18" font-family="Microsoft YaHei">上升沿触发选择：1</text>
+  <line x1="1195" y1="257" x2="1195" y2="325" stroke="#62e887" stroke-width="4"/>
+  <rect x="1320" y="165" width="210" height="92" rx="10" fill="#111a23" stroke="#f4f7fb" stroke-width="3"/>
+  <text x="1425" y="201" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="700" font-family="Microsoft YaHei">FTSR[x]</text>
+  <text x="1425" y="232" text-anchor="middle" fill="#cbd5df" font-size="18" font-family="Microsoft YaHei">下降沿触发选择：0</text>
+  <line x1="1425" y1="257" x2="1300" y2="325" stroke="#f4f7fb" stroke-width="3"/>
+
+  <!-- latch -->
+  <line x1="1120" y1="405" x2="970" y2="405" stroke="#f4f7fb" stroke-width="5" marker-end="url(#arrowW)"/>
+  <rect x="700" y="305" width="270" height="200" rx="12" fill="#111a23" stroke="#f4f7fb" stroke-width="3"/>
+  <text x="835" y="348" text-anchor="middle" fill="#ffffff" font-size="25" font-weight="700" font-family="Microsoft YaHei">请求挂起寄存器（PR[x]）</text>
+  <rect x="760" y="375" width="150" height="66" rx="9" fill="#17222d" stroke="#ffffff" stroke-width="2"/>
+  <text x="835" y="417" text-anchor="middle" fill="#ffffff" font-size="21" font-family="Microsoft YaHei">置位-复位锁存器（S-R）</text>
+  <text x="720" y="476" fill="#a9f6bd" font-size="19" font-family="Microsoft YaHei">S：触发脉冲置 1</text>
+  <text x="865" y="476" fill="#ffd166" font-size="19" font-family="Microsoft YaHei">R：写 1 清零</text>
+  <rect x="745" y="555" width="180" height="88" rx="10" fill="#0d2015" stroke="#62e887" stroke-width="3"/>
+  <text x="835" y="592" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="700" font-family="Microsoft YaHei">SWIER[x]</text>
+  <text x="835" y="623" text-anchor="middle" fill="#a9f6bd" font-size="17" font-family="Microsoft YaHei">软件触发寄存器：写1</text>
+  <line x1="835" y1="555" x2="835" y2="442" stroke="#62e887" stroke-width="4" marker-end="url(#arrowG)"/>
+
+  <!-- mask and NVIC path -->
+  <line x1="700" y1="405" x2="520" y2="405" stroke="#f4f7fb" stroke-width="5" marker-end="url(#arrowW)"/>
+  <path d="M500 375 L555 405 L500 435 Z" fill="#111a23" stroke="#ffffff" stroke-width="3"/>
+  <text x="520" y="414" text-anchor="middle" fill="#ffffff" font-size="21" font-weight="700" font-family="Arial">AND</text>
+  <rect x="385" y="270" width="210" height="92" rx="10" fill="#0d2015" stroke="#62e887" stroke-width="3"/>
+  <text x="490" y="306" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="700" font-family="Microsoft YaHei">IMR[x]</text>
+  <text x="490" y="338" text-anchor="middle" fill="#a9f6bd" font-size="18" font-family="Microsoft YaHei">中断屏蔽寄存器：1放行</text>
+  <line x1="490" y1="362" x2="490" y2="375" stroke="#62e887" stroke-width="5" filter="url(#glow)"/>
+  <line x1="500" y1="405" x2="190" y2="405" stroke="#f4f7fb" stroke-width="5" marker-end="url(#arrowW)"/>
+  <text x="80" y="390" fill="#ffffff" font-size="25" font-weight="700" font-family="Microsoft YaHei">送往嵌套向量中断控制器（NVIC）</text>
+
+  <!-- bit examples -->
+  <text x="80" y="185" fill="#ffffff" font-size="30" font-family="Consolas">IMR  000000000000</text>
+  <text x="438" y="185" fill="#62e887" font-size="46" font-weight="700" font-family="Consolas" filter="url(#glow)">1</text>
+  <text x="465" y="185" fill="#ffffff" font-size="30" font-family="Consolas">0000</text>
+  <text x="80" y="235" fill="#ffffff" font-size="30" font-family="Consolas">PR   000000000000</text>
+  <text x="438" y="235" fill="#62e887" font-size="46" font-weight="700" font-family="Consolas" filter="url(#glow)">1</text>
+  <text x="465" y="235" fill="#ffffff" font-size="30" font-family="Consolas">0000</text>
+  <text x="80" y="278" fill="#9fb0c0" font-size="20" font-family="Microsoft YaHei">示例：x=4，对应第4位（bit4）</text>
+
+  <!-- event path -->
+  <rect x="385" y="620" width="210" height="88" rx="10" fill="#111a23" stroke="#f4f7fb" stroke-width="3"/>
+  <text x="490" y="657" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="700" font-family="Microsoft YaHei">EMR[x]</text>
+  <text x="490" y="688" text-anchor="middle" fill="#cbd5df" font-size="17" font-family="Microsoft YaHei">事件屏蔽寄存器</text>
+  <line x1="700" y1="490" x2="640" y2="490" stroke="#ffd166" stroke-width="4"/>
+  <line x1="640" y1="490" x2="640" y2="665" stroke="#ffd166" stroke-width="4"/>
+  <line x1="640" y1="665" x2="595" y2="665" stroke="#ffd166" stroke-width="4"/>
+  <line x1="385" y1="665" x2="185" y2="665" stroke="#ffd166" stroke-width="4" marker-end="url(#arrowW)"/>
+  <text x="80" y="750" fill="#ffd166" font-size="24" font-family="Microsoft YaHei">事件 / 唤醒路径（不进入中断服务程序）</text>
+
+  <rect x="700" y="710" width="800" height="112" rx="12" fill="#111a23" stroke="#ffffff" stroke-width="2"/>
+  <text x="735" y="744" fill="#ffffff" font-size="19" font-family="Microsoft YaHei">记忆：触发选择 → 请求挂起（PR）→ 中断屏蔽（IMR）</text>
+  <text x="735" y="772" fill="#ffffff" font-size="19" font-family="Microsoft YaHei">→ 嵌套向量中断控制器（NVIC）仲裁</text>
+  <text x="735" y="804" fill="#ffd166" font-size="20" font-family="Microsoft YaHei">PR=1 表示“发生过”，处理后必须写1清零（W1C）。</text>
+</svg>
