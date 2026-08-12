@@ -14,6 +14,15 @@ additional_redirect_urls = [
 enable_confirmations = true
 max_frequency = "1m"
 otp_length = 8
+otp_expiry = 600
+
+[auth.email.template.magic_link]
+subject = "lhyzs 评论通知登录验证码"
+content_path = "./supabase/templates/comment_admin_otp.html"
+
+[auth.email.template.confirmation]
+subject = "lhyzs 评论通知登录验证码"
+content_path = "./supabase/templates/comment_admin_otp.html"
 
 [auth.mfa.totp]
 enroll_enabled = true

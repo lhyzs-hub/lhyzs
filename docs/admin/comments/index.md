@@ -22,8 +22,27 @@ hide:
     <div class="comment-admin-login__mark" aria-hidden="true"><i></i><i></i><i></i></div>
     <p>PRIVATE CHANNEL / 仅站长可见</p>
     <h2 id="comment-admin-login-title">验证管理员邮箱</h2>
-    <span>登录链接将发送至 3178287074@qq.com，点击邮件中的链接即可进入。</span>
-    <button id="comment-admin-send-link" type="button">发送登录链接</button>
+    <span>验证码将发送至 3178287074@qq.com，仅用于本次登录。</span>
+    <button id="comment-admin-send-code" type="button">发送 8 位验证码</button>
+    <form class="comment-admin-login__verify" id="comment-admin-code-form" hidden>
+      <label for="comment-admin-code">邮箱验证码</label>
+      <div>
+        <input
+          id="comment-admin-code"
+          name="code"
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          pattern="[0-9]{8}"
+          minlength="8"
+          maxlength="8"
+          placeholder="输入 8 位数字"
+          aria-describedby="comment-admin-login-status"
+          required
+        >
+        <button id="comment-admin-verify-code" type="submit">验证并登录</button>
+      </div>
+    </form>
     <small id="comment-admin-login-status" role="status" aria-live="polite"></small>
   </section>
 

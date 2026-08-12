@@ -8,7 +8,10 @@
     const login = root.querySelector("#comment-admin-login");
     const consolePanel = root.querySelector("#comment-admin-console");
     const identity = root.querySelector("#comment-admin-identity");
-    const sendLink = root.querySelector("#comment-admin-send-link");
+    const sendCode = root.querySelector("#comment-admin-send-code");
+    const codeForm = root.querySelector("#comment-admin-code-form");
+    const codeInput = root.querySelector("#comment-admin-code");
+    const verifyCode = root.querySelector("#comment-admin-verify-code");
     const loginStatus = root.querySelector("#comment-admin-login-status");
     const signOut = root.querySelector("#comment-admin-sign-out");
     const status = root.querySelector("#comment-admin-status");
@@ -185,7 +188,8 @@
       consolePanel.hidden = !allowed;
       identity.hidden = !allowed;
       if (allowed) {
-        if (location.hash.includes("access_token=")) history.replaceState(null, "", location.pathname + location.search);
+        loginStatus.textContent = "验证成功，正在载入评论。";
+        loginStatus.dataset.tone = "ready";
         await loadComments();
       } else if (session) {
         loginStatus.textContent = "当前账号没有管理员权限。";
@@ -194,38 +198,105 @@
     };
 
     if (!admin?.configured) {
-      sendLink.disabled = true;
+      sendCode.disabled = true;
       loginStatus.textContent = "评论服务配置尚未加载。";
       loginStatus.dataset.tone = "error";
       return;
     }
 
-    sendLink.addEventListener("click", async () => {
-      sendLink.disabled = true;
-      loginStatus.textContent = "正在发送…";
+    codeInput.addEventListener("input", () => {
+      codeInput.value = codeInput.value.replace(/\D/g, "").slice(0, 8);
+      codeInput.setCustomValidity("");
+    });
+    codeInput.addEventListener("paste", (event) => {
+      const pastedCode = event.clipboardData?.getData("text").replace(/\D/g, "").slice(0, 8);
+      if (!pastedCode) return;
+      event.preventDefault();
+      codeInput.value = pastedCode;
+      codeInput.setCustomValidity("");
+    });
+
+    sendCode.addEventListener("click", async () => {
+      sendCode.disabled = true;
+      loginStatus.textContent = "正在发送验证码…";
       loginStatus.dataset.tone = "loading";
       const { error } = await admin.client.auth.signInWithOtp({
         email: admin.ADMIN_EMAIL,
         options: {
-          emailRedirectTo: admin.adminUrl,
           shouldCreateUser: true
         }
       });
       if (error) {
-        loginStatus.textContent = error.message || "发送失败，请稍后重试。";
+        loginStatus.textContent = error.status === 429
+          ? "发送次数过多，请一分钟后重试。"
+          : (error.message || "发送失败，请稍后重试。");
         loginStatus.dataset.tone = "error";
-        sendLink.disabled = false;
+        sendCode.disabled = false;
         return;
       }
-      loginStatus.textContent = "登录链接已发送，请检查 QQ 邮箱。";
+      codeForm.hidden = false;
+      codeInput.disabled = false;
+      verifyCode.disabled = false;
+      loginStatus.textContent = "验证码已发送，请检查 QQ 邮箱；验证码只能使用一次。";
       loginStatus.dataset.tone = "ready";
-      window.setTimeout(() => { sendLink.disabled = false; }, 60000);
+      codeInput.focus();
+      let seconds = 60;
+      sendCode.textContent = `${seconds} 秒后可重发`;
+      const cooldown = window.setInterval(() => {
+        seconds -= 1;
+        sendCode.textContent = seconds > 0 ? `${seconds} 秒后可重发` : "重新发送验证码";
+        if (seconds <= 0) {
+          window.clearInterval(cooldown);
+          sendCode.disabled = false;
+        }
+      }, 1000);
+    });
+
+    codeForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const token = codeInput.value.replace(/\D/g, "");
+      if (token.length !== 8) {
+        codeInput.setCustomValidity("请输入邮件中的 8 位数字验证码。");
+        codeInput.reportValidity();
+        return;
+      }
+
+      verifyCode.disabled = true;
+      codeInput.disabled = true;
+      loginStatus.textContent = "正在验证…";
+      loginStatus.dataset.tone = "loading";
+      const { data, error } = await admin.client.auth.verifyOtp({
+        email: admin.ADMIN_EMAIL,
+        token,
+        type: "email"
+      });
+      if (error) {
+        loginStatus.textContent = "验证码无效、已过期或已被使用，请重新发送。";
+        loginStatus.dataset.tone = "error";
+        codeInput.disabled = false;
+        verifyCode.disabled = false;
+        codeInput.select();
+        return;
+      }
+      if (!admin.isAdmin(data?.session)) {
+        await admin.client.auth.signOut();
+        loginStatus.textContent = "当前账号没有管理员权限。";
+        loginStatus.dataset.tone = "error";
+        codeInput.disabled = false;
+        verifyCode.disabled = false;
+        return;
+      }
+      await showSession(data.session);
     });
 
     signOut.addEventListener("click", async () => {
       await admin.client.auth.signOut();
       comments = [];
       list.replaceChildren();
+      codeInput.value = "";
+      codeInput.disabled = false;
+      verifyCode.disabled = false;
+      codeForm.hidden = true;
       showSession(null);
     });
 
