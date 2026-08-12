@@ -2994,6 +2994,95 @@ body:has(.yuumi-game) .md-content__inner > h1 {
   display: none;
 }
 
+.yuumi-game-loader {
+  width: min(19rem, 100%);
+  border: 1px solid rgba(75, 117, 131, 0.62);
+  border-top-color: rgba(215, 170, 70, 0.8);
+  padding: 0.72rem 0.8rem 0.68rem;
+  background: linear-gradient(145deg, rgba(10, 25, 36, 0.96), rgba(4, 12, 19, 0.96));
+  box-shadow: inset 0 0 1.4rem rgba(45, 124, 144, 0.08), 0 0.8rem 2rem rgba(0, 0, 0, 0.28);
+}
+
+.yuumi-game-loader[hidden] { display: none; }
+
+.yuumi-game-loader__runes {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 0.2rem;
+  height: 1rem;
+  margin-bottom: 0.55rem;
+}
+
+.yuumi-game-loader__runes i {
+  width: 0.28rem;
+  border: 1px solid rgba(242, 216, 139, 0.56);
+  background: linear-gradient(#efd27d, #806127);
+  transform: rotate(-45deg);
+  animation: yuumi-loader-rune 900ms steps(3, end) infinite;
+}
+
+.yuumi-game-loader__runes i:nth-child(1) { height: 0.38rem; }
+.yuumi-game-loader__runes i:nth-child(2) { height: 0.62rem; animation-delay: 120ms; }
+.yuumi-game-loader__runes i:nth-child(3) { height: 0.86rem; animation-delay: 240ms; }
+
+.yuumi-game-loader__track {
+  position: relative;
+  overflow: hidden;
+  height: 0.52rem;
+  border: 1px solid #3a626f;
+  background: #030a10;
+  box-shadow: inset 0 0 0 2px rgba(6, 22, 31, 0.95);
+}
+
+.yuumi-game-loader__track::after {
+  position: absolute;
+  inset: 1px;
+  background: repeating-linear-gradient(90deg, transparent 0 1.7rem, rgba(3, 10, 16, 0.9) 1.7rem calc(1.7rem + 2px));
+  content: "";
+  pointer-events: none;
+}
+
+.yuumi-game-loader__track span {
+  display: block;
+  width: var(--game-load-progress, 8%);
+  height: 100%;
+  background: linear-gradient(90deg, #176074, #43b8ce 72%, #c8f7ff);
+  box-shadow: 0 0 0.85rem rgba(72, 194, 217, 0.66);
+  transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.yuumi-game-loader__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+  color: #7e9aa3;
+  font: 600 0.52rem/1.25 "JetBrains Mono", monospace;
+  letter-spacing: 0.08em;
+}
+
+.yuumi-game-loader__meta strong { color: #e7ca78; }
+
+.yuumi-game-loader[data-tone="error"] {
+  border-color: rgba(190, 88, 74, 0.72);
+}
+
+.yuumi-game-loader[data-tone="error"] .yuumi-game-loader__track span {
+  background: #9f493d;
+  box-shadow: 0 0 0.7rem rgba(159, 73, 61, 0.45);
+}
+
+.yuumi-game-loader.is-complete {
+  opacity: 0;
+  transform: translateY(-0.2rem);
+  transition: opacity 280ms ease, transform 280ms ease;
+}
+
+@keyframes yuumi-loader-rune {
+  50% { filter: brightness(1.7); transform: rotate(-45deg) translateY(-1px); }
+}
+
 .yuumi-game__status {
   margin: 0;
   padding: 0.48rem 0.85rem;

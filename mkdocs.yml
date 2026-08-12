@@ -23,12 +23,10 @@ extra_css:
 extra_javascript:
   - assets/javascripts/site-v2.js
   - assets/javascripts/notes-hub.js
-  - assets/javascripts/not-found-game.js
   - assets/javascripts/supabase-config.js
   - https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.min.js
   - assets/javascripts/admin-auth.js
   - assets/javascripts/security.js
-  - assets/javascripts/game.js
   - assets/javascripts/daily.js
   - assets/javascripts/comments.js
   - assets/javascripts/admin-comments.js

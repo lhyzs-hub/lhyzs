@@ -18,3 +18,8 @@
     <span class="jungle-runner__sr-status" data-runner-status aria-live="polite">等待开始</span>
   </section>
 {% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="{{ 'assets/javascripts/not-found-game.js' | url }}" defer></script>
+{% endblock %}

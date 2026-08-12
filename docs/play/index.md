@@ -28,6 +28,14 @@ hide:
       <div class="yuumi-game__canvas-shell">
         <canvas id="yuumi-game-canvas" width="960" height="540" tabindex="0" aria-label="悠米冬日飞行小游戏。按空格、点击或触摸控制悠米起飞。"></canvas>
         <div class="yuumi-game__curtain" id="game-curtain">
+          <div class="yuumi-game-loader" id="game-loader" role="status" aria-live="polite">
+            <div class="yuumi-game-loader__runes" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="yuumi-game-loader__track" aria-hidden="true"><span id="game-loader-bar"></span></div>
+            <div class="yuumi-game-loader__meta">
+              <span id="game-loader-label">正在唤醒冬境引擎</span>
+              <strong id="game-loader-percent">08%</strong>
+            </div>
+          </div>
           <p class="yuumi-game__status" id="game-status">冬境素材加载中…</p>
           <button class="yuumi-game__start" id="game-start" type="button" disabled>准备中…</button>
           <small>空格 / 点击 / 触摸起飞</small>
@@ -57,3 +65,5 @@ hide:
     </aside>
   </div>
 </section>
+
+<script src="../assets/javascripts/game-loader.js" data-game-script="../assets/javascripts/game.js"></script>

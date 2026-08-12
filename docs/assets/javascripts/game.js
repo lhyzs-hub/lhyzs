@@ -24,6 +24,8 @@
     const playerNameInput = scoreForm.elements.name;
     const scoreTurnstile = scoreForm.querySelector("[data-score-turnstile]");
     const security = window.LHYZS_SECURITY;
+    const loading = window.LHYZS_GAME_LOADING;
+    const reportLoading = (progress, label) => loading?.report(progress, label);
 
     const config = window.LHYZS_SUPABASE || {};
     const isConfigured = Boolean(config.url && config.publishableKey && window.supabase?.createClient);
@@ -45,10 +47,13 @@
       image.src = new URL(source, document.baseURI).href;
       if (image.complete && image.naturalWidth) resolve();
     });
-    const assetsPromise = Promise.all([
-      loadImage(sprite, root.dataset.sprite),
-      loadImage(sceneBackground, isDay ? root.dataset.dayBackground : root.dataset.nightBackground)
-    ]);
+    const spritePromise = loadImage(sprite, root.dataset.sprite)
+      .then(() => reportLoading(56, "悠米就绪 · 正在铺设冬境"));
+    const backgroundPromise = loadImage(
+      sceneBackground,
+      isDay ? root.dataset.dayBackground : root.dataset.nightBackground
+    ).then(() => reportLoading(82, isDay ? "雪林就绪 · 正在连接英雄榜" : "冰洞就绪 · 正在连接英雄榜"));
+    const assetsPromise = Promise.all([spritePromise, backgroundPromise]);
     ctx.imageSmoothingEnabled = false;
     themeLabel.textContent = isDay ? "白昼 · 雪林" : "夜晚 · 冰洞";
     root.classList.toggle("is-night", !isDay);
@@ -141,6 +146,7 @@
         boardEntries = [];
         renderBoard();
         setBoardStatus("未连接", "error");
+        if (!quiet) reportLoading(92, "冬境就绪 · 英雄榜暂时离线");
         return;
       }
 
@@ -157,6 +163,7 @@
         boardEntries = [];
         renderBoard();
         setBoardStatus("同步失败", "error");
+        if (!quiet) reportLoading(92, "冬境就绪 · 英雄榜同步失败");
         return;
       }
 
@@ -166,6 +173,7 @@
       }));
       renderBoard();
       setBoardStatus("云端", "ready");
+      if (!quiet) reportLoading(94, "英雄榜已同步 · 最后校准");
     };
 
     const chooseGapY = () => {
@@ -490,6 +498,7 @@
       obstacles.forEach(drawPillar);
       drawPlayer(lastTime);
       root.dataset.assets = "ready";
+      reportLoading(100, "冬境已开启");
       requestAnimationFrame(loop);
     }).catch((error) => {
       console.error("Unable to load game artwork", error);
@@ -498,6 +507,7 @@
       statusLabel.textContent = "冬境素材加载失败，请刷新重试";
       startButton.textContent = "无法开始";
       startButton.disabled = true;
+      loading?.fail();
     });
   };
 
