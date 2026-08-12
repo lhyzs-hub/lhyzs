@@ -4,7 +4,7 @@ hide:
   - toc
 ---
 
-<section class="daily-space" id="daily-space" data-source="qzone.json">
+<section class="daily-space" id="daily-space" data-source="qzone.json" data-photo-manifest="photo-manifest.json">
   <header class="daily-space__hero">
     <div>
       <p class="daily-space__eyebrow">DAILY / PERSONAL SPACE</p>
@@ -26,6 +26,12 @@ hide:
 
   <div class="daily-space__notice" id="daily-space-notice" role="status">正在读取日常记录…</div>
   <div class="daily-timeline" id="daily-timeline"></div>
+  <div class="daily-load-more" id="daily-load-more" hidden>
+    <button id="daily-load-more-button" type="button">
+      <span>加载更多</span>
+      <small id="daily-load-more-status" aria-live="polite"></small>
+    </button>
+  </div>
 
   <aside class="daily-editor" id="daily-editor" aria-labelledby="daily-editor-title" hidden>
     <div class="daily-editor__backdrop" data-editor-close></div>

@@ -9,6 +9,9 @@
     const postCount = root.querySelector("#daily-post-count");
     const photoCount = root.querySelector("#daily-photo-count");
     const ownerButton = root.querySelector("#daily-owner-edit");
+    const loadMore = root.querySelector("#daily-load-more");
+    const loadMoreButton = root.querySelector("#daily-load-more-button");
+    const loadMoreStatus = root.querySelector("#daily-load-more-status");
     const editor = root.querySelector("#daily-editor");
     const form = root.querySelector("#daily-editor-form");
     const select = root.querySelector("#daily-editor-select");
@@ -23,7 +26,11 @@
     };
 
     const ownerHost = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
+    const initialEntryCount = 4;
+    const entryBatchSize = 4;
     let payload = { source: "QQ空间", cutoff: "2025-08-15T00:00:00+08:00", entries: [] };
+    let photoManifest = {};
+    let visibleEntryCount = initialEntryCount;
     let fileHandle = null;
 
     const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
@@ -43,8 +50,27 @@
       const safeImages = images.filter(Boolean);
       if (!safeImages.length) return "";
       return `<div class="daily-card__photos photos-${Math.min(safeImages.length, 4)}">
-        ${safeImages.map((src, index) => `<button type="button" data-photo="${escapeHtml(src)}" aria-label="查看第 ${index + 1} 张照片"><img src="${escapeHtml(src)}" alt="" loading="lazy"></button>`).join("")}
+        ${safeImages.map((src, index) => {
+          const meta = photoManifest[src] || {};
+          const preview = meta.thumbnail || src;
+          const dimensions = meta.thumbnail_width && meta.thumbnail_height
+            ? ` width="${meta.thumbnail_width}" height="${meta.thumbnail_height}"`
+            : "";
+          return `<button type="button" data-photo="${escapeHtml(src)}" aria-label="查看第 ${index + 1} 张高清照片"><img src="${escapeHtml(preview)}" alt="" loading="lazy" decoding="async" fetchpriority="low"${dimensions}></button>`;
+        }).join("")}
       </div>`;
+    };
+
+    const updateLoadMore = () => {
+      const visible = Math.min(visibleEntryCount, payload.entries.length);
+      const remaining = payload.entries.length - visible;
+      loadMore.hidden = remaining <= 0;
+      loadMoreStatus.textContent = remaining > 0
+        ? `已显示 ${visible} / ${payload.entries.length} 条`
+        : "";
+      loadMoreButton.setAttribute("aria-label", remaining > 0
+        ? `加载更多日常，还剩 ${remaining} 条`
+        : "已显示全部日常");
     };
 
     const render = () => {
@@ -59,12 +85,13 @@
           ? "尚未导入 QQ 空间内容。完成二维码登录后，2025-08-15 之后的记录会显示在这里。"
           : "日常内容正在整理中。"
         timeline.innerHTML = "";
+        loadMore.hidden = true;
         return;
       }
 
       notice.hidden = true;
       let currentMonth = "";
-      timeline.innerHTML = payload.entries.map((entry) => {
+      timeline.innerHTML = payload.entries.slice(0, visibleEntryCount).map((entry) => {
         const month = monthKey(entry.date);
         const monthHeading = month !== currentMonth ? `<h2 class="daily-timeline__month"><span>${escapeHtml(month)}</span></h2>` : "";
         currentMonth = month;
@@ -85,6 +112,7 @@
           <div class="daily-card__comments" data-comments-host hidden></div>
         </article>`;
       }).join("");
+      updateLoadMore();
       document.dispatchEvent(new CustomEvent("lhyzs:daily-rendered", { detail: { root } }));
     };
 
@@ -132,8 +160,12 @@
     };
 
     try {
-      const response = await fetch(`${root.dataset.source}?v=${Date.now()}`);
+      const [response, manifestResponse] = await Promise.all([
+        fetch(`${root.dataset.source}?v=${Date.now()}`),
+        fetch(root.dataset.photoManifest || "photo-manifest.json").catch(() => null)
+      ]);
       if (response.ok) payload = await response.json();
+      if (manifestResponse?.ok) photoManifest = await manifestResponse.json();
     } catch (_) {}
 
     if (ownerHost) ownerButton.hidden = false;
@@ -149,6 +181,10 @@
       document.body.classList.remove("daily-editor-open");
     }));
     select.addEventListener("change", () => loadEntry(select.value));
+    loadMoreButton.addEventListener("click", () => {
+      visibleEntryCount += entryBatchSize;
+      render();
+    });
     timeline.addEventListener("click", (event) => {
       const edit = event.target.closest("[data-edit-entry]");
       if (edit && ownerHost) {
