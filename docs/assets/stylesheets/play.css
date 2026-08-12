@@ -1,0 +1,561 @@
+/* lhyzs page bundle: play */
+/* PLAY / Yuumi winter flight */
+body:has(.yuumi-game) .md-main__inner {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body:has(.yuumi-game) .md-content {
+  max-width: none;
+}
+
+body:has(.yuumi-game) .md-content__inner {
+  max-width: 86rem;
+  margin: 0 auto;
+  padding: 2.2rem 1.5rem 3rem;
+}
+
+body:has(.yuumi-game) .md-content__inner::before,
+body:has(.yuumi-game) .md-content__inner > h1 {
+  display: none;
+}
+
+.yuumi-game {
+  --game-gold: #d7aa46;
+  --game-gold-soft: #f2d88b;
+  --game-border: #476875;
+  --game-panel: #0b1621;
+  color: #e9f2f2;
+}
+
+.yuumi-game__topline,
+.yuumi-game__layout,
+.yuumi-game__hud,
+.yuumi-leaderboard__head,
+.yuumi-leaderboard li,
+.yuumi-leaderboard__form > div:not(.human-check) {
+  display: flex;
+  align-items: center;
+}
+
+.yuumi-game__topline {
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(215, 170, 70, 0.32);
+  padding-bottom: 0.8rem;
+}
+
+.yuumi-game__eyebrow,
+.yuumi-leaderboard__head p {
+  margin: 0 0 0.18rem;
+  color: #7695a0;
+  font: 600 0.64rem/1.3 "JetBrains Mono", monospace;
+  letter-spacing: 0.17em;
+}
+
+.yuumi-game__topline h1 {
+  margin: 0;
+  color: #f5f1e5;
+  font-size: clamp(1.45rem, 2vw, 2.05rem);
+  letter-spacing: 0.08em;
+}
+
+.yuumi-game__season {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  color: #d8e7e7;
+  font-size: 0.78rem;
+}
+
+.yuumi-game__season span {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: #72d9bc;
+  box-shadow: 0 0 0.8rem #72d9bc;
+}
+
+.yuumi-game__layout {
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.yuumi-game__stage-wrap {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.yuumi-game__canvas-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #557985;
+  background:
+    linear-gradient(rgba(95, 151, 166, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(95, 151, 166, 0.045) 1px, transparent 1px),
+    #08131d;
+  background-size: 12px 12px;
+  box-shadow: inset 0 0 0 1px rgba(215, 170, 70, 0.18), 0 1.2rem 3rem rgba(0, 0, 0, 0.3);
+  line-height: 0;
+}
+
+.yuumi-game__canvas-shell::before,
+.yuumi-game__canvas-shell::after {
+  position: absolute;
+  z-index: 4;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-color: var(--game-gold);
+  content: "";
+  pointer-events: none;
+}
+
+.yuumi-game__canvas-shell::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.yuumi-game__canvas-shell::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+}
+
+#yuumi-game-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  opacity: 1;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.yuumi-game[data-assets="loading"] #yuumi-game-canvas,
+.yuumi-game[data-assets="error"] #yuumi-game-canvas {
+  visibility: hidden;
+}
+
+.yuumi-game[data-assets="loading"] .yuumi-game__season span {
+  animation: yuumi-asset-pulse 1.2s steps(2, end) infinite;
+}
+
+@keyframes yuumi-asset-pulse {
+  50% { opacity: 0.35; }
+}
+
+#yuumi-game-canvas:focus-visible {
+  outline: 2px solid var(--game-gold-soft);
+  outline-offset: -3px;
+}
+
+.yuumi-game__hud {
+  min-height: 2.8rem;
+  border: 1px solid rgba(71, 104, 117, 0.8);
+  border-bottom: 0;
+  padding: 0.55rem 0.8rem;
+  background: linear-gradient(90deg, rgba(9, 20, 30, 0.98), rgba(17, 35, 46, 0.94));
+  color: #86a2ab;
+  font: 600 0.7rem/1.2 "JetBrains Mono", monospace;
+  gap: 1.3rem;
+}
+
+.yuumi-game__hud span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.yuumi-game__hud strong {
+  color: var(--game-gold-soft);
+  font-size: 0.9rem;
+}
+
+.yuumi-game__hud button {
+  margin-left: auto;
+  border: 0;
+  padding: 0.2rem 0.35rem;
+  background: transparent;
+  color: #a7bdc3;
+  font: inherit;
+  cursor: pointer;
+}
+
+.yuumi-game__hud button + button {
+  margin-left: 0;
+}
+
+.yuumi-game__hud button:hover,
+.yuumi-game__hud button:focus-visible {
+  color: var(--game-gold-soft);
+}
+
+.yuumi-game__curtain {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: min(22rem, calc(100% - 2rem));
+  transform: translate(-50%, -50%);
+  justify-items: center;
+  gap: 0.72rem;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.yuumi-game__curtain[hidden] {
+  display: none;
+}
+
+.yuumi-game-loader {
+  width: min(19rem, 100%);
+  border: 1px solid rgba(75, 117, 131, 0.62);
+  border-top-color: rgba(215, 170, 70, 0.8);
+  padding: 0.72rem 0.8rem 0.68rem;
+  background: linear-gradient(145deg, rgba(10, 25, 36, 0.96), rgba(4, 12, 19, 0.96));
+  box-shadow: inset 0 0 1.4rem rgba(45, 124, 144, 0.08), 0 0.8rem 2rem rgba(0, 0, 0, 0.28);
+}
+
+.yuumi-game-loader[hidden] { display: none; }
+
+.yuumi-game-loader__runes {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 0.2rem;
+  height: 1rem;
+  margin-bottom: 0.55rem;
+}
+
+.yuumi-game-loader__runes i {
+  width: 0.28rem;
+  border: 1px solid rgba(242, 216, 139, 0.56);
+  background: linear-gradient(#efd27d, #806127);
+  transform: rotate(-45deg);
+  animation: yuumi-loader-rune 900ms steps(3, end) infinite;
+}
+
+.yuumi-game-loader__runes i:nth-child(1) { height: 0.38rem; }
+.yuumi-game-loader__runes i:nth-child(2) { height: 0.62rem; animation-delay: 120ms; }
+.yuumi-game-loader__runes i:nth-child(3) { height: 0.86rem; animation-delay: 240ms; }
+
+.yuumi-game-loader__track {
+  position: relative;
+  overflow: hidden;
+  height: 0.52rem;
+  border: 1px solid #3a626f;
+  background: #030a10;
+  box-shadow: inset 0 0 0 2px rgba(6, 22, 31, 0.95);
+}
+
+.yuumi-game-loader__track::after {
+  position: absolute;
+  inset: 1px;
+  background: repeating-linear-gradient(90deg, transparent 0 1.7rem, rgba(3, 10, 16, 0.9) 1.7rem calc(1.7rem + 2px));
+  content: "";
+  pointer-events: none;
+}
+
+.yuumi-game-loader__track span {
+  display: block;
+  width: var(--game-load-progress, 8%);
+  height: 100%;
+  background: linear-gradient(90deg, #176074, #43b8ce 72%, #c8f7ff);
+  box-shadow: 0 0 0.85rem rgba(72, 194, 217, 0.66);
+  transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.yuumi-game-loader__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+  color: #7e9aa3;
+  font: 600 0.52rem/1.25 "JetBrains Mono", monospace;
+  letter-spacing: 0.08em;
+}
+
+.yuumi-game-loader__meta strong { color: #e7ca78; }
+
+.yuumi-game-loader[data-tone="error"] {
+  border-color: rgba(190, 88, 74, 0.72);
+}
+
+.yuumi-game-loader[data-tone="error"] .yuumi-game-loader__track span {
+  background: #9f493d;
+  box-shadow: 0 0 0.7rem rgba(159, 73, 61, 0.45);
+}
+
+.yuumi-game-loader.is-complete {
+  opacity: 0;
+  transform: translateY(-0.2rem);
+  transition: opacity 280ms ease, transform 280ms ease;
+}
+
+@keyframes yuumi-loader-rune {
+  50% { filter: brightness(1.7); transform: rotate(-45deg) translateY(-1px); }
+}
+
+.yuumi-game__status {
+  margin: 0;
+  padding: 0.48rem 0.85rem;
+  border-left: 2px solid var(--game-gold);
+  background: rgba(5, 13, 21, 0.84);
+  color: #eef4f2;
+  font-size: 0.78rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.25);
+}
+
+.yuumi-game__start {
+  min-width: 8.5rem;
+  border: 1px solid var(--game-gold);
+  padding: 0.66rem 1rem;
+  background: rgba(7, 18, 28, 0.93);
+  color: var(--game-gold-soft);
+  font: 700 0.78rem/1 "JetBrains Mono", monospace;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(242, 216, 139, 0.12);
+}
+
+.yuumi-game__start:hover,
+.yuumi-game__start:focus-visible {
+  background: #173143;
+  box-shadow: 0 0 1.2rem rgba(215, 170, 70, 0.24);
+}
+
+.yuumi-game__start:disabled {
+  cursor: wait;
+  opacity: 0.58;
+  box-shadow: none;
+}
+
+.yuumi-game__curtain small {
+  padding: 0.28rem 0.5rem;
+  background: rgba(5, 13, 21, 0.72);
+  color: #d6e4e4;
+  font-size: 0.66rem;
+}
+
+.yuumi-game__hint {
+  margin: 0.75rem 0 0;
+  color: #728d97;
+  font-size: 0.68rem;
+}
+
+.yuumi-game__hint kbd {
+  border: 1px solid #4a6771;
+  border-radius: 2px;
+  background: #111f29;
+  box-shadow: none;
+  color: #d9e6e5;
+}
+
+.yuumi-leaderboard {
+  display: flex;
+  width: 17rem;
+  flex: 0 0 17rem;
+  flex-direction: column;
+  border: 1px solid rgba(215, 170, 70, 0.35);
+  background: linear-gradient(180deg, #0d1a25, #09131d);
+}
+
+.yuumi-leaderboard__head {
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(215, 170, 70, 0.3);
+  padding: 0.85rem 0.9rem;
+}
+
+.yuumi-leaderboard__head h2 {
+  margin: 0;
+  color: #e9e3cf;
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+}
+
+.yuumi-leaderboard__head > span {
+  border: 1px solid #42606c;
+  padding: 0.18rem 0.35rem;
+  color: #7996a0;
+  font: 600 0.58rem/1.2 "JetBrains Mono", monospace;
+}
+
+.yuumi-leaderboard__head > span[data-tone="ready"] {
+  border-color: rgba(98, 168, 140, 0.7);
+  color: #87c8ad;
+  box-shadow: 0 0 0.7rem rgba(98, 168, 140, 0.12);
+}
+
+.yuumi-leaderboard__head > span[data-tone="loading"] {
+  border-color: rgba(86, 175, 192, 0.65);
+  color: #83c9d4;
+}
+
+.yuumi-leaderboard__head > span[data-tone="warning"] {
+  border-color: rgba(215, 170, 70, 0.68);
+  color: #e0bf72;
+}
+
+.yuumi-leaderboard__head > span[data-tone="error"] {
+  border-color: rgba(196, 102, 85, 0.62);
+  color: #d99487;
+}
+
+.yuumi-leaderboard ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.yuumi-leaderboard li {
+  min-height: 3.7rem;
+  gap: 0.6rem;
+  border-bottom: 1px solid rgba(79, 108, 118, 0.18);
+  padding: 0.65rem 0.8rem;
+  font: 600 0.66rem/1.2 "JetBrains Mono", monospace;
+}
+
+.yuumi-leaderboard__rank {
+  display: grid;
+  width: 1.45rem;
+  height: 1.45rem;
+  place-items: center;
+  border: 1px solid #47636c;
+  color: #8ea5ac;
+}
+
+.yuumi-leaderboard__name {
+  overflow: hidden;
+  flex: 1;
+  color: #b8c8cc;
+  text-overflow: ellipsis;
+}
+
+.yuumi-leaderboard li strong {
+  color: #8fbcc5;
+  white-space: nowrap;
+}
+
+.yuumi-leaderboard .yuumi-leaderboard__empty {
+  min-height: 6rem;
+  grid-column: 1 / -1;
+  justify-content: center;
+  padding: 1.25rem;
+  color: #718b94;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.yuumi-leaderboard .rank-1 .yuumi-leaderboard__rank,
+.yuumi-leaderboard .rank-1 strong { color: #f2d88b; border-color: #d7aa46; }
+.yuumi-leaderboard .rank-2 .yuumi-leaderboard__rank { color: #dce9ea; border-color: #afc6ca; }
+.yuumi-leaderboard .rank-3 .yuumi-leaderboard__rank { color: #d88d65; border-color: #a76448; }
+
+.yuumi-leaderboard__form {
+  margin-top: auto;
+  border-top: 1px solid rgba(215, 170, 70, 0.3);
+  padding: 0.8rem;
+}
+
+.yuumi-leaderboard__form[hidden] {
+  display: none;
+}
+
+.yuumi-leaderboard__form label {
+  display: block;
+  margin-bottom: 0.42rem;
+  color: #8ba3aa;
+  font-size: 0.68rem;
+}
+
+.yuumi-leaderboard__form input {
+  min-height: 2.75rem;
+  min-width: 0;
+  flex: 1;
+  border: 1px solid #3e5e69;
+  border-right: 0;
+  padding: 0.5rem;
+  background: #07111a;
+  color: #e8eeee;
+  font: 0.68rem/1 "JetBrains Mono", monospace;
+}
+
+.yuumi-leaderboard__form button {
+  min-height: 2.75rem;
+  border: 1px solid var(--game-gold);
+  padding: 0.5rem 0.65rem;
+  background: #172936;
+  color: var(--game-gold-soft);
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.yuumi-leaderboard__form .human-check--score {
+  display: block;
+  margin-top: 0.65rem;
+}
+
+.yuumi-leaderboard__form button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+@media (max-width: 62rem) {
+  .yuumi-game__layout {
+    flex-direction: column;
+  }
+
+  .yuumi-leaderboard {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .yuumi-leaderboard ol {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .yuumi-leaderboard li {
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 42rem) {
+  body:has(.yuumi-game) .md-content__inner {
+    padding: 1.2rem 0.65rem 2rem;
+  }
+
+  .yuumi-game__topline h1 {
+    font-size: 1.28rem;
+  }
+
+  .yuumi-game__hud {
+    flex-wrap: wrap;
+    gap: 0.42rem 0.8rem;
+  }
+
+  .yuumi-game__hud button {
+    margin-left: 0;
+  }
+
+  .yuumi-leaderboard ol {
+    grid-template-columns: 1fr;
+  }
+
+  .yuumi-leaderboard li {
+    min-height: 3rem;
+    flex-wrap: nowrap;
+  }
+
+  .yuumi-game__hint {
+    display: none;
+  }
+}

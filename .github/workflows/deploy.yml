@@ -34,6 +34,8 @@ jobs:
         run: mkdocs build --strict
       - name: Validate generated content and sitemap
         run: python scripts/content_pipeline.py check --site-dir site
+      - name: Validate page-specific assets
+        run: python scripts/check_page_assets.py --site-dir site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

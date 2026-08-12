@@ -1,0 +1,213 @@
+/* lhyzs page bundle: comments */
+/* Supabase comments — shared by notes and daily cards */
+.comments-panel {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(201, 155, 61, 0.5);
+  color: #dce4e9;
+}
+
+.comments-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.comments-panel__head > div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+}
+
+.comments-panel__head h2 {
+  margin: 0;
+  color: #f0d58a;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+}
+
+.comments-panel__head span,
+.comments-panel__head p {
+  margin: 0;
+  color: #8999a4;
+  font-size: 0.76rem;
+}
+
+.comments-panel__head p::before {
+  content: "";
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  background: #62a88c;
+  box-shadow: 0 0 0.7rem rgba(98, 168, 140, 0.6);
+}
+
+.comments-panel__head p[data-tone="warning"]::before { background: #c99b3d; }
+.comments-panel__head p[data-tone="error"]::before { background: #c96f62; }
+.comments-panel__head p[data-tone="loading"]::before { background: #4e93a5; }
+
+.comments-form {
+  position: relative;
+  padding: 1rem;
+  border: 1px solid rgba(125, 93, 37, 0.58);
+  border-left: 3px solid #2a6573;
+  background: rgba(4, 9, 14, 0.76);
+}
+
+.comments-form__meta {
+  display: grid;
+  grid-template-columns: minmax(10rem, 17rem) 1fr;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.comments-form label {
+  display: grid;
+  gap: 0.35rem;
+  color: #aeb8c2;
+  font-size: 0.78rem;
+}
+
+.comments-form__meta > span {
+  padding-bottom: 0.65rem;
+  color: #71838f;
+  font-size: 0.72rem;
+}
+
+.comments-form input,
+.comments-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #243746;
+  border-radius: 2px;
+  outline: none;
+  background: #0b1620;
+  color: #edf2f4;
+  font: inherit;
+}
+
+.comments-form input { min-height: 2.5rem; padding: 0.55rem 0.7rem; }
+.comments-form textarea { min-height: 7.2rem; padding: 0.75rem; resize: vertical; line-height: 1.65; }
+
+.comments-form input:focus,
+.comments-form textarea:focus {
+  border-color: #4c8b96;
+  box-shadow: 0 0 0 2px rgba(42, 101, 115, 0.18);
+}
+
+.comments-form__content { position: relative; }
+.comments-form__content small {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.45rem;
+  color: #637782;
+  font-size: 0.65rem;
+}
+
+.comments-form__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.comments-form__actions span { color: #b9a36c; font-size: 0.72rem; }
+.comments-form__actions button,
+.daily-card__comments-toggle {
+  border: 1px solid #c99b3d;
+  border-radius: 2px;
+  background: rgba(201, 155, 61, 0.08);
+  color: #f0d58a;
+  font: 700 0.72rem/1 Inter, sans-serif;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.comments-form__actions button { min-width: 7.5rem; min-height: 2.75rem; padding: 0.65rem 1rem; }
+.comments-form__actions button:hover,
+.comments-form__actions button:focus-visible,
+.daily-card__comments-toggle:hover,
+.daily-card__comments-toggle:focus-visible { background: rgba(201, 155, 61, 0.16); }
+.comments-form__actions button:disabled { cursor: not-allowed; opacity: 0.48; }
+.comments-form__trap { position: absolute !important; left: -9999px !important; }
+
+
+
+.comments-panel__list { margin-top: 1.4rem; }
+.comments-panel__empty {
+  margin: 0;
+  padding: 1.3rem 0;
+  color: #7f909a;
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+.site-comment {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 0.8rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(66, 87, 99, 0.32);
+}
+
+.site-comment__avatar {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgba(201, 155, 61, 0.52);
+  background: #112330;
+  color: #86cbd2;
+  font: 700 0.9rem/1 JetBrains Mono, monospace;
+}
+
+.site-comment header { display: flex; align-items: baseline; gap: 0.75rem; }
+.site-comment strong { color: #e8c66f; font-size: 0.82rem; }
+.site-comment time { color: #71838f; font-size: 0.68rem; }
+.site-comment p { margin: 0.35rem 0 0; color: #c8d1d7; font-size: 0.86rem; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.comments-panel--compact {
+  margin: 0;
+  padding: 1rem 1.25rem 1.2rem;
+  border-top-color: rgba(42, 101, 115, 0.65);
+  background: rgba(4, 10, 16, 0.68);
+}
+
+.comments-panel--compact .comments-panel__head h2 { font-size: 1rem; }
+.comments-panel--compact .comments-form textarea { min-height: 5rem; }
+.daily-card__comments-toggle { padding: 0.45rem 0.7rem; }
+.daily-card__comments[hidden] { display: none; }
+.daily-card__comments { border-top: 1px solid rgba(52, 83, 96, 0.42); }
+
+
+@media (max-width: 42rem) {
+  .comments-panel { margin-top: 2.5rem; }
+  .comments-panel__head { align-items: flex-start; flex-direction: column; }
+  .comments-form__meta { grid-template-columns: 1fr; gap: 0.25rem; }
+  .comments-form__meta > span { padding-bottom: 0.35rem; }
+  .comments-form__actions { align-items: stretch; flex-direction: column; }
+  .comments-form__actions button { width: 100%; }
+  .comments-panel--compact { padding-inline: 0.85rem; }
+}
+
+html[data-lhyzs-theme="light"] .comments-form,
+html[data-lhyzs-theme="light"] .comments-panel--compact {
+  background: rgba(249, 251, 252, 0.96);
+}
+
+html[data-lhyzs-theme="light"] .comments-form input,
+html[data-lhyzs-theme="light"] .comments-form textarea {
+  border-color: #bdc9cf;
+  background: #fff;
+  color: #172129;
+}
+
+
+html[data-lhyzs-theme="light"] .site-comment p { color: #36444d; }
+html[data-lhyzs-theme="light"] .site-comment__avatar { background: #e5eff2; }

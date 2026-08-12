@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  {% set page_path = page.url if page and page.url else "" %}
+  {% if page and page.is_homepage %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/home.css' | url }}">
+  {% elif page_path == "notes/" %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/notes.css' | url }}">
+  {% elif page_path.startswith("notes/") %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/comments.css' | url }}">
+  {% elif page_path == "daily/" %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/daily.css' | url }}">
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/comments.css' | url }}">
+  {% elif page_path == "play/" %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/play.css' | url }}">
+  {% elif page_path == "store/" %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/store.css' | url }}">
+  {% elif page_path == "friends/" %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/friends.css' | url }}">
+  {% elif page_path == "admin/comments/" %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/admin-comments.css' | url }}">
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {% set page_path = page.url if page and page.url else "" %}
+  {% if page_path == "notes/" %}
+    <script src="{{ 'assets/javascripts/notes-hub.js' | url }}" defer></script>
+  {% elif page_path.startswith("notes/") %}
+    <script src="{{ 'assets/javascripts/security.js' | url }}" defer></script>
+    <script src="{{ 'assets/javascripts/comments.js' | url }}" defer></script>
+  {% elif page_path == "daily/" %}
+    <script src="{{ 'assets/javascripts/security.js' | url }}" defer></script>
+    <script src="{{ 'assets/javascripts/daily.js' | url }}" defer></script>
+    <script src="{{ 'assets/javascripts/comments.js' | url }}" defer></script>
+  {% elif page_path == "play/" %}
+    <script src="{{ 'assets/javascripts/security.js' | url }}" defer></script>
+  {% elif page_path == "admin/comments/" %}
+    <script src="{{ 'assets/javascripts/admin-comments.js' | url }}" defer></script>
+  {% endif %}
+{% endblock %}

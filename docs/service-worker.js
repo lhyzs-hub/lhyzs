@@ -1,10 +1,10 @@
-const CACHE_VERSION = "lhyzs-site-v31";
+const CACHE_VERSION = "lhyzs-site-v32";
 const CACHE_NAME = `lhyzs-offline-${CACHE_VERSION}`;
 const SCOPE_URL = new URL(self.registration.scope);
 const OFFLINE_PAGE = new URL("404.html", SCOPE_URL).href;
 const CORE_ASSETS = [
   OFFLINE_PAGE,
-  new URL("assets/stylesheets/theme-v2.css", SCOPE_URL).href,
+  new URL("assets/stylesheets/core.css", SCOPE_URL).href,
   new URL("assets/javascripts/site-v2.js", SCOPE_URL).href,
   new URL("assets/javascripts/notes-hub.js", SCOPE_URL).href,
   new URL("assets/javascripts/not-found-game.js", SCOPE_URL).href,
