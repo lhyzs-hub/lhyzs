@@ -1,4 +1,4 @@
-const CACHE_VERSION = "lhyzs-site-v28";
+const CACHE_VERSION = "lhyzs-site-v29";
 const CACHE_NAME = `lhyzs-offline-${CACHE_VERSION}`;
 const SCOPE_URL = new URL(self.registration.scope);
 const OFFLINE_PAGE = new URL("404.html", SCOPE_URL).href;

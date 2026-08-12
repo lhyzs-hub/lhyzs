@@ -31,6 +31,7 @@
     let payload = { source: "QQ空间", cutoff: "2025-08-15T00:00:00+08:00", entries: [] };
     let photoManifest = {};
     let visibleEntryCount = initialEntryCount;
+    const requestedCommentEntry = new URLSearchParams(location.search).get("comment");
     let fileHandle = null;
 
     const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
@@ -169,8 +170,20 @@
     } catch (_) {}
 
     if (ownerHost) ownerButton.hidden = false;
+    if (requestedCommentEntry) {
+      const requestedIndex = payload.entries.findIndex((entry) => entry.id === requestedCommentEntry);
+      if (requestedIndex >= 0) visibleEntryCount = Math.max(visibleEntryCount, requestedIndex + 1);
+    }
     render();
     clearForm();
+
+    if (requestedCommentEntry) {
+      window.requestAnimationFrame(() => {
+        const card = timeline.querySelector(`[data-entry-id="${CSS.escape(requestedCommentEntry)}"]`);
+        card?.scrollIntoView({ behavior: "smooth", block: "center" });
+        card?.querySelector("[data-comments-toggle]")?.click();
+      });
+    }
 
     ownerButton.addEventListener("click", () => {
       editor.hidden = false;

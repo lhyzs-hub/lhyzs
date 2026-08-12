@@ -1,4 +1,23 @@
 project_id = "mdgkqgkeqyqzmeztmioi"
 
+[auth]
+site_url = "https://lhyzs-hub.github.io/lhyzs/"
+additional_redirect_urls = [
+  "https://lhyzs-hub.github.io/lhyzs/admin/comments/",
+  "http://127.0.0.1:8000/admin/comments/",
+  "http://localhost:8000/admin/comments/",
+  "http://127.0.0.1:8000/lhyzs/admin/comments/",
+  "http://localhost:8000/lhyzs/admin/comments/",
+]
+
+[auth.email]
+enable_confirmations = true
+max_frequency = "1m"
+otp_length = 8
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
 [functions.public-submit]
 verify_jwt = false

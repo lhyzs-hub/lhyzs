@@ -3,8 +3,8 @@
   const security = window.LHYZS_SECURITY;
   const isConfigured = Boolean(CONFIG.url && CONFIG.publishableKey && window.supabase?.createClient);
   const client = isConfigured
-    ? window.supabase.createClient(CONFIG.url, CONFIG.publishableKey, {
-        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+      ? window.supabase.createClient(CONFIG.url, CONFIG.publishableKey, {
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: "lhyzs-comments-public" }
       })
     : null;
 

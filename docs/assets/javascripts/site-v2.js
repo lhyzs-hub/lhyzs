@@ -279,6 +279,7 @@
     const homeLink = document.querySelector(".md-header__title a, .md-logo")?.href || new URL("./", document.baseURI).href;
     const assetUrl = new URL("assets/images/avatar.png", homeLink).href;
     const playUrl = new URL("play/", homeLink).href;
+    const adminCommentsUrl = new URL("admin/comments/", homeLink).href;
 
     const launcher = document.createElement("a");
     launcher.className = "play-launcher";
@@ -468,6 +469,7 @@
     profile.innerHTML = `
       <button class="player-profile__trigger" type="button" aria-expanded="false" aria-controls="player-profile-card" aria-label="查看 lhyzs 的个人信息">
         <img class="player-profile__avatar" src="${assetUrl}" alt="">
+        <span class="player-profile__notification" data-comment-admin-trigger-count hidden>0</span>
         <span class="player-profile__level" aria-label="等级 19">19</span>
       </button>
       <section class="player-profile__card" id="player-profile-card" aria-label="个人信息" hidden>
@@ -485,6 +487,16 @@
           <span class="player-profile__interest">二次元</span>
           <span class="player-profile__interest">游戏</span>
         </div>
+        <a class="player-profile__admin-link" href="${adminCommentsUrl}" data-comment-admin-link hidden>
+          <span class="player-profile__admin-identity">
+            <svg class="player-profile__admin-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 8.5a7 7 0 0 1 14 0v4.2l1.4 2.25H3.6L5 12.7V8.5Z"/>
+              <path d="M9.5 18a2.7 2.7 0 0 0 5 0"/>
+            </svg>
+            <span><strong>评论通知</strong><small>OWNER CONSOLE</small></span>
+          </span>
+          <b data-comment-admin-count hidden>0</b>
+        </a>
         <a class="player-profile__github" href="https://github.com/lhyzs-hub" target="_blank" rel="me noopener noreferrer" aria-label="访问 lhyzs-hub 的 GitHub 主页（新窗口打开）">
           <span class="player-profile__github-identity">
             <svg class="player-profile__github-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -497,6 +509,7 @@
       </section>`;
 
     headerInner.append(profile);
+    document.dispatchEvent(new CustomEvent("lhyzs:profile-ready", { detail: { profile } }));
 
     const trigger = profile.querySelector(".player-profile__trigger");
     const card = profile.querySelector(".player-profile__card");
@@ -585,6 +598,7 @@
       ".music-switch",
       ".theme-switch",
       ".player-profile__trigger",
+      ".player-profile__admin-link",
       ".hero-home__action",
       ".hero-home__update"
     ].join(",");

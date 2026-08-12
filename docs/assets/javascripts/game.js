@@ -29,7 +29,7 @@
     const isConfigured = Boolean(config.url && config.publishableKey && window.supabase?.createClient);
     const supabaseClient = isConfigured
       ? window.supabase.createClient(config.url, config.publishableKey, {
-          auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+          auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: "lhyzs-game-public" }
         })
       : null;
 
