@@ -162,8 +162,8 @@
 
     try {
       const [response, manifestResponse] = await Promise.all([
-        fetch(`${root.dataset.source}?v=${Date.now()}`),
-        fetch(root.dataset.photoManifest || "photo-manifest.json").catch(() => null)
+        fetch(root.dataset.source, { cache: "no-cache" }),
+        fetch(root.dataset.photoManifest || "photo-manifest.json", { cache: "no-cache" }).catch(() => null)
       ]);
       if (response.ok) payload = await response.json();
       if (manifestResponse?.ok) photoManifest = await manifestResponse.json();

@@ -79,6 +79,8 @@ def page_kind(relative: Path) -> str:
 
 
 def expected_assets(kind: str) -> tuple[set[str], set[str]]:
+    if kind == "not-found":
+        return {"not-found.css"}, {"not-found-game.js"}
     css = {"core.css"}
     scripts = set(GLOBAL_JS)
     if kind == "home":
@@ -102,9 +104,6 @@ def expected_assets(kind: str) -> tuple[set[str], set[str]]:
     elif kind == "admin-comments":
         css.add("admin-comments.css")
         scripts.add("admin-comments.js")
-    elif kind == "not-found":
-        css.add("not-found.css")
-        scripts.add("not-found-game.js")
     return css, scripts
 
 

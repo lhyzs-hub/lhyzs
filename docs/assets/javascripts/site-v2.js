@@ -309,11 +309,36 @@
 
     const tabsList = document.querySelector(".md-tabs__list");
     if (tabsList) {
+      tabsList.style.setProperty("--lhyzs-nav-item-count", String(tabsList.children.length));
       const nav = document.createElement("nav");
       nav.className = "game-nav";
       nav.setAttribute("aria-label", "主导航");
       nav.append(tabsList);
       headerInner.append(nav);
+
+      const activeTab = tabsList.querySelector(".md-tabs__item--active");
+      const updateNavOverflow = () => {
+        const overflow = nav.scrollWidth - nav.clientWidth > 2;
+        nav.classList.toggle("is-overflowing", overflow);
+        nav.classList.toggle("can-scroll-left", overflow && nav.scrollLeft > 2);
+        nav.classList.toggle(
+          "can-scroll-right",
+          overflow && nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 2,
+        );
+      };
+      const revealActiveTab = () => {
+        if (!activeTab || nav.scrollWidth <= nav.clientWidth) {
+          updateNavOverflow();
+          return;
+        }
+        const target = activeTab.offsetLeft - (nav.clientWidth - activeTab.offsetWidth) / 2;
+        nav.scrollTo({ left: Math.max(0, target), behavior: "auto" });
+        updateNavOverflow();
+      };
+
+      nav.addEventListener("scroll", updateNavOverflow, { passive: true });
+      window.addEventListener("resize", revealActiveTab, { passive: true });
+      window.requestAnimationFrame(revealActiveTab);
     }
 
     const musicSwitch = document.createElement("button");

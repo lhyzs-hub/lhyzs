@@ -1,4 +1,29 @@
 /* lhyzs page bundle: not-found */
+:root {
+  --md-code-font-family: "Courier New", monospace;
+  --md-text-font-family: Arial, sans-serif;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+main {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background: #f4f4f2;
+}
+
 /* 404 game-only revision */
 body:has(.jungle-404) .md-main__inner {
   display: grid;
