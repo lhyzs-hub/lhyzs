@@ -478,6 +478,17 @@
       startBackgroundMusic({ keepPreferenceOnFailure: true });
     }
 
+    window.addEventListener("lhyzs:secret-track-open", () => {
+      saveMusicProgress(true);
+      backgroundMusic.pause();
+      musicSwitch.disabled = true;
+    });
+    window.addEventListener("lhyzs:secret-track-close", (event) => {
+      musicSwitch.disabled = false;
+      if (!event.detail?.resumeBackgroundMusic) return;
+      backgroundMusic.play().then(() => updateMusicSwitch("playing")).catch(() => updateMusicSwitch("awaiting"));
+    });
+
     const themeSwitch = document.createElement("button");
     themeSwitch.className = "theme-switch";
     themeSwitch.type = "button";

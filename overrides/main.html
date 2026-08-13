@@ -26,7 +26,9 @@
 {% block scripts %}
   {{ super() }}
   {% set page_path = page.url if page and page.url else "" %}
-  {% if page_path == "notes/" %}
+  {% if page and page.is_homepage %}
+    <script src="{{ 'assets/javascripts/home-secret-track.js' | url }}" defer></script>
+  {% elif page_path == "notes/" %}
     <script src="{{ 'assets/javascripts/notes-hub.js' | url }}" defer></script>
   {% elif page_path.startswith("notes/") %}
     <script src="{{ 'assets/javascripts/security.js' | url }}" defer></script>
