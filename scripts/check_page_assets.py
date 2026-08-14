@@ -18,6 +18,7 @@ CSS_BUNDLES = {
     "not-found.css",
     "comments.css",
     "play.css",
+    "workshop.css",
     "daily.css",
     "store.css",
     "admin-comments.css",
@@ -33,6 +34,7 @@ JS_BUNDLES = {
     "comments.js",
     "admin-comments.js",
     "game-loader.js",
+    "workshop.js",
     "not-found-game.js",
 }
 
@@ -69,6 +71,8 @@ def page_kind(relative: Path) -> str:
         return "daily"
     if parts[:2] == ("play", "index.html"):
         return "play"
+    if parts[:3] == ("play", "workshop", "index.html"):
+        return "workshop"
     if parts[:2] == ("store", "index.html"):
         return "store"
     if parts[:2] == ("friends", "index.html"):
@@ -97,6 +101,9 @@ def expected_assets(kind: str) -> tuple[set[str], set[str]]:
     elif kind == "play":
         css.add("play.css")
         scripts.update({"security.js", "game-loader.js"})
+    elif kind == "workshop":
+        css.add("workshop.css")
+        scripts.update({"security.js", "workshop.js"})
     elif kind == "store":
         css.add("store.css")
     elif kind == "friends":

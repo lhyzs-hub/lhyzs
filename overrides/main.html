@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{{ 'assets/stylesheets/comments.css' | url }}">
   {% elif page_path == "play/" %}
     <link rel="stylesheet" href="{{ 'assets/stylesheets/play.css' | url }}">
+  {% elif page_path == "play/workshop/" %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/workshop.css' | url }}">
   {% elif page_path == "store/" %}
     <link rel="stylesheet" href="{{ 'assets/stylesheets/store.css' | url }}">
   {% elif page_path == "friends/" %}
@@ -39,6 +41,9 @@
     <script src="{{ 'assets/javascripts/comments.js' | url }}" defer></script>
   {% elif page_path == "play/" %}
     <script src="{{ 'assets/javascripts/security.js' | url }}" defer></script>
+  {% elif page_path == "play/workshop/" %}
+    <script src="{{ 'assets/javascripts/security.js' | url }}" defer></script>
+    <script src="{{ 'assets/javascripts/workshop.js' | url }}" defer></script>
   {% elif page_path == "admin/comments/" %}
     <script src="{{ 'assets/javascripts/admin-comments.js' | url }}" defer></script>
   {% endif %}

@@ -1,5 +1,44 @@
 /* lhyzs page bundle: play */
 /* PLAY / Yuumi winter flight */
+.play-mode-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 34rem;
+  margin: 0 0 1.35rem;
+  border: 1px solid rgba(65, 111, 126, 0.55);
+  background: #07111a;
+}
+
+.play-mode-nav a {
+  position: relative;
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  color: #849da5 !important;
+  font: 700 0.66rem/1.2 "JetBrains Mono", monospace;
+  letter-spacing: 0.06em;
+}
+
+.play-mode-nav a + a { border-left: 1px solid rgba(65, 111, 126, 0.4); }
+.play-mode-nav a span { color: #52727d; font-size: 0.58rem; }
+
+.play-mode-nav a:hover,
+.play-mode-nav a:focus-visible {
+  background: rgba(48, 128, 150, 0.1);
+  color: #d2e4e5 !important;
+  outline: 0;
+}
+
+.play-mode-nav a.is-active {
+  background: linear-gradient(90deg, rgba(35, 114, 137, 0.2), rgba(196, 151, 55, 0.05));
+  color: #f0d485 !important;
+  box-shadow: inset 0 -2px #c99b3d, 0 0 1.1rem rgba(54, 153, 177, 0.08);
+}
+
+.play-mode-nav a.is-active span { color: #61bdd1; }
+
 body:has(.yuumi-game) .md-main__inner {
   max-width: 100%;
   margin: 0;

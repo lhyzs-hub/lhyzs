@@ -154,6 +154,7 @@
       const { data, error } = await supabaseClient
         .from("game_scores")
         .select("id,player_name,score,created_at")
+        .eq("game_key", "yuumi-flight")
         .order("score", { ascending: false })
         .order("created_at", { ascending: true })
         .limit(5);

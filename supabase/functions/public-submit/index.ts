@@ -124,17 +124,132 @@ async function parseBody(request: Request): Promise<JsonRecord> {
   return JSON.parse(source) as JsonRecord;
 }
 
-async function startGame(origin: string | null, visitor: string) {
+async function startGame(origin: string | null, visitor: string, body: JsonRecord) {
   const rate = await consumeRateLimit("game_start", visitor, 20, 600);
   if (!rate.allowed) return json(origin, 429, { ok: false, code: "rate_limited", retryAfter: rate.retry_after, message: "开局过于频繁，请稍后再试" });
 
+  const gameKey = body.gameKey === "hextech-workshop" ? "hextech-workshop" : "yuumi-flight";
+  const challengeKey = typeof body.challengeKey === "string" ? body.challengeKey : null;
+  if (gameKey === "hextech-workshop" && (!challengeKey || !/^\d{4}-\d{2}-\d{2}$/.test(challengeKey))) {
+    return json(origin, 422, { ok: false, code: "invalid_challenge", message: "每日蓝图编号无效" });
+  }
+
   const { data, error } = await supabase
     .from("game_runs")
-    .insert({ fingerprint: visitor })
+    .insert({ fingerprint: visitor, game_key: gameKey, challenge_key: challengeKey })
     .select("id,expires_at")
     .single();
   if (error) throw error;
   return json(origin, 200, { ok: true, runId: data.id, expiresAt: data.expires_at });
+}
+
+type WorkshopPart = "shaft" | "elbow" | "gear" | "belt" | "tee";
+type WorkshopPiece = { cell: number; type: WorkshopPart; rotation: number };
+type WorkshopLevel = {
+  source: { index: number; ports: string[] };
+  targets: Array<{ index: number; ports: string[] }>;
+  blocks: number[];
+  inventory: Record<WorkshopPart, number>;
+  optimalParts: number;
+  optimalEnergy: number;
+};
+
+const WORKSHOP_PARTS: Record<WorkshopPart, { energy: number; ports: string[] }> = {
+  shaft: { energy: 2, ports: ["E", "W"] },
+  elbow: { energy: 3, ports: ["N", "E"] },
+  gear: { energy: 5, ports: ["N", "E", "S", "W"] },
+  belt: { energy: 1, ports: ["E", "W"] },
+  tee: { energy: 4, ports: ["N", "E", "W"] },
+};
+
+const WORKSHOP_DAILY_LEVELS: WorkshopLevel[] = [
+  { source: { index: 18, ports: ["E"] }, targets: [{ index: 35, ports: ["N"] }], blocks: [4, 13, 22, 31], inventory: { shaft: 8, elbow: 5, gear: 1, belt: 4, tee: 0 }, optimalParts: 11, optimalEnergy: 22 },
+  { source: { index: 45, ports: ["E"] }, targets: [{ index: 17, ports: ["S"] }], blocks: [11, 20, 29, 38, 39], inventory: { shaft: 9, elbow: 5, gear: 1, belt: 5, tee: 0 }, optimalParts: 12, optimalEnergy: 23 },
+  { source: { index: 9, ports: ["E"] }, targets: [{ index: 44, ports: ["N"] }], blocks: [3, 12, 21, 30, 31], inventory: { shaft: 8, elbow: 6, gear: 2, belt: 4, tee: 0 }, optimalParts: 12, optimalEnergy: 25 },
+  { source: { index: 27, ports: ["E"] }, targets: [{ index: 8, ports: ["S"] }, { index: 53, ports: ["W"] }], blocks: [4, 13, 22, 31, 40], inventory: { shaft: 11, elbow: 7, gear: 2, belt: 5, tee: 2 }, optimalParts: 17, optimalEnergy: 37 },
+  { source: { index: 0, ports: ["E"] }, targets: [{ index: 52, ports: ["N"] }], blocks: [12, 13, 14, 29, 30, 31], inventory: { shaft: 10, elbow: 6, gear: 2, belt: 5, tee: 0 }, optimalParts: 14, optimalEnergy: 28 },
+  { source: { index: 36, ports: ["E"] }, targets: [{ index: 17, ports: ["S"] }, { index: 44, ports: ["N"] }], blocks: [4, 13, 22, 40, 49], inventory: { shaft: 12, elbow: 7, gear: 2, belt: 6, tee: 2 }, optimalParts: 18, optimalEnergy: 38 },
+  { source: { index: 9, ports: ["E"] }, targets: [{ index: 53, ports: ["W"] }], blocks: [2, 11, 20, 38, 47], inventory: { shaft: 10, elbow: 6, gear: 2, belt: 5, tee: 0 }, optimalParts: 14, optimalEnergy: 28 },
+];
+
+function workshopLevel(challengeKey: string): WorkshopLevel | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(challengeKey);
+  if (!match) return null;
+  const timestamp = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  const parsed = new Date(timestamp);
+  if (
+    parsed.getUTCFullYear() !== Number(match[1])
+    || parsed.getUTCMonth() !== Number(match[2]) - 1
+    || parsed.getUTCDate() !== Number(match[3])
+  ) return null;
+  const day = Math.floor(timestamp / 86400000);
+  return WORKSHOP_DAILY_LEVELS[((day % WORKSHOP_DAILY_LEVELS.length) + WORKSHOP_DAILY_LEVELS.length) % WORKSHOP_DAILY_LEVELS.length];
+}
+
+function validateWorkshopSolution(raw: unknown, challengeKey: string) {
+  const level = workshopLevel(challengeKey);
+  if (!level || !Array.isArray(raw) || raw.length < 1 || raw.length > 40) return null;
+  const pieces = new Map<number, WorkshopPiece>();
+  const counts: Record<WorkshopPart, number> = { shaft: 0, elbow: 0, gear: 0, belt: 0, tee: 0 };
+  for (const item of raw) {
+    if (!item || typeof item !== "object") return null;
+    const source = item as Record<string, unknown>;
+    const cell = source.cell;
+    const type = source.type;
+    const rotation = source.rotation;
+    if (
+      typeof cell !== "number" || !Number.isInteger(cell) || cell < 0 || cell >= 54
+      || typeof type !== "string" || !(type in WORKSHOP_PARTS)
+      || typeof rotation !== "number" || !Number.isInteger(rotation) || rotation < 0 || rotation > 3
+    ) return null;
+    const typedPart = type as WorkshopPart;
+    const typedCell = Number(cell);
+    if (
+      pieces.has(typedCell)
+      || level.blocks.includes(typedCell)
+      || level.source.index === typedCell
+      || level.targets.some((target) => target.index === typedCell)
+    ) return null;
+    counts[typedPart] += 1;
+    if (counts[typedPart] > level.inventory[typedPart]) return null;
+    pieces.set(typedCell, { cell: typedCell, type: typedPart, rotation: Number(rotation) });
+  }
+
+  const rotate = (port: string, rotation: number) => {
+    const directions = ["N", "E", "S", "W"];
+    const index = directions.indexOf(port);
+    return directions[(index + rotation) % 4];
+  };
+  const portsAt = (cell: number): string[] => {
+    if (cell === level.source.index) return level.source.ports;
+    const target = level.targets.find((item) => item.index === cell);
+    if (target) return target.ports;
+    const piece = pieces.get(cell);
+    return piece ? WORKSHOP_PARTS[piece.type].ports.map((port) => rotate(port, piece.rotation)) : [];
+  };
+  const opposite: Record<string, string> = { N: "S", E: "W", S: "N", W: "E" };
+  const delta: Record<string, number> = { N: -9, E: 1, S: 9, W: -1 };
+  const neighbor = (cell: number, direction: string) => {
+    const row = Math.floor(cell / 9);
+    const column = cell % 9;
+    if ((direction === "N" && row === 0) || (direction === "S" && row === 5) || (direction === "W" && column === 0) || (direction === "E" && column === 8)) return -1;
+    return cell + delta[direction];
+  };
+  const visited = new Set<number>([level.source.index]);
+  const queue = [level.source.index];
+  while (queue.length) {
+    const cell = queue.shift()!;
+    for (const port of portsAt(cell)) {
+      const next = neighbor(cell, port);
+      if (next < 0 || visited.has(next) || !portsAt(next).includes(opposite[port])) continue;
+      visited.add(next);
+      queue.push(next);
+    }
+  }
+  if (!level.targets.every((target) => visited.has(target.index))) return null;
+  const parts = pieces.size;
+  const energy = [...pieces.values()].reduce((total, piece) => total + WORKSHOP_PARTS[piece.type].energy, 0);
+  return { parts, energy };
 }
 
 async function submitComment(origin: string | null, body: JsonRecord, visitor: string, ip: string) {
@@ -215,6 +330,67 @@ async function submitScore(origin: string | null, body: JsonRecord, visitor: str
     player_name: playerName,
     score,
     run_id: runId,
+    game_key: "yuumi-flight",
+    submission_fingerprint: visitor,
+    review_status: "accepted",
+  });
+  if (error) throw error;
+  return json(origin, 201, { ok: true });
+}
+
+async function submitWorkshopScore(origin: string | null, body: JsonRecord, visitor: string, ip: string) {
+  const playerName = typeof body.playerName === "string" ? body.playerName.trim() : "";
+  const runId = typeof body.runId === "string" ? body.runId : "";
+  const challengeKey = typeof body.challengeKey === "string" ? body.challengeKey : "";
+  const score = typeof body.score === "number" ? body.score : Number.NaN;
+  const durationMs = typeof body.durationMs === "number" ? body.durationMs : Number.NaN;
+  if (!isSafeNickname(playerName, 12)) return json(origin, 422, { ok: false, code: "nickname_rejected", message: "昵称不可用，请换一个昵称" });
+  if (
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(runId)
+    || !/^\d{4}-\d{2}-\d{2}$/.test(challengeKey)
+    || !Number.isInteger(score) || score < 100 || score > 2000
+    || !Number.isInteger(durationMs) || durationMs < 1000 || durationMs > 1800000
+  ) return json(origin, 422, { ok: false, code: "invalid_score", message: "工坊方案数据无效，请重新挑战" });
+
+  const solution = validateWorkshopSolution(body.solution, challengeKey);
+  if (!solution) return json(origin, 422, { ok: false, code: "invalid_solution", message: "传动方案未通过服务端连通校验" });
+  const expectedScore = Math.max(100, 2000 - solution.parts * 70 - solution.energy * 25 - Math.ceil(durationMs / 1000) * 4);
+  if (score !== expectedScore) return json(origin, 422, { ok: false, code: "invalid_score", message: "方案评分与零件、能耗或用时不一致" });
+
+  const rate = await consumeRateLimit("workshop_score", visitor, 5, 600);
+  if (!rate.allowed) return json(origin, 429, { ok: false, code: "rate_limited", retryAfter: rate.retry_after, message: "方案提交过于频繁，请稍后再试" });
+  if (!await verifyTurnstile(body.turnstileToken, "score", ip)) {
+    return json(origin, 400, { ok: false, code: "turnstile_failed", message: "人机验证已失效，请重新验证" });
+  }
+
+  const { data: claim, error: claimError } = await supabase.rpc("claim_workshop_run", {
+    p_run_id: runId,
+    p_fingerprint: visitor,
+    p_challenge_key: challengeKey,
+    p_score: score,
+    p_parts: solution.parts,
+    p_energy: solution.energy,
+    p_duration_ms: durationMs,
+  });
+  if (claimError) throw claimError;
+  if (!claim?.[0]?.accepted) {
+    return json(origin, 422, { ok: false, code: "score_rejected", message: "本次工坊赛局未通过时序校验，请重新挑战" });
+  }
+
+  const dailyLevel = workshopLevel(challengeKey)!;
+  const stars = solution.parts <= dailyLevel.optimalParts && solution.energy <= dailyLevel.optimalEnergy
+    ? 3
+    : score >= 950 ? 2 : 1;
+  const { error } = await supabase.from("game_scores").insert({
+    player_name: playerName,
+    score,
+    run_id: runId,
+    game_key: "hextech-workshop",
+    challenge_key: challengeKey,
+    parts_used: solution.parts,
+    energy_used: solution.energy,
+    duration_ms: durationMs,
+    stars,
     submission_fingerprint: visitor,
     review_status: "accepted",
   });
@@ -236,9 +412,10 @@ Deno.serve(async (request) => {
     const action = typeof body.action === "string" ? body.action : "";
     const ip = clientIp(request);
     const visitor = await fingerprint(ip);
-    if (action === "start_game") return await startGame(origin, visitor);
+    if (action === "start_game") return await startGame(origin, visitor, body);
     if (action === "comment") return await submitComment(origin, body, visitor, ip);
     if (action === "score") return await submitScore(origin, body, visitor, ip);
+    if (action === "workshop_score") return await submitWorkshopScore(origin, body, visitor, ip);
     return json(origin, 400, { ok: false, code: "invalid_action", message: "Invalid action" });
   } catch (error) {
     console.error("public-submit failed", error);

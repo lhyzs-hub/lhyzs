@@ -8,6 +8,10 @@ hide:
   data-sprite="../assets/images/game/yuumi-winter-spritesheet-v2.png"
   data-day-background="../assets/images/game/winter-day-background.png"
   data-night-background="../assets/images/game/winter-night-cave-background.png">
+  <nav class="play-mode-nav" aria-label="选择游戏">
+    <a class="is-active" href="./" aria-current="page"><span>01</span>星林飞羽</a>
+    <a href="workshop/"><span>02</span>海克斯机巧工坊</a>
+  </nav>
   <div class="yuumi-game__topline">
     <div>
       <p class="yuumi-game__eyebrow">PLAY / 冬境试炼</p>
