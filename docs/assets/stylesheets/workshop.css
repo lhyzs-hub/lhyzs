@@ -322,13 +322,25 @@ body:has(.hex-workshop) .md-content__inner > h1 { display: none; }
 
 .mechanism--belt::before { top: 31%; height: 38%; border-color: #477b87; background: repeating-linear-gradient(90deg, #18272e 0 8%, #3d6570 8% 13%); }
 
+.mechanism--elbow::before,
+.mechanism--elbow::after {
+  border: 1px solid #8e7a4c;
+  background: #25343a;
+  box-shadow: inset 0 0 0 2px #0a1318;
+}
+
 .mechanism--elbow::before {
-  top: 4%;
-  right: -14%;
-  width: 55%;
-  height: 55%;
-  border-top: 8px solid #77673f;
-  border-right: 8px solid #77673f;
+  top: 42%;
+  left: 50%;
+  width: 64%;
+  height: 16%;
+}
+
+.mechanism--elbow::after {
+  top: -14%;
+  left: 42%;
+  width: 16%;
+  height: 64%;
 }
 
 .mechanism--gear::before {
