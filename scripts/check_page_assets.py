@@ -35,7 +35,7 @@ JS_BUNDLES = {
     "admin-comments.js",
     "game-loader.js",
     "workshop.js",
-    "not-found-game.js",
+    "not-found-game-v2.js",
 }
 
 GLOBAL_JS = {"site-v2.js", "supabase-config.js", "admin-auth.js"}
@@ -84,7 +84,7 @@ def page_kind(relative: Path) -> str:
 
 def expected_assets(kind: str) -> tuple[set[str], set[str]]:
     if kind == "not-found":
-        return {"not-found.css"}, {"not-found-game.js"}
+        return {"not-found.css"}, {"not-found-game-v2.js"}
     css = {"core.css"}
     scripts = set(GLOBAL_JS)
     if kind == "home":
