@@ -8,9 +8,7 @@
 
     const siteRoot = new URL("../../", scriptUrl);
     const workerUrl = new URL("service-worker.js", siteRoot);
-    navigator.serviceWorker.register(workerUrl, { scope: siteRoot.pathname }).catch(() => {
-      // Offline support is progressive enhancement; the site remains usable if registration is blocked.
-    });
+    navigator.serviceWorker.register(workerUrl, { scope: siteRoot.pathname }).catch(() => {});
   };
 
   registerOfflineSupport();
@@ -22,9 +20,7 @@
       const offlineUrl = new URL("__offline__/", registration.scope);
       if (window.location.href === offlineUrl.href) return;
       window.location.replace(offlineUrl.href);
-    }).catch(() => {
-      // Keep the current page visible if the offline shell is not ready yet.
-    });
+    }).catch(() => {});
   };
 
   window.addEventListener("offline", redirectToOfflineGame);
@@ -34,7 +30,10 @@
   const MUSIC_ENABLED_STORAGE_KEY = "lhyzs-background-music-enabled";
   const MUSIC_TIME_STORAGE_KEY = "lhyzs-background-music-time";
   const MOON_ASSET_URL = new URL("../images/theme-moon-skill.png", scriptUrl || document.baseURI).href;
-  const SEARCH_EASTER_EGG_ASSET_URL = new URL("../images/search-easter-egg-lhyzs.webp", scriptUrl || document.baseURI).href;
+  const SEARCH_EASTER_EGGS = new Map([
+    ["lhyzs", [new URL("../images/search-easter-egg-lhyzs.webp", scriptUrl || document.baseURI).href, "lhyzs 搜索彩蛋"]],
+    ["美女", [new URL("../images/search-easter-egg-beauty.jpg", scriptUrl || document.baseURI).href, "美女搜索彩蛋"]]
+  ]);
   const NAVIGATION_CLICK_ASSET_URL = new URL("../audio/navigation-metal-click.ogg", scriptUrl || document.baseURI).href;
   const PLAY_CLICK_ASSET_URL = new URL("../audio/play-heavy-metal.ogg", scriptUrl || document.baseURI).href;
   const BACKGROUND_MUSIC_ASSET_URL = new URL("../audio/background-rock.mp3", scriptUrl || document.baseURI).href;
@@ -94,7 +93,6 @@
     activeClickSounds.add(sound);
     sound.play().catch(() => {
       releaseSound();
-      // Browsers may suppress sound before the first trusted user interaction.
     });
   };
 
@@ -590,9 +588,10 @@
     searchEasterEgg.type = "button";
     searchEasterEgg.hidden = true;
     searchEasterEgg.setAttribute("aria-label", "关闭彩蛋");
-    searchEasterEgg.innerHTML = `<img src="${SEARCH_EASTER_EGG_ASSET_URL}" alt="">`;
+    searchEasterEgg.innerHTML = "<img alt=\"\">";
     document.body.append(searchEasterEgg);
 
+    const searchEasterEggImage = searchEasterEgg.querySelector("img");
     let easterEggTrigger;
     let easterEggCloseTimer;
 
@@ -607,9 +606,10 @@
       }, 220);
     };
 
-    const openSearchEasterEgg = (searchInput) => {
+    const openSearchEasterEgg = (searchInput, easterEgg) => {
       window.clearTimeout(easterEggCloseTimer);
       easterEggTrigger = searchInput;
+      [searchEasterEggImage.src, searchEasterEggImage.alt] = easterEgg;
       searchEasterEgg.hidden = false;
       document.body.classList.add("search-easter-egg-open");
       window.requestAnimationFrame(() => {
@@ -629,17 +629,15 @@
       }
 
       const searchInput = event.target.closest?.(".md-search__input");
-      if (
-        !searchInput
-        || event.key !== "Enter"
-        || event.isComposing
-        || searchInput.value.trim().toLowerCase() !== "lhyzs"
-      ) return;
+      if (!searchInput || event.key !== "Enter" || event.isComposing) return;
+
+      const easterEgg = SEARCH_EASTER_EGGS.get(searchInput.value.trim().toLowerCase());
+      if (!easterEgg) return;
 
       event.preventDefault();
       event.stopImmediatePropagation();
       playNavigationClick(false);
-      openSearchEasterEgg(searchInput);
+      openSearchEasterEgg(searchInput, easterEgg);
     }, true);
 
     const pressableSelector = [

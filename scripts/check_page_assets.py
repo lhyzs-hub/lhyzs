@@ -25,7 +25,7 @@ CSS_BUNDLES = {
 }
 
 JS_BUNDLES = {
-    "site-v3.js",
+    "site-v4.js",
     "notes-hub.js",
     "supabase-config.js",
     "admin-auth.js",
@@ -38,7 +38,7 @@ JS_BUNDLES = {
     "not-found-game-v3.js",
 }
 
-GLOBAL_JS = {"site-v3.js", "supabase-config.js", "admin-auth.js"}
+GLOBAL_JS = {"site-v4.js", "supabase-config.js", "admin-auth.js"}
 MAX_PAGE_CSS_BYTES = 60 * 1024
 MAX_PAGE_JS_BYTES = 60 * 1024
 

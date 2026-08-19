@@ -21,7 +21,7 @@ markdown_extensions:
 extra_css:
   - assets/stylesheets/core.css
 extra_javascript:
-  - assets/javascripts/site-v3.js
+  - assets/javascripts/site-v4.js
   - assets/javascripts/supabase-config.js
   - https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.min.js
   - assets/javascripts/admin-auth.js
