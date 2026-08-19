@@ -2,6 +2,27 @@
 
 个人网站，使用 MkDocs Material 构建并部署到 GitHub Pages。
 
+## 项目结构
+
+```text
+.github/       GitHub Pages 构建、校验和部署工作流
+docs/          网站页面、笔记和浏览器资源
+overrides/     MkDocs Material 模板覆盖与 404 页面
+scripts/       内容同步、构建配置生成和站点校验工具
+supabase/      数据库迁移、Edge Function 和邮件模板
+tools/         独立的内容导入工具
+local/         不提交的原始媒体与一次性本地工具
+site/          MkDocs 构建产物，不提交
+test-results/  浏览器测试、截图和临时预览，不提交
+exports/       本地导出结果，不提交
+.superdesign/  设计工具临时文件，不提交
+mkdocs.yml     站点、导航和全局资源配置
+```
+
+网站发布资源统一放在 `docs/assets/`。高质量音频、图片原稿等仅用于制作的文件放在
+`local/source-assets/`，包含个人路径或会话标识的脚本放在 `local/tools/`。不要让网页、
+构建脚本或部署流程依赖 `local/` 中的文件。
+
 ## 本地预览
 
 ```powershell

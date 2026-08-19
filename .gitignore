@@ -1,5 +1,6 @@
 .superdesign/tmp/
 .superdesign/
+local/
 site/
 test-results/
 exports/
