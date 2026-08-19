@@ -18,8 +18,14 @@
   const sprite = new Image();
   const spriteLayer = document.createElement("canvas");
   const spriteCtx = spriteLayer.getContext("2d");
+  const jumpSound = root.dataset.jumpSound ? new Audio(root.dataset.jumpSound) : null;
 
   sprite.src = root.dataset.sprite;
+  if (jumpSound) {
+    jumpSound.preload = "auto";
+    jumpSound.volume = 0.22;
+    jumpSound.playbackRate = 1.18;
+  }
   spriteLayer.width = 64;
   spriteLayer.height = 64;
   ctx.imageSmoothingEnabled = false;
@@ -112,6 +118,12 @@
     player.grounded = false;
     coyoteTime = 0;
     jumpBuffer = 0;
+    if (jumpSound) {
+      jumpSound.currentTime = 0;
+      jumpSound.play().catch(() => {
+        // Audio feedback is optional; gameplay must remain available when playback is blocked.
+      });
+    }
   }
 
   function spawnObstacle() {
