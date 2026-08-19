@@ -318,6 +318,17 @@
     ctx.globalAlpha = 1;
   }
 
+  function drawIdlePrompt() {
+    if (state !== "idle") return;
+    ctx.fillStyle = INK;
+    ctx.globalAlpha = 0.72;
+    ctx.font = "700 12px 'JetBrains Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("按 SPACE / ↑ / W 开始 · 点击亦可", W / 2, 137);
+    ctx.globalAlpha = 1;
+  }
+
   function drawGameOver() {
     if (state !== "gameover") return;
     const centerX = W / 2;
@@ -337,6 +348,12 @@
     pixelRect(centerX - 3, 152, 8, 2);
     pixelRect(centerX - 6, 150, 3, 2);
     pixelRect(centerX - 8, 147, 2, 3);
+
+    ctx.fillStyle = INK;
+    ctx.globalAlpha = 0.68;
+    ctx.font = "700 11px 'JetBrains Mono', monospace";
+    ctx.fillText("SPACE / R 重新开始", centerX, 173);
+    ctx.globalAlpha = 1;
   }
 
   function draw() {
@@ -348,6 +365,7 @@
     obstacles.forEach(drawWall);
     drawDaisy();
     drawScore();
+    drawIdlePrompt();
     drawGameOver();
   }
 
