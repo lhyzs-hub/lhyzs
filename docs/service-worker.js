@@ -1,4 +1,4 @@
-const CACHE_VERSION = "lhyzs-site-v39";
+const CACHE_VERSION = "lhyzs-site-v40";
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const CACHE_PREFIXES = ["lhyzs-site-v", "lhyzs-offline-"];
@@ -42,11 +42,11 @@ async function installOfflineShell() {
 async function networkFirstPage(request) {
   const key = normalizedUrl(request.url);
   try {
-    const response = await fetch(request);
+    const response = await fetch(request, { cache: "no-store" });
     await putResponse(RUNTIME_CACHE, key, response);
     return response;
   } catch {
-    return (await caches.match(key)) || (await caches.match(OFFLINE_PAGE)) || Response.error();
+    return (await caches.match(OFFLINE_PAGE)) || Response.error();
   }
 }
 

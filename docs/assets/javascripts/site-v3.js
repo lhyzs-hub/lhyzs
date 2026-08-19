@@ -15,6 +15,21 @@
 
   registerOfflineSupport();
 
+  const redirectToOfflineGame = () => {
+    if (!("serviceWorker" in navigator) || !navigator.serviceWorker.controller) return;
+
+    navigator.serviceWorker.ready.then((registration) => {
+      const offlineUrl = new URL("__offline__/", registration.scope);
+      if (window.location.href === offlineUrl.href) return;
+      window.location.replace(offlineUrl.href);
+    }).catch(() => {
+      // Keep the current page visible if the offline shell is not ready yet.
+    });
+  };
+
+  window.addEventListener("offline", redirectToOfflineGame);
+  if (!navigator.onLine) redirectToOfflineGame();
+
   const THEME_STORAGE_KEY = "lhyzs-theme";
   const MUSIC_ENABLED_STORAGE_KEY = "lhyzs-background-music-enabled";
   const MUSIC_TIME_STORAGE_KEY = "lhyzs-background-music-time";
