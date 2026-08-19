@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "note_count": 30,
-  "latest_updated": "2026-08-13",
+  "note_count": 32,
+  "latest_updated": "2026-08-19",
   "categories": {
-    "大学课程学习": 3,
-    "工科学习": 27
+    "大学课程学习": 4,
+    "工科学习": 28
   },
   "notes": [
     {
@@ -34,11 +34,20 @@
       ]
     },
     {
-      "path": "大学课程学习/创业启程_期末复习知识点_Obsidian.md",
+      "path": "大学课程学习/创业启程/26夏 创业启程（退学启程） 个人向攻略.md",
+      "title": "26 夏《创业启程》个人向攻略",
+      "category": "大学课程学习",
+      "subgroup": "创业启程",
+      "updated": "2026-08-19",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "大学课程学习/创业启程/创业启程_期末复习知识点_Obsidian.md",
       "title": "创业启程期末复习知识点",
       "category": "大学课程学习",
       "subgroup": "创业启程",
-      "updated": "2026-08-13",
+      "updated": "2026-08-19",
       "reading_minutes": 32,
       "tags": [
         "创业启程",
@@ -261,8 +270,8 @@
       "title": "STM32 GPIO 与外部中断",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-11",
-      "reading_minutes": 9,
+      "updated": "2026-08-15",
+      "reading_minutes": 11,
       "tags": [
         "领域/嵌入式",
         "主题/STM32",
@@ -277,8 +286,8 @@
       "title": "STM32 UART 与 DMA",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-07",
-      "reading_minutes": 2,
+      "updated": "2026-08-15",
+      "reading_minutes": 5,
       "tags": [
         "领域/嵌入式",
         "主题/STM32",
@@ -293,7 +302,7 @@
       "title": "STM32 I2C 与 OLED",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-07",
+      "updated": "2026-08-15",
       "reading_minutes": 1,
       "tags": [
         "领域/嵌入式",
@@ -309,8 +318,8 @@
       "title": "STM32 时钟树与定时器",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-07",
-      "reading_minutes": 2,
+      "updated": "2026-08-15",
+      "reading_minutes": 4,
       "tags": [
         "领域/嵌入式",
         "主题/STM32",
@@ -325,8 +334,8 @@
       "title": "STM32 PWM 与电机控制",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-07",
-      "reading_minutes": 2,
+      "updated": "2026-08-15",
+      "reading_minutes": 3,
       "tags": [
         "领域/嵌入式",
         "主题/STM32",
@@ -341,8 +350,8 @@
       "title": "STM32 ADC 与 RTC",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-07",
-      "reading_minutes": 2,
+      "updated": "2026-08-15",
+      "reading_minutes": 4,
       "tags": [
         "领域/嵌入式",
         "主题/STM32",
@@ -357,8 +366,8 @@
       "title": "STM32 工程化专题与综合项目",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-07",
-      "reading_minutes": 2,
+      "updated": "2026-08-15",
+      "reading_minutes": 3,
       "tags": [
         "领域/嵌入式",
         "主题/STM32",
@@ -372,7 +381,7 @@
       "title": "STM32 内部结构与总线架构",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-08",
+      "updated": "2026-08-15",
       "reading_minutes": 4,
       "tags": [
         "领域/嵌入式",
@@ -389,7 +398,7 @@
       "title": "STM32 GPIO 内部结构与模式",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-08",
+      "updated": "2026-08-15",
       "reading_minutes": 6,
       "tags": [
         "领域/嵌入式",
@@ -405,7 +414,7 @@
       "title": "STM32 输入输出方式总览",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-07",
+      "updated": "2026-08-15",
       "reading_minutes": 5,
       "tags": [
         "领域/嵌入式",
@@ -420,7 +429,7 @@
       "title": "STM32 HAL 函数速查",
       "category": "工科学习",
       "subgroup": "STM32",
-      "updated": "2026-08-07",
+      "updated": "2026-08-15",
       "reading_minutes": 2,
       "tags": [
         "领域/嵌入式",
@@ -445,6 +454,20 @@
         "PWM",
         "ADC",
         "通信协议"
+      ]
+    },
+    {
+      "path": "工科学习/人工智能/AI入门基础：原理、术语与从0到1项目.md",
+      "title": "AI入门基础：原理、术语与从0到1项目",
+      "category": "工科学习",
+      "subgroup": "人工智能",
+      "updated": "2026-08-15",
+      "reading_minutes": 14,
+      "tags": [
+        "领域/人工智能",
+        "主题/大语言模型",
+        "类型/学习笔记",
+        "难度/入门"
       ]
     },
     {

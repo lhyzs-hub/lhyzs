@@ -1,7 +1,7 @@
 ---
 title: STM32 GPIO 内部结构与模式
 created: 2026-08-07
-updated: 2026-08-08
+updated: 2026-08-15
 tags:
   - 领域/嵌入式
   - 主题/STM32
@@ -160,6 +160,8 @@ ADC 引脚应设为 Analog，关闭数字输入缓冲，减少漏电和数字噪
 HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 ```
+
+三个参数分别是：`LED_GPIO_Port` 为端口寄存器地址，`LED_Pin` 为引脚位掩码，第三个参数为要写入的物理高/低电平。该函数无返回值，完整原型和多引脚规则见 [STM32-02-GPIO与外部中断](STM32-02-GPIO与外部中断.md#_4)。
 
 ## 八、复位后的默认状态
 

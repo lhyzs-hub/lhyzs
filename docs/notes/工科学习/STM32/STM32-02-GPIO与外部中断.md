@@ -1,7 +1,7 @@
 ---
 title: STM32 GPIO 与外部中断
 created: 2026-08-07
-updated: 2026-08-11
+updated: 2026-08-15
 tags:
   - 领域/嵌入式
   - 主题/STM32
@@ -55,20 +55,74 @@ GPIO 引脚 → AFIO_EXTICR 选择 EXTI 线 → 边沿检测 → PR 挂起 → I
 
 这条链上任何一层未配置，都可能出现“引脚电平变化了，但回调不执行”。
 
-## 三、重要函数
+## 三、重要函数与参数
+
+### 1. 写 GPIO 电平
 
 ```c
+void HAL_GPIO_WritePin(GPIO_TypeDef *GPIOx,
+                       uint16_t GPIO_Pin,
+                       GPIO_PinState PinState);
+
 HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+```
+
+| 参数 | 含义 | 常用值/注意 |
+|---|---|---|
+| `GPIOx` | GPIO 端口寄存器地址 | `GPIOA`、`GPIOB`；CubeMX 标签常生成 `LED_GPIO_Port` |
+| `GPIO_Pin` | 引脚位掩码，不是引脚序号 | `GPIO_PIN_5` 或 `LED_Pin`；多个输出脚可用按位或 `GPIO_PIN_1 | GPIO_PIN_2` |
+| `PinState` | 要输出的物理电平 | `GPIO_PIN_SET` 为高电平，`GPIO_PIN_RESET` 为低电平 |
+| 返回值 | 无 | 函数通过寄存器直接改变输出锁存器 |
+
+`GPIO_PIN_SET` 不等于“灯亮”：低电平点亮的 LED 要输出 `GPIO_PIN_RESET` 才会亮。
+
+### 2. 读取 GPIO 电平
+
+```c
+GPIO_PinState HAL_GPIO_ReadPin(GPIO_TypeDef *GPIOx,
+                              uint16_t GPIO_Pin);
+
 GPIO_PinState key = HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin);
+```
+
+| 参数/返回值 | 含义 |
+|---|---|
+| `GPIOx` | 要读取的端口，如 `GPIOA` 或 `KEY_GPIO_Port` |
+| `GPIO_Pin` | 要读取的引脚掩码，如 `GPIO_PIN_0`；判断按键时通常只传一个引脚 |
+| 返回值 | `GPIO_PIN_SET` 表示读到高电平，`GPIO_PIN_RESET` 表示读到低电平 |
+
+### 3. 翻转 GPIO
+
+```c
+void HAL_GPIO_TogglePin(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin);
+
 HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 ```
 
-| 函数 | 输入 | 输出/副作用 |
-|---|---|---|
-| `HAL_GPIO_WritePin(port,pin,state)` | 端口、引脚掩码、SET/RESET | 改变输出电平 |
-| `HAL_GPIO_ReadPin(port,pin)` | 端口、引脚掩码 | 返回 `GPIO_PIN_SET/RESET` |
-| `HAL_GPIO_TogglePin(port,pin)` | 端口、引脚掩码 | 翻转输出状态 |
-| `HAL_Delay(ms)` | 毫秒数 | 阻塞当前流程 |
+`GPIOx` 和 `GPIO_Pin` 含义与 `HAL_GPIO_WritePin()` 相同。函数无返回值，每调用一次就在当前输出状态基础上翻转一次。
+
+### 4. 延时和系统节拍
+
+```c
+void HAL_Delay(uint32_t Delay);  // Delay：阻塞毫秒数
+uint32_t HAL_GetTick(void);      // 无参数，返回启动后的毫秒计数
+```
+
+- `HAL_Delay(20)` 会阻塞当前执行流程约 20 ms，不应在中断回调中使用。
+- `HAL_GetTick()` 无输入，返回 `uint32_t` 毫秒节拍；推荐用差值判断时间，避免阻塞。
+
+### 5. EXTI 入口和回调参数
+
+```c
+void HAL_GPIO_EXTI_IRQHandler(uint16_t GPIO_Pin);
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+```
+
+| 参数 | 含义 |
+|---|---|
+| `GPIO_Pin` | 触发的引脚掩码，例如 `GPIO_PIN_12` 或 CubeMX 生成的 `KEY_Pin`，不是数字 `12` |
+
+`HAL_GPIO_EXTI_IRQHandler()` 由真正的 IRQHandler 调用，负责检查/清除 EXTI 挂起位，再调用用户重写的 `HAL_GPIO_EXTI_Callback()`。共享中断中应根据 `GPIO_Pin` 判断来源。
 
 ## 四、按键消抖
 
@@ -249,6 +303,15 @@ HAL_NVIC_SetPriority(TIM2_IRQn, 1, 0);
 HAL_NVIC_EnableIRQ(TIM2_IRQn);
 ```
 
+| 函数参数 | 含义 |
+|---|---|
+| `PriorityGroup` | 全局优先级分组常量，例如 `NVIC_PRIORITYGROUP_2` |
+| `IRQn` | 中断通道枚举，例如 `EXTI15_10_IRQn`、`USART1_IRQn`；不是 GPIO 引脚号 |
+| `PreemptPriority` | 抢占优先级数值，范围由当前分组决定，数值越小越优先 |
+| `SubPriority` | 响应/子优先级数值，只给相同抢占级的挂起请求排序 |
+| `HAL_NVIC_SetPriority()` 返回值 | 无；它写入指定 IRQ 的优先级配置 |
+| `HAL_NVIC_EnableIRQ()` 返回值 | 无；它在 NVIC 中使能指定 IRQ |
+
 若直接使用 CMSIS，可通过当前分组编码后再写入：
 
 ```c
@@ -319,6 +382,24 @@ NVIC_EnableIRQ(EXTI15_10_IRQn);
 ```
 
 正常工程优先让 CubeMX/HAL 完成初始化；这些接口主要用于运行时临时控制和调试。
+
+- `__HAL_GPIO_EXTI_GET_IT(GPIO_Pin)`：参数是引脚掩码，返回该 EXTI 位是否挂起。
+- `__HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin)`：参数同样是引脚掩码，无返回值，通过向对应 `PR` 位写 1 清除挂起。
+- `NVIC_EncodePriority(group, preempt, sub)`：依次传入当前分组、抢占值和响应值，返回可交给 `NVIC_SetPriority()` 的编码优先级。
+
+CMSIS 的 NVIC 控制函数参数如下：
+
+| 函数 | 参数 | 返回/作用 |
+|---|---|---|
+| `NVIC_GetPriorityGrouping()` | 无参数 | 返回当前优先级分组编码 |
+| `NVIC_SetPriority(IRQn, priority)` | `IRQn` 为中断通道；`priority` 为已编码的逻辑优先级 | 无返回值，设置指定通道优先级 |
+| `NVIC_EnableIRQ(IRQn)` | 要使能的中断通道 | 无返回值 |
+| `NVIC_DisableIRQ(IRQn)` | 要临时禁用的中断通道 | 无返回值；不会自动清除已经挂起的请求 |
+| `NVIC_SetPendingIRQ(IRQn)` | 要由软件置为挂起的中断通道 | 无返回值 |
+| `NVIC_ClearPendingIRQ(IRQn)` | 要清除挂起状态的中断通道 | 无返回值 |
+| `NVIC_GetActive(IRQn)` | 要查询的中断通道 | 返回非零表示该中断正在执行 |
+
+这里的 `IRQn` 始终是 `IRQn_Type` 枚举，例如 `EXTI15_10_IRQn`，不是引脚号、EXTI 线号或中断优先级数值。
 
 ## 六、中断回调与主循环分工
 
