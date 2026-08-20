@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
+{% block styles %}
+  {{ super() }}
+  {% if page and page.is_homepage %}
+    <script>document.documentElement.dataset.lhyzsPage = "home";</script>
+  {% endif %}
+  <style>
+    .md-header { height: 4.5rem; }
+    .md-main__inner { margin: 0 !important; }
+    @media (max-width: 60rem) { .md-header { height: 7.5rem; } }
+  </style>
+{% endblock %}
+
 {% block extrahead %}
   {{ super() }}
   {% set page_path = page.url if page and page.url else "" %}

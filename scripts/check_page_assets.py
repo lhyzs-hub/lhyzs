@@ -28,7 +28,7 @@ CSS_BUNDLES = {
 GLOBAL_CSS = {"fonts.css", "core.css"}
 
 JS_BUNDLES = {
-    "site-v5.js",
+    "site-v6.js",
     "supabase-admin-loader.js",
     "notes-hub.js",
     "supabase-config.js",
@@ -42,7 +42,7 @@ JS_BUNDLES = {
     "not-found-game-v3.js",
 }
 
-GLOBAL_JS = {"site-v5.js", "supabase-admin-loader.js"}
+GLOBAL_JS = {"site-v6.js", "supabase-admin-loader.js"}
 MAX_PAGE_CSS_BYTES = 60 * 1024
 MAX_PAGE_JS_BYTES = 60 * 1024
 

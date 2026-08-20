@@ -1,4 +1,4 @@
-const CACHE_VERSION = "lhyzs-site-v45";
+const CACHE_VERSION = "lhyzs-site-v46";
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const CACHE_PREFIXES = ["lhyzs-site-v", "lhyzs-offline-"];
@@ -8,7 +8,7 @@ const CORE_ASSETS = [
   OFFLINE_PAGE,
   new URL("assets/stylesheets/not-found.css", SCOPE_URL).href,
   new URL("assets/javascripts/not-found-game-v3.js", SCOPE_URL).href,
-  new URL("assets/images/game/daisy-run-spritesheet-v2.png", SCOPE_URL).href,
+  new URL("assets/images/game/daisy-run-spritesheet-v2.webp", SCOPE_URL).href,
   new URL("assets/audio/navigation-metal-click.ogg", SCOPE_URL).href,
 ];
 

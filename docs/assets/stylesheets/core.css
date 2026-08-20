@@ -642,7 +642,7 @@ body.lhyzs-music-playing .music-switch__record {
 
 
 /* Reading layout for notes, daily photos, friends, search and PLAY. */
-body:not(.lhyzs-home) .md-main__inner {
+html:not([data-lhyzs-page="home"]) body .md-main__inner {
   width: min(100%, 88rem) !important;
   max-width: 88rem !important;
   min-height: calc(100vh - 4.5rem);
@@ -650,7 +650,7 @@ body:not(.lhyzs-home) .md-main__inner {
   padding: clamp(2rem, 5vw, 4.5rem) clamp(1rem, 4vw, 3rem) 5rem;
 }
 
-body:not(.lhyzs-home) .md-content__inner {
+html:not([data-lhyzs-page="home"]) body .md-content__inner {
   width: min(100%, 68rem);
   max-width: 68rem;
   min-height: 28rem;
@@ -663,7 +663,7 @@ body:not(.lhyzs-home) .md-content__inner {
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px rgba(240, 213, 138, 0.04);
 }
 
-body:not(.lhyzs-home) .md-typeset h1 {
+html:not([data-lhyzs-page="home"]) body .md-typeset h1 {
   margin: 0 0 2rem;
   color: var(--lhyzs-gold-light);
   font-family: Inter, sans-serif;
@@ -671,25 +671,25 @@ body:not(.lhyzs-home) .md-typeset h1 {
   letter-spacing: -0.02em;
 }
 
-body:not(.lhyzs-home) .md-typeset h2 {
+html:not([data-lhyzs-page="home"]) body .md-typeset h2 {
   margin-top: 2rem;
   color: var(--lhyzs-text);
   font-family: Inter, sans-serif;
   font-weight: 700;
 }
 
-body:not(.lhyzs-home) .md-typeset a {
+html:not([data-lhyzs-page="home"]) body .md-typeset a {
   color: #70b9c8;
   text-decoration-color: rgba(112, 185, 200, 0.35);
   text-underline-offset: 0.18em;
 }
 
-body:not(.lhyzs-home) .md-typeset a:hover,
-body:not(.lhyzs-home) .md-typeset a:focus-visible {
+html:not([data-lhyzs-page="home"]) body .md-typeset a:hover,
+html:not([data-lhyzs-page="home"]) body .md-typeset a:focus-visible {
   color: var(--lhyzs-gold-light);
 }
 
-body:not(.lhyzs-home) .md-typeset li {
+html:not([data-lhyzs-page="home"]) body .md-typeset li {
   margin-block: 0.55rem;
 }
 
@@ -941,7 +941,7 @@ body:not(.lhyzs-home) .md-typeset li {
   .game-nav .md-tabs__link { min-height: 2.75rem; }
   .md-main__inner { min-height: calc(100vh - 7.5rem); }
 
-  body:not(.lhyzs-home) .md-main__inner {
+  html:not([data-lhyzs-page="home"]) body .md-main__inner {
     min-height: calc(100vh - 7.5rem);
     padding-top: 2rem;
   }
@@ -1273,13 +1273,13 @@ html[data-lhyzs-theme="light"] .play-launcher:hover,
 html[data-lhyzs-theme="light"] .play-launcher:focus-visible { color: #111820 !important; }
 
 
-html[data-lhyzs-theme="light"] body:not(.lhyzs-home) .md-content__inner {
+html[data-lhyzs-theme="light"]:not([data-lhyzs-page="home"]) body .md-content__inner {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(239, 244, 246, 0.96));
   border-color: rgba(154, 110, 30, 0.3);
   box-shadow: 0 20px 55px rgba(38, 51, 60, 0.1), inset 0 1px rgba(255, 255, 255, 0.9);
 }
 
-html[data-lhyzs-theme="light"] body:not(.lhyzs-home) .md-typeset a { color: #176c7d; }
+html[data-lhyzs-theme="light"]:not([data-lhyzs-page="home"]) body .md-typeset a { color: #176c7d; }
 html[data-lhyzs-theme="light"] .player-profile__trigger,
 html[data-lhyzs-theme="light"] .player-profile__card { box-shadow: 0 8px 24px rgba(28, 41, 51, 0.14); }
 

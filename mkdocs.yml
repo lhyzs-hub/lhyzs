@@ -19,7 +19,7 @@ extra_css:
   - assets/stylesheets/fonts.css
   - assets/stylesheets/core.css
 extra_javascript:
-  - assets/javascripts/site-v5.js
+  - assets/javascripts/site-v6.js
   - assets/javascripts/supabase-admin-loader.js
 nav:
   - 主页: index.md
