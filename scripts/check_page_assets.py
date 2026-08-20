@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 
 
 CSS_BUNDLES = {
+    "fonts.css",
     "core.css",
     "home.css",
     "friends.css",
@@ -23,6 +24,8 @@ CSS_BUNDLES = {
     "store.css",
     "admin-comments.css",
 }
+
+GLOBAL_CSS = {"fonts.css", "core.css"}
 
 JS_BUNDLES = {
     "site-v4.js",
@@ -86,7 +89,7 @@ def page_kind(relative: Path) -> str:
 def expected_assets(kind: str) -> tuple[set[str], set[str]]:
     if kind == "not-found":
         return {"not-found.css"}, {"not-found-game-v3.js"}
-    css = {"core.css"}
+    css = set(GLOBAL_CSS)
     scripts = set(GLOBAL_JS)
     if kind == "home":
         css.add("home.css")

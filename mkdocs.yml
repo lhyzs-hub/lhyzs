@@ -12,13 +12,11 @@ theme:
     scheme: slate
     primary: indigo
     accent: amber
-  font:
-    text: Roboto
-    code: JetBrains Mono
-    heading: Inter
+  font: false
 markdown_extensions:
   - admonition
 extra_css:
+  - assets/stylesheets/fonts.css
   - assets/stylesheets/core.css
 extra_javascript:
   - assets/javascripts/site-v4.js
