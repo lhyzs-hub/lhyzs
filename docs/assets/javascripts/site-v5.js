@@ -283,6 +283,7 @@
   const initHeader = () => {
     document.body.classList.toggle("lhyzs-home", Boolean(document.querySelector(".hero-home")));
     document.body.classList.toggle("lhyzs-notes-hub", Boolean(document.querySelector("[data-notes-hub]")));
+    document.querySelector('.md-search[role="dialog"]')?.setAttribute("aria-label", "站内搜索");
 
     const headerInner = document.querySelector(".md-header__inner");
     if (!headerInner || headerInner.dataset.lhyzsReady === "true") return;
@@ -301,7 +302,7 @@
       <span class="play-launcher__steps" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="play-launcher__frame" aria-hidden="true"></span>
       <span class="play-launcher__label" data-text="PLAY">PLAY</span>`;
-    launcher.setAttribute("aria-label", "打开小游戏入口");
+    launcher.setAttribute("aria-label", "PLAY：打开小游戏入口");
     const normalizePath = (pathname) => pathname.replace(/index\.html$/, "").replace(/\/+$/, "/");
     const isPlayPage = normalizePath(window.location.pathname) === normalizePath(new URL(playUrl).pathname);
     launcher.classList.toggle("is-play-current", isPlayPage);
@@ -516,7 +517,7 @@
     const profile = document.createElement("div");
     profile.className = "player-profile";
     profile.innerHTML = `
-      <button class="player-profile__trigger" type="button" aria-expanded="false" aria-controls="player-profile-card" aria-label="查看 lhyzs 的个人信息">
+      <button class="player-profile__trigger" type="button" aria-expanded="false" aria-controls="player-profile-card" aria-label="查看 lhyzs 的个人信息，等级 19">
         <img class="player-profile__avatar" src="${assetUrl}" alt="">
         <span class="player-profile__notification" data-comment-admin-trigger-count hidden>0</span>
         <span class="player-profile__level" aria-label="等级 19">19</span>
