@@ -26,6 +26,7 @@ CSS_BUNDLES = {
 
 JS_BUNDLES = {
     "site-v4.js",
+    "supabase-admin-loader.js",
     "notes-hub.js",
     "supabase-config.js",
     "admin-auth.js",
@@ -38,7 +39,7 @@ JS_BUNDLES = {
     "not-found-game-v3.js",
 }
 
-GLOBAL_JS = {"site-v4.js", "supabase-config.js", "admin-auth.js"}
+GLOBAL_JS = {"site-v4.js", "supabase-admin-loader.js"}
 MAX_PAGE_CSS_BYTES = 60 * 1024
 MAX_PAGE_JS_BYTES = 60 * 1024
 
@@ -94,23 +95,23 @@ def expected_assets(kind: str) -> tuple[set[str], set[str]]:
         scripts.add("notes-hub.js")
     elif kind == "note":
         css.add("comments.css")
-        scripts.update({"security.js", "comments.js"})
+        scripts.update({"supabase-config.js", "security.js", "comments.js"})
     elif kind == "daily":
         css.update({"daily.css", "comments.css"})
-        scripts.update({"security.js", "daily.js", "comments.js"})
+        scripts.update({"supabase-config.js", "security.js", "daily.js", "comments.js"})
     elif kind == "play":
         css.add("play.css")
-        scripts.update({"security.js", "game-loader.js"})
+        scripts.update({"supabase-config.js", "security.js", "game-loader.js"})
     elif kind == "workshop":
         css.add("workshop.css")
-        scripts.update({"security.js", "workshop.js"})
+        scripts.update({"supabase-config.js", "security.js", "workshop.js"})
     elif kind == "store":
         css.add("store.css")
     elif kind == "friends":
         css.add("friends.css")
     elif kind == "admin-comments":
         css.add("admin-comments.css")
-        scripts.add("admin-comments.js")
+        scripts.update({"supabase-config.js", "admin-auth.js", "admin-comments.js"})
     return css, scripts
 
 

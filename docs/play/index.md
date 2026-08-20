@@ -69,5 +69,3 @@ hide:
     </aside>
   </div>
 </section>
-
-<script src="../assets/javascripts/game-loader.js" data-game-script="../assets/javascripts/game.js"></script>

@@ -28,6 +28,11 @@
 {% block scripts %}
   {{ super() }}
   {% set page_path = page.url if page and page.url else "" %}
+  {% set uses_supabase = page_path.startswith("notes/") and page_path != "notes/" or page_path in ["daily/", "play/", "play/workshop/", "admin/comments/"] %}
+  {% if uses_supabase %}
+    <script src="{{ 'assets/javascripts/supabase-config.js' | url }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.min.js" defer></script>
+  {% endif %}
   {% if page and page.is_homepage %}
     <script src="{{ 'assets/javascripts/home-secret-track.js' | url }}" defer></script>
   {% elif page_path == "notes/" %}
@@ -41,10 +46,12 @@
     <script src="{{ 'assets/javascripts/comments.js' | url }}" defer></script>
   {% elif page_path == "play/" %}
     <script src="{{ 'assets/javascripts/security.js' | url }}" defer></script>
+    <script src="{{ 'assets/javascripts/game-loader.js' | url }}" data-game-script="{{ 'assets/javascripts/game.js' | url }}" defer></script>
   {% elif page_path == "play/workshop/" %}
     <script src="{{ 'assets/javascripts/security.js' | url }}" defer></script>
     <script src="{{ 'assets/javascripts/workshop.js' | url }}" defer></script>
   {% elif page_path == "admin/comments/" %}
+    <script src="{{ 'assets/javascripts/admin-auth.js' | url }}" defer></script>
     <script src="{{ 'assets/javascripts/admin-comments.js' | url }}" defer></script>
   {% endif %}
 {% endblock %}
