@@ -574,7 +574,12 @@ def render_note_row(note: dict[str, object], recent: bool = False) -> str:
 
 def write_notes_index(note_paths: list[Path]) -> list[dict[str, object]]:
     catalog = collect_note_catalog(note_paths)
-    category_order = ["工科学习", "大学课程学习"]
+    preferred_categories = ["工科学习", "大学课程学习", "运动"]
+    available_categories = {str(note["category"]) for note in catalog}
+    category_order = [category for category in preferred_categories if category in available_categories]
+    category_order.extend(
+        sorted(available_categories - set(category_order), key=str.casefold)
+    )
     order = {category: index for index, category in enumerate(category_order)}
     catalog.sort(key=lambda note: (order.get(str(note["category"]), 99), str(note["title"]).casefold()))
     recent = sorted(
