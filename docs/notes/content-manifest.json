@@ -1,10 +1,11 @@
 {
   "version": 1,
-  "note_count": 32,
-  "latest_updated": "2026-08-19",
+  "note_count": 53,
+  "latest_updated": "2026-08-24",
   "categories": {
-    "大学课程学习": 4,
-    "工科学习": 28
+    "大学课程学习": 5,
+    "工科学习": 28,
+    "篮球训练": 20
   },
   "notes": [
     {
@@ -38,7 +39,7 @@
       "title": "26 夏《创业启程》个人向攻略",
       "category": "大学课程学习",
       "subgroup": "创业启程",
-      "updated": "2026-08-19",
+      "updated": "2026-08-24",
       "reading_minutes": 3,
       "tags": []
     },
@@ -47,7 +48,7 @@
       "title": "创业启程期末复习知识点",
       "category": "大学课程学习",
       "subgroup": "创业启程",
-      "updated": "2026-08-19",
+      "updated": "2026-08-24",
       "reading_minutes": 32,
       "tags": [
         "创业启程",
@@ -55,6 +56,15 @@
         "期末复习",
         "Obsidian"
       ]
+    },
+    {
+      "path": "大学课程学习/工程训练/工程训练课程总结报告.md",
+      "title": "《工程训练》课程总结报告",
+      "category": "大学课程学习",
+      "subgroup": "工程训练",
+      "updated": "2026-08-24",
+      "reading_minutes": 8,
+      "tags": []
     },
     {
       "path": "工科学习/koala考核期/PID控制笔记.md",
@@ -476,7 +486,7 @@
       "category": "工科学习",
       "subgroup": "视觉",
       "updated": "2026-08-08",
-      "reading_minutes": 11,
+      "reading_minutes": 35,
       "tags": [
         "领域/人工智能",
         "主题/计算机视觉",
@@ -486,6 +496,186 @@
         "难度/入门",
         "YOLO26"
       ]
+    },
+    {
+      "path": "篮球训练/00-篮球零基础到进阶路线图.md",
+      "title": "篮球零基础到进阶路线图",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 4,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/01-热身、落地与基础球性.md",
+      "title": "热身、落地与基础球性",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 2,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/02-原地运球训练.md",
+      "title": "原地运球训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/03-行进间运球、护球与弱手.md",
+      "title": "行进间运球、护球与弱手",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/04-变向过人基础动作训练.md",
+      "title": "变向过人基础动作训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/05-变向过人进阶组合与节奏训练.md",
+      "title": "变向过人进阶组合与节奏训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/06-三威胁与启动脚步训练.md",
+      "title": "三威胁与启动脚步训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/07-投篮基础与姿势训练.md",
+      "title": "投篮基础与姿势训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/08-接球投篮与移动投篮训练.md",
+      "title": "接球投篮与移动投篮训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/09-运球急停、撤步与中距离训练.md",
+      "title": "运球急停、撤步与中距离训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/10-上篮与篮下终结训练.md",
+      "title": "上篮与篮下终结训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/11-进攻脚步、转身与背身训练.md",
+      "title": "进攻脚步、转身与背身训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/12-传球、接球与无球跑动训练.md",
+      "title": "传球、接球与无球跑动训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/13-身体对抗与一对一训练.md",
+      "title": "身体对抗与一对一训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/14-防守姿势、脚步与实战训练.md",
+      "title": "防守姿势、脚步与实战训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/15-篮板球与卡位训练.md",
+      "title": "篮板球与卡位训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 2,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/16-弹跳与爆发力训练.md",
+      "title": "弹跳与爆发力训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/17-力量、体能、灵活性与恢复训练.md",
+      "title": "力量、体能、灵活性与恢复训练",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/18-十六周训练计划与能力测试.md",
+      "title": "十六周训练计划与能力测试",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 3,
+      "tags": []
+    },
+    {
+      "path": "篮球训练/19-教程来源与动作索引.md",
+      "title": "教程来源与动作索引",
+      "category": "篮球训练",
+      "subgroup": "未分类",
+      "updated": "2026-08-24",
+      "reading_minutes": 4,
+      "tags": []
     }
   ]
 }
