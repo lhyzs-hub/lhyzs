@@ -24,7 +24,7 @@ tags:
 2. 形状由哪些几何关系控制？
 3. 大小和位置由哪些尺寸控制？
 
-![02-草图完全定义](../attachments/SolidWorks/02-草图完全定义.png)
+![02-草图完全定义](../adobe%20illustrator/attachments/SolidWorks/02-草图完全定义.png)
 
 ## 二、创建草图的标准流程
 

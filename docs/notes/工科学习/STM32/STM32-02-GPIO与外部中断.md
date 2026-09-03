@@ -158,7 +158,7 @@ EXTI0–15 与 GPIO 引脚编号对应，而不是与端口一一对应。因此
 
 下面按视频中的读图方式，从右侧输入线沿白色信号线向左看。绿色表示本例中写入 `1` 或正在起作用的位：
 
-![stm32-exti-video-style](../attachments/diagrams/stm32-exti-video-style.png)
+![stm32-exti-video-style](../adobe%20illustrator/attachments/diagrams/stm32-exti-video-style.png)
 
 读图只抓住三步：
 
@@ -230,7 +230,7 @@ STM32 资料中常见两个名称：
 
 STM32F1 在 8 位优先级字段中实现高 4 位。`AIRCR.PRIGROUP` 决定这 4 位如何分给抢占优先级和响应优先级；分组是整个 NVIC 的全局设置，不是每个 IRQ 单独选择。
 
-![stm32-nvic-priority-grouping-video-style](../attachments/diagrams/stm32-nvic-priority-grouping-video-style.png)
+![stm32-nvic-priority-grouping-video-style](../adobe%20illustrator/attachments/diagrams/stm32-nvic-priority-grouping-video-style.png)
 
 | HAL 分组 | 抢占位数 | 响应位数 | 抢占取值 | 响应取值 |
 |---|---:|---:|---:|---:|
@@ -257,7 +257,7 @@ STM32F1 在 8 位优先级字段中实现高 4 位。`AIRCR.PRIGROUP` 决定这 
 | B：USART | 1 | 3 | 抢占值 1 小于 2，可以打断 A |
 | C：TIM | 1 | 0 | 与 B 抢占值相同，不能打断 B；但排队时优先于响应值为 3 的同级请求 |
 
-![stm32-nvic-preemption-video-style](../attachments/diagrams/stm32-nvic-preemption-video-style.png)
+![stm32-nvic-preemption-video-style](../adobe%20illustrator/attachments/diagrams/stm32-nvic-preemption-video-style.png)
 
 执行顺序：
 

@@ -27,7 +27,12 @@ MANIFEST_NAME = "content-manifest.json"
 
 SKIPPED_SUFFIXES = {".base"}
 SKIPPED_DIRS = {".obsidian", ".trash", "音乐学习", "运动"}
-SKIPPED_NOTE_NAMES = {"电路设计索引.md", "知识库首页.md", "迁移记录.md"}
+SKIPPED_NOTE_NAMES = {
+    "电路设计索引.md",
+    "知识库首页.md",
+    "知识库总览.md",
+    "迁移记录.md",
+}
 SKIPPED_NOTE_STEMS = {Path(name).stem for name in SKIPPED_NOTE_NAMES}
 SKIPPED_WIKILINK_PATTERN = re.compile(
     r"!?\[\[(?:"
@@ -35,6 +40,9 @@ SKIPPED_WIKILINK_PATTERN = re.compile(
     + r")(?:[#|][^\]]*)?\]\]"
 )
 WIKILINK_PATTERN = re.compile(r"(!?)\[\[([^\[\]\n]+)\]\]")
+MARKDOWN_IMAGE_PATTERN = re.compile(
+    r"(?P<prefix>!\[[^\]\n]*\]\()(?P<target><[^>\n]+>|[^)\s]+)(?P<suffix>[^)\n]*\))"
+)
 CALLOUT_START_PATTERN = re.compile(
     r"^(?P<indent>\s*)>\s*\[!(?P<kind>[A-Za-z-]+)\][+-]?\s*(?P<title>.*)$"
 )
@@ -307,6 +315,47 @@ def convert_wikilinks(
     return WIKILINK_PATTERN.sub(replace, markdown)
 
 
+def convert_markdown_image_paths(
+    markdown: str,
+    current: Path,
+    assets_exact: dict[str, Path],
+    assets_by_name: dict[str, list[Path]],
+    stats: dict[str, int],
+) -> str:
+    """把 Obsidian 可按文件名解析的普通 Markdown 图片改为发布目录中的相对路径。"""
+    converted: list[str] = []
+    fence: str | None = None
+
+    def replace(match: re.Match[str]) -> str:
+        raw_target = match.group("target")
+        target = raw_target[1:-1] if raw_target.startswith("<") else raw_target
+        target = target.replace("%20", " ").replace("%28", "(").replace("%29", ")")
+        if target.startswith(("#", "/", "//")) or re.match(r"^[a-z][a-z0-9+.-]*:", target, re.I):
+            return match.group(0)
+
+        clean_target = target.split("#", 1)[0].split("?", 1)[0]
+        asset = resolve_asset(clean_target, current, assets_exact, assets_by_name)
+        if not asset:
+            return match.group(0)
+
+        rewritten = relative_link(current, asset)
+        if rewritten != raw_target:
+            stats["markdown_images"] += 1
+        return f'{match.group("prefix")}{rewritten}{match.group("suffix")}'
+
+    for line in markdown.splitlines():
+        fence_match = FENCE_PATTERN.match(line)
+        if fence_match:
+            marker = fence_match.group(1)[0]
+            fence = None if fence == marker else marker if fence is None else fence
+            converted.append(line)
+            continue
+        converted.append(line if fence else MARKDOWN_IMAGE_PATTERN.sub(replace, line))
+
+    result = "\n".join(converted)
+    return result + ("\n" if markdown.endswith("\n") else "")
+
+
 def convert_obsidian_callouts(markdown: str, stats: dict[str, int]) -> str:
     """将 Obsidian 的 > [!type] Callout 转为 MkDocs admonition。"""
     lines = markdown.splitlines()
@@ -366,6 +415,7 @@ def copy_vault() -> tuple[list[Path], int, dict[str, int], list[str]]:
         "notes": 0,
         "anchors": 0,
         "embeds": 0,
+        "markdown_images": 0,
         "assets": 0,
         "callouts": 0,
         "unresolved": 0,
@@ -392,6 +442,13 @@ def copy_vault() -> tuple[list[Path], int, dict[str, int], list[str]]:
             heading_index,
             stats,
             unresolved,
+        )
+        converted = convert_markdown_image_paths(
+            converted,
+            relative,
+            assets_exact,
+            assets_by_name,
+            stats,
         )
         converted = convert_obsidian_callouts(converted, stats)
         target.write_text(converted, encoding="utf-8")
@@ -770,6 +827,7 @@ def main() -> None:
         f"{stats['notes']} 个笔记链接，"
         f"{stats['anchors']} 个标题锚点，"
         f"{stats['embeds']} 个图片嵌入，"
+        f"{stats['markdown_images']} 个普通图片路径，"
         f"{stats['assets']} 个附件链接，"
         f"{stats['callouts']} 个提示框。"
     )

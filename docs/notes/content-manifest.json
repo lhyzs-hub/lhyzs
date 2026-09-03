@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "note_count": 34,
+  "note_count": 38,
   "latest_updated": "2026-09-04",
   "categories": {
-    "大学课程学习": 6,
-    "工科学习": 28
+    "大学课程学习": 7,
+    "工科学习": 31
   },
   "notes": [
     {
@@ -66,6 +66,18 @@
       ]
     },
     {
+      "path": "大学课程学习/大学课程学习索引.md",
+      "title": "大学课程学习索引",
+      "category": "大学课程学习",
+      "subgroup": "未分类",
+      "updated": "2026-09-04",
+      "reading_minutes": 1,
+      "tags": [
+        "领域/大学课程",
+        "类型/索引"
+      ]
+    },
+    {
       "path": "大学课程学习/工程训练/工程训练课程总结报告.md",
       "title": "《工程训练》课程总结报告",
       "category": "大学课程学习",
@@ -73,6 +85,21 @@
       "updated": "2026-09-04",
       "reading_minutes": 8,
       "tags": []
+    },
+    {
+      "path": "工科学习/adobe illustrator/[Adobe Illustrator 2026] 科研绘图零基础入门.md",
+      "title": "Adobe Illustrator 2026 科研绘图零基础入门",
+      "category": "工科学习",
+      "subgroup": "adobe illustrator",
+      "updated": "2026-09-04",
+      "reading_minutes": 25,
+      "tags": [
+        "科研工具",
+        "Adobe Illustrator",
+        "科研绘图",
+        "论文作图",
+        "矢量图"
+      ]
     },
     {
       "path": "工科学习/koala考核期/PID控制笔记.md",
@@ -133,6 +160,20 @@
         "平台/Arduino",
         "类型/实践笔记",
         "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/origin/[Origin 2026] 科研绘图小白实战教程.md",
+      "title": "Origin 2026 科研绘图小白实战教程",
+      "category": "工科学习",
+      "subgroup": "origin",
+      "updated": "2026-09-04",
+      "reading_minutes": 12,
+      "tags": [
+        "科研工具",
+        "Origin",
+        "数据可视化",
+        "论文作图"
       ]
     },
     {
@@ -486,6 +527,18 @@
         "主题/大语言模型",
         "类型/学习笔记",
         "难度/入门"
+      ]
+    },
+    {
+      "path": "工科学习/科研绘图工具索引.md",
+      "title": "科研绘图工具索引",
+      "category": "工科学习",
+      "subgroup": "未分类",
+      "updated": "2026-09-04",
+      "reading_minutes": 1,
+      "tags": [
+        "领域/科研工具",
+        "类型/索引"
       ]
     },
     {

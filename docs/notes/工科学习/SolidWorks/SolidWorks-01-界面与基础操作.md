@@ -28,7 +28,7 @@ tags:
 
 ## 二、界面分区
 
-![01-界面分区](../attachments/SolidWorks/01-界面分区.png)
+![01-界面分区](../adobe%20illustrator/attachments/SolidWorks/01-界面分区.png)
 
 ### 2.1 CommandManager
 

@@ -18,7 +18,7 @@ aliases:
 !!! abstract "这篇笔记解决什么问题"
     用单片机读取传感器或编码器反馈，通过 PID 计算 PWM 输出，让电机速度、位置或温度更快、更稳地跟随目标值。
 
-![pid-control-loop-v2](../attachments/diagrams/pid-control-loop-v2.png)
+![pid-control-loop-v2](../adobe%20illustrator/attachments/diagrams/pid-control-loop-v2.png)
 
 ## 最小闭环
 

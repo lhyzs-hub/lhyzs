@@ -20,7 +20,7 @@ tags:
 
 每个自由零件有 6 个自由度：沿 X/Y/Z 平移，绕 X/Y/Z 转动。配合通过几何关系消除自由度，但机构需要的自由度应保留。
 
-![04-装配体配合自由度](../attachments/SolidWorks/04-装配体配合自由度.png)
+![04-装配体配合自由度](../adobe%20illustrator/attachments/SolidWorks/04-装配体配合自由度.png)
 
 ## 二、新建装配体
 
