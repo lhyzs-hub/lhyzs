@@ -1,7 +1,7 @@
 <section class="store-space">
   <header class="store-hero">
     <div class="store-hero__copy">
-      <p class="store-eyebrow">CAMPUS BOOKS · 14 本在售</p>
+      <p class="store-eyebrow">CAMPUS BOOKS · 12 本在售</p>
       <h1>二手教材商店</h1>
       <p class="store-lead">长期三折出书，zjg东区可送</p>
       <div class="store-badges" aria-label="交易信息">
@@ -14,7 +14,7 @@
 
   <div class="store-section-heading">
     <div><span>01</span><h2>数学基础</h2></div>
-    <p>微积分与线性代数</p>
+    <p>微积分教材</p>
   </div>
   <div class="store-grid">
     <article class="book-card">
@@ -24,10 +24,6 @@
     <article class="book-card">
       <img src="../assets/images/store/math-sticker.png" alt="紧张的数学书表情包" loading="lazy" width="256" height="256">
       <div><p>数学基础</p><h3>微积分下（苏德矿）</h3><span>三折 · 东区可送</span></div>
-    </article>
-    <article class="book-card">
-      <img src="../assets/images/store/math-sticker.png" alt="紧张的数学书表情包" loading="lazy" width="256" height="256">
-      <div><p>数学基础</p><h3>线性代数（黄正达）</h3><span>三折 · 东区可送</span></div>
     </article>
   </div>
 
@@ -66,10 +62,6 @@
     <article class="book-card">
       <img src="../assets/images/store/engineering-sticker.png" alt="戴安全帽的工程书表情包" loading="lazy" width="256" height="256">
       <div><p>工业工程</p><h3>人因工程</h3><span>三折 · 东区可送</span></div>
-    </article>
-    <article class="book-card">
-      <img src="../assets/images/store/engineering-sticker.png" alt="戴安全帽的工程书表情包" loading="lazy" width="256" height="256">
-      <div><p>计算机</p><h3>C语言程序设计</h3><span>三折 · 东区可送</span></div>
     </article>
     <article class="book-card">
       <img src="../assets/images/store/engineering-sticker.png" alt="戴安全帽的工程书表情包" loading="lazy" width="256" height="256">

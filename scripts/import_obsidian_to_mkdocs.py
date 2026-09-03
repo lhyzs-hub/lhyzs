@@ -26,7 +26,7 @@ STAGING_ROOT = DOCS_ROOT / ".notes-import-staging"
 MANIFEST_NAME = "content-manifest.json"
 
 SKIPPED_SUFFIXES = {".base"}
-SKIPPED_DIRS = {".obsidian", ".trash", "音乐学习"}
+SKIPPED_DIRS = {".obsidian", ".trash", "音乐学习", "运动"}
 SKIPPED_NOTE_NAMES = {"电路设计索引.md", "知识库首页.md", "迁移记录.md"}
 SKIPPED_NOTE_STEMS = {Path(name).stem for name in SKIPPED_NOTE_NAMES}
 SKIPPED_WIKILINK_PATTERN = re.compile(
