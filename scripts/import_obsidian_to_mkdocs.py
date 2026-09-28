@@ -581,6 +581,9 @@ def collect_note_catalog(note_paths: list[Path]) -> list[dict[str, object]]:
         if len(relative.parts) > 2:
             subgroup = relative.parts[1]
             subgroup_href = f"{category}/{subgroup}/"
+        elif "类型/索引" in tags or title.endswith("索引"):
+            subgroup = title
+            subgroup_href = f"{relative.with_suffix('').as_posix()}/"
         elif category == "大学课程学习" and "创业启程" in title:
             subgroup = "创业启程"
             subgroup_href = f"{relative.with_suffix('').as_posix()}/"
