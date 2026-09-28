@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380">
+  <defs>
+    <marker id="force" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#d45b45"/>
+    </marker>
+    <style>
+      .frame{fill:#e8edf1;stroke:#34495e;stroke-width:4;stroke-linejoin:round}
+      .part{fill:#b9c9d4;stroke:#34495e;stroke-width:3}
+      .sample{fill:#efc777;stroke:#815f26;stroke-width:3}
+      .wire{fill:none;stroke:#637381;stroke-width:2.5}
+      .forceLine{fill:none;stroke:#d45b45;stroke-width:4;marker-end:url(#force)}
+      text{font-family:Arial,sans-serif;font-size:20px;fill:#253746}
+      .sub{font-size:17px;fill:#586b7a}
+    </style>
+  </defs>
+  <rect width="900" height="380" fill="#fff"/>
+  <text x="28" y="36" font-size="21" fill="#586b7a">项目 3｜拉伸试验装置图（简化示意）</text>
+  <rect class="frame" x="92" y="72" width="310" height="255" rx="4"/>
+  <rect x="133" y="105" width="24" height="180" fill="#fff" stroke="#34495e" stroke-width="3"/>
+  <rect x="337" y="105" width="24" height="180" fill="#fff" stroke="#34495e" stroke-width="3"/>
+  <rect class="part" x="145" y="94" width="204" height="30"/>
+  <rect class="part" x="185" y="124" width="125" height="34"/>
+  <rect class="part" x="219" y="156" width="58" height="18"/>
+  <path class="sample" d="M236 174 H260 L269 190 V224 L260 240 H236 L227 224 V190 Z"/>
+  <rect class="part" x="219" y="240" width="58" height="18"/>
+  <rect class="part" x="185" y="258" width="125" height="30"/>
+  <rect class="part" x="145" y="288" width="204" height="24"/>
+  <path class="forceLine" d="M296 194 V160"/>
+  <path class="forceLine" d="M200 222 V257"/>
+  <rect x="223" y="197" width="50" height="18" rx="7" fill="#d7ede7" stroke="#278477" stroke-width="2.5"/>
+  <path class="wire" d="M273 206 C320 206 340 213 430 213"/>
+  <rect x="445" y="174" width="148" height="78" rx="8" fill="#f2f5f7" stroke="#34495e" stroke-width="3"/>
+  <text x="463" y="207">数据采集</text><text x="461" y="232">/控制系统</text>
+  <path class="wire" d="M593 213 H653"/>
+  <rect x="653" y="118" width="202" height="176" rx="5" fill="#fff" stroke="#34495e" stroke-width="3"/>
+  <path d="M680 258 V151 M680 258 H828" fill="none" stroke="#637381" stroke-width="2.5"/>
+  <path d="M689 246 C717 237 728 220 744 199 C764 178 784 175 816 160" fill="none" stroke="#278477" stroke-width="4"/>
+  <text x="698" y="282" class="sub">应变 ε</text>
+  <text x="660" y="145" class="sub">应力 σ</text>
+  <text x="102" y="351" class="sub">机架 / 夹具 / 试样 / 传感器必须按真实设备增删与标注</text>
+  <text x="663" y="326" class="sub">曲线应从原始数据软件导入</text>
+</svg>

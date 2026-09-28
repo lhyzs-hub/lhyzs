@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+    </marker>
+    <style>
+      .line{stroke:#34495e;stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .thin{stroke:#637381;stroke-width:2.5;fill:none}
+      .load{stroke:#d45b45;stroke-width:4;fill:none;marker-end:url(#arr)}
+      .reaction{stroke:#278477;stroke-width:4;fill:none;marker-end:url(#arr)}
+      .dim{stroke:#637381;stroke-width:2.5;fill:none;marker-start:url(#arr);marker-end:url(#arr)}
+      text{font-family:Arial,sans-serif;font-size:25px;fill:#253746}
+      .red{fill:#b84b39;font-weight:bold}
+      .green{fill:#23776c;font-weight:bold}
+    </style>
+  </defs>
+  <rect width="900" height="320" fill="#fff"/>
+  <text x="28" y="38" font-size="21" fill="#586b7a">项目 1｜简支梁自由体图（示意，不按比例）</text>
+  <rect x="125" y="129" width="650" height="26" rx="3" fill="#dfe6eb" stroke="#34495e" stroke-width="4"/>
+  <path d="M170 158 L138 208 L202 208 Z" fill="#f4f6f8" stroke="#34495e" stroke-width="3"/>
+  <path d="M700 158 L668 208 L732 208 Z" fill="#f4f6f8" stroke="#34495e" stroke-width="3"/>
+  <circle cx="681" cy="218" r="7" fill="#fff" stroke="#34495e" stroke-width="3"/>
+  <circle cx="719" cy="218" r="7" fill="#fff" stroke="#34495e" stroke-width="3"/>
+  <path class="thin" d="M124 226 H204 M660 234 H740"/>
+  <path class="load" d="M450 58 V116"/>
+  <path class="reaction" d="M170 273 V172"/>
+  <path class="reaction" d="M700 273 V172"/>
+  <path class="thin" d="M170 226 V252 M700 236 V252"/>
+  <path class="dim" d="M184 253 H686"/>
+  <text class="red" x="466" y="84">P</text>
+  <text class="green" x="112" y="286">R_A</text>
+  <text class="green" x="709" y="286">R_B</text>
+  <text x="151" y="247">A</text>
+  <text x="703" y="247">B</text>
+  <text x="425" y="246">L</text>
+</svg>

@@ -39,7 +39,7 @@ SKIPPED_WIKILINK_PATTERN = re.compile(
     + "|".join(re.escape(name) for name in sorted(SKIPPED_NOTE_STEMS))
     + r")(?:[#|][^\]]*)?\]\]"
 )
-WIKILINK_PATTERN = re.compile(r"(!?)\[\[([^\[\]\n]+)\]\]")
+WIKILINK_PATTERN = re.compile(r"(!?)\[\[(.+?)\]\]")
 MARKDOWN_IMAGE_PATTERN = re.compile(
     r"(?P<prefix>!\[[^\]\n]*\]\()(?P<target><[^>\n]+>|[^)\s]+)(?P<suffix>[^)\n]*\))"
 )

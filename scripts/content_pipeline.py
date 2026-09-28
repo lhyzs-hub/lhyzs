@@ -19,7 +19,7 @@ DOCS_ROOT = ROOT / "docs"
 NOTES_ROOT = DOCS_ROOT / "notes"
 MANIFEST_FILE = NOTES_ROOT / "content-manifest.json"
 INDEX_FILE = NOTES_ROOT / "index.md"
-WIKILINK_PATTERN = re.compile(r"!?\[\[[^\]\n]+\]\]")
+WIKILINK_PATTERN = re.compile(r"!?\[\[.+?\]\]")
 MARKDOWN_LINK_PATTERN = re.compile(r"!?\[[^\]]*\]\((?P<target><[^>]+>|[^)\s]+)")
 HTML_ASSET_PATTERN = re.compile(r"(?:src|href)=[\"'](?P<target>[^\"']+)[\"']", re.IGNORECASE)
 NAV_START = "<!-- lhyzs-note-nav:start -->"
