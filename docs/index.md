@@ -15,10 +15,12 @@
 <section class="home-portals" aria-label="继续探索">
   <div class="home-portals__inner">
     <nav class="hero-home__actions" aria-label="首页快捷入口">
-      <a class="hero-home__action" href="notes/大学课程学习/军事理论/26期末卷_答案/">
+      <!-- lhyzs-latest-note-action:start -->
+      <a class="hero-home__action" href="notes/大学课程学习/25机械转专业经验/25机械转专业经验/">
         <span aria-hidden="true">01</span>
         <strong>查看最新笔记</strong>
       </a>
+<!-- lhyzs-latest-note-action:end -->
       <a class="hero-home__action" href="daily/">
         <span aria-hidden="true">02</span>
         <strong>浏览最近日常</strong>
@@ -28,11 +30,13 @@
         <strong>进入 PLAY</strong>
       </a>
     </nav>
-    <a class="hero-home__update" href="notes/大学课程学习/军事理论/">
+    <!-- lhyzs-latest-note-update:start -->
+    <a class="hero-home__update" href="notes/大学课程学习/25机械转专业经验/25机械转专业经验/">
       <span class="hero-home__update-label"><i aria-hidden="true"></i>最近更新</span>
-      <strong>新增军事理论复习资料</strong>
-      <time datetime="2026-08-09">2026.08.09</time>
+      <strong>机械转专业经验</strong>
+      <time datetime="2026-09-28">2026.09.28</time>
       <span class="hero-home__update-arrow" aria-hidden="true">↗</span>
     </a>
+<!-- lhyzs-latest-note-update:end -->
   </div>
 </section>

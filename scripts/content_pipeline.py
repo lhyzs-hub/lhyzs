@@ -19,6 +19,7 @@ DOCS_ROOT = ROOT / "docs"
 NOTES_ROOT = DOCS_ROOT / "notes"
 MANIFEST_FILE = NOTES_ROOT / "content-manifest.json"
 INDEX_FILE = NOTES_ROOT / "index.md"
+HOME_INDEX_FILE = DOCS_ROOT / "index.md"
 WIKILINK_PATTERN = re.compile(r"!?\[\[.+?\]\]")
 MARKDOWN_LINK_PATTERN = re.compile(r"!?\[[^\]]*\]\((?P<target><[^>]+>|[^)\s]+)")
 HTML_ASSET_PATTERN = re.compile(r"(?:src|href)=[\"'](?P<target>[^\"']+)[\"']", re.IGNORECASE)
@@ -160,6 +161,34 @@ def validate_index(manifest: dict[str, object], errors: list[str]) -> None:
             errors.append(f"笔记首页缺少条目：{entry['path']}")
 
 
+def validate_home_latest_note(manifest: dict[str, object], errors: list[str]) -> None:
+    if not HOME_INDEX_FILE.is_file():
+        errors.append("缺少网站首页 docs/index.md")
+        return
+    notes = manifest.get("notes", [])
+    if not notes:
+        return
+
+    latest = max(notes, key=lambda note: (str(note["updated"]), str(note["title"]).casefold()))
+    href = html.escape(
+        "notes/" + PurePosixPath(str(latest["path"])).with_suffix("").as_posix() + "/",
+        quote=True,
+    )
+    home = HOME_INDEX_FILE.read_text(encoding="utf-8")
+    for name in ("action", "update"):
+        start = f"<!-- lhyzs-latest-note-{name}:start -->"
+        end = f"<!-- lhyzs-latest-note-{name}:end -->"
+        block = re.search(rf"{re.escape(start)}(.*?){re.escape(end)}", home, re.DOTALL)
+        if not block or f'href="{href}"' not in block.group(1):
+            errors.append(f"首页最新笔记的{name}入口已过期")
+            continue
+        if name == "update" and (
+            f'<strong>{html.escape(str(latest["title"]))}</strong>' not in block.group(1)
+            or f'datetime="{latest["updated"]}"' not in block.group(1)
+        ):
+            errors.append("首页最新笔记的标题或日期已过期")
+
+
 def validate_sitemap(site_dir: Path, files: list[Path], errors: list[str]) -> int:
     sitemap = site_dir / "sitemap.xml"
     if not sitemap.is_file():
@@ -195,6 +224,7 @@ def run_check(site_dir: Path | None = None) -> None:
         errors.extend("未转换 Obsidian 语法：" + item for item in wikilinks)
     manifest = validate_manifest(files, errors)
     validate_index(manifest, errors)
+    validate_home_latest_note(manifest, errors)
     link_count = validate_links([INDEX_FILE, *files], errors)
     sitemap_count = validate_sitemap(site_dir, files, errors) if site_dir else 0
     if errors:

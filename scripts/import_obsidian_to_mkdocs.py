@@ -523,8 +523,7 @@ def write_directory_index(directory: Path, title: str) -> None:
         lines.append("")
 
     if markdown_files:
-        section_title = "创业启程" if title == "大学课程学习" else "笔记"
-        lines.extend([f"## {section_title}", ""])
+        lines.extend(["## 笔记", ""])
         for note in markdown_files:
             lines.append(f"- [{note.stem}]({note.name})")
         lines.append("")
@@ -606,6 +605,42 @@ def collect_note_catalog(note_paths: list[Path]) -> list[dict[str, object]]:
 
 def note_web_href(relative: Path) -> str:
     return f"{relative.with_suffix('').as_posix()}/"
+
+
+def prepare_home_latest_note(catalog: list[dict[str, object]]) -> tuple[Path, str] | None:
+    home_index = DOCS_ROOT / "index.md"
+    if not home_index.is_file() or not catalog:
+        return None
+
+    latest = max(catalog, key=lambda note: (str(note["updated"]), str(note["title"]).casefold()))
+    href = html.escape(f'notes/{note_web_href(latest["path"])}', quote=True)
+    title = html.escape(str(latest["title"]))
+    updated = html.escape(str(latest["updated"]))
+    markdown = home_index.read_text(encoding="utf-8")
+    blocks = {
+        "action": (
+            f'      <a class="hero-home__action" href="{href}">\n'
+            '        <span aria-hidden="true">01</span>\n'
+            '        <strong>查看最新笔记</strong>\n'
+            '      </a>'
+        ),
+        "update": (
+            f'    <a class="hero-home__update" href="{href}">\n'
+            '      <span class="hero-home__update-label"><i aria-hidden="true"></i>最近更新</span>\n'
+            f'      <strong>{title}</strong>\n'
+            f'      <time datetime="{updated}">{updated.replace("-", ".")}</time>\n'
+            '      <span class="hero-home__update-arrow" aria-hidden="true">↗</span>\n'
+            '    </a>'
+        ),
+    }
+    for name, block in blocks.items():
+        start = f"<!-- lhyzs-latest-note-{name}:start -->"
+        end = f"<!-- lhyzs-latest-note-{name}:end -->"
+        pattern = re.compile(rf"{re.escape(start)}.*?{re.escape(end)}", re.DOTALL)
+        if len(pattern.findall(markdown)) != 1:
+            fail(f"首页缺少唯一的自动更新标记：{name}")
+        markdown = pattern.sub(lambda _: f"{start}\n{block}\n{end}", markdown, count=1)
+    return home_index, markdown
 
 
 def render_note_row(note: dict[str, object], recent: bool = False) -> str:
@@ -813,6 +848,7 @@ def main() -> None:
     note_paths, asset_count, stats, unresolved = copy_vault()
     generate_note_navigation(note_paths)
     catalog = generate_indexes()
+    home_update = prepare_home_latest_note(catalog)
 
     if unresolved:
         print("以下 Obsidian 链接无法解析：", file=sys.stderr)
@@ -821,6 +857,8 @@ def main() -> None:
         fail("导入已停止；原网站笔记未被替换。")
 
     replace_notes_tree()
+    if home_update:
+        home_update[0].write_text(home_update[1], encoding="utf-8")
     print(f"同步完成：{len(note_paths)} 篇笔记，{asset_count} 个附件。")
     print(
         "已转换："
