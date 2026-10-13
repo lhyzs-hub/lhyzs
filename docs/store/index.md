@@ -1,7 +1,7 @@
 <section class="store-space">
   <header class="store-hero">
     <div class="store-hero__copy">
-      <p class="store-eyebrow">CAMPUS BOOKS · 11 本在售</p>
+      <p class="store-eyebrow">CAMPUS BOOKS · 10 本在售</p>
       <h1>二手教材商店</h1>
       <p class="store-lead">长期三折出书，zjg东区可送</p>
       <div class="store-badges" aria-label="交易信息">
@@ -55,10 +55,6 @@
     <p>机械、计算机、人工智能与工程制图</p>
   </div>
   <div class="store-grid">
-    <article class="book-card">
-      <img src="../assets/images/store/engineering-sticker.png" alt="戴安全帽的工程书表情包" loading="lazy" width="256" height="256">
-      <div><p>工业工程</p><h3>人因工程</h3><span>三折 · 东区可送</span></div>
-    </article>
     <article class="book-card">
       <img src="../assets/images/store/engineering-sticker.png" alt="戴安全帽的工程书表情包" loading="lazy" width="256" height="256">
       <div><p>工程实践</p><h3>工程训练实训教程</h3><span>三折 · 东区可送</span></div>
