@@ -2,13 +2,11 @@
 
 {% block styles %}
   {{ super() }}
-  {% if page and page.is_homepage %}
-    <script>document.documentElement.dataset.lhyzsPage = "home";</script>
-  {% endif %}
+  {% set page_path = page.url if page and page.url else "" %}
+  {% set page_kind = "home" if page and page.is_homepage else "notes" if page_path == "notes/" else "note" if page_path.startswith("notes/") else page_path.strip("/").replace("/", "-") %}
+  <script>document.documentElement.dataset.lhyzsPage = {{ page_kind | tojson }};</script>
   <style>
-    .md-header { height: 4.5rem; }
-    .md-main__inner { margin: 0 !important; }
-    @media (max-width: 60rem) { .md-header { height: 7.5rem; } }
+    .md-header { height: var(--lhyzs-header-height, 4.5rem); }
   </style>
 {% endblock %}
 
@@ -20,6 +18,7 @@
   {% elif page_path == "notes/" %}
     <link rel="stylesheet" href="{{ 'assets/stylesheets/notes.css' | url }}">
   {% elif page_path.startswith("notes/") %}
+    <link rel="stylesheet" href="{{ 'assets/stylesheets/reading.css' | url }}">
     <link rel="stylesheet" href="{{ 'assets/stylesheets/comments.css' | url }}">
   {% elif page_path == "daily/" %}
     <link rel="stylesheet" href="{{ 'assets/stylesheets/daily.css' | url }}">

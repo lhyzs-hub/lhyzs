@@ -104,8 +104,9 @@
   const applyTheme = (theme, button) => {
     document.documentElement.dataset.lhyzsTheme = theme;
     document.documentElement.style.colorScheme = theme;
-    if (!button) return;
     const isLight = theme === "light";
+    document.body?.setAttribute("data-md-color-scheme", isLight ? "default" : "slate");
+    if (!button) return;
     const switchesToLight = !isLight;
     button.dataset.currentTheme = theme;
     button.dataset.nextTheme = switchesToLight ? "light" : "dark";

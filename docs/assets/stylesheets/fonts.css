@@ -28,4 +28,6 @@
 :root {
   --md-text-font: "Roboto";
   --md-code-font: "JetBrains Mono";
+  --md-text-font-family: "Roboto", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --md-code-font-family: "JetBrains Mono", "Microsoft YaHei", monospace;
 }

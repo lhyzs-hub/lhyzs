@@ -16,6 +16,7 @@ CSS_BUNDLES = {
     "home.css",
     "friends.css",
     "notes.css",
+    "reading.css",
     "not-found.css",
     "comments.css",
     "play.css",
@@ -97,7 +98,7 @@ def expected_assets(kind: str) -> tuple[set[str], set[str]]:
         css.add("notes.css")
         scripts.add("notes-hub.js")
     elif kind == "note":
-        css.add("comments.css")
+        css.update({"reading.css", "comments.css"})
         scripts.update({"supabase-config.js", "security.js", "comments.js"})
     elif kind == "daily":
         css.update({"daily.css", "comments.css"})
@@ -174,6 +175,10 @@ def validate(site_dir: Path) -> None:
 
     if (site_dir / "assets" / "stylesheets" / "theme-v2.css").exists():
         failures.append("Legacy monolithic theme-v2.css is still present in the generated site")
+
+    # The gallery is imported only after opening a photo, not in the initial bundle.
+    if not (site_dir / "assets" / "javascripts" / "daily-gallery.js").is_file():
+        failures.append("Missing on-demand daily-gallery.js")
 
     if failures:
         raise RuntimeError("Page asset validation failed:\n- " + "\n- ".join(failures))

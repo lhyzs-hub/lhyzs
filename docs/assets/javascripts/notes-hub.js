@@ -17,6 +17,11 @@
     const pageSize = 10;
     let category = "all";
     let limit = pageSize;
+    const categories = page.querySelector("[data-note-categories]");
+    const wideScreen = window.matchMedia("(min-width: 48em)");
+    const updateCategories = () => { if (categories) categories.open = wideScreen.matches; };
+    updateCategories();
+    wideScreen.addEventListener("change", updateCategories);
 
     const rowData = (row) => ({
       title: row.querySelector(".note-row__main strong")?.textContent.trim() || "",
@@ -35,6 +40,7 @@
     const update = ({ reset = false } = {}) => {
       if (reset) limit = pageSize;
       const query = (input?.value || "").trim().toLocaleLowerCase("zh-CN");
+      page.classList.toggle("is-filtering", Boolean(query || category !== "all"));
       const matches = rows.filter((row) => {
         const matchesCategory = category === "all" || row.dataset.category === category;
         const matchesQuery = !query || (row.dataset.search || "").includes(query);

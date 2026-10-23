@@ -1,5 +1,13 @@
 /* lhyzs page bundle: friends */
 /* Friend directory: quiet portraits framed like linked profile plaques. */
+html[data-lhyzs-page="friends"] .md-content__inner {
+  max-width: 48rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  min-height: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
 .friend-directory__intro {
   max-width: 34rem;
   margin: -0.75rem 0 2rem !important;
@@ -26,8 +34,8 @@
   color: var(--lhyzs-text) !important;
   background: linear-gradient(135deg, rgba(17, 29, 40, 0.96), rgba(8, 14, 21, 0.94));
   border: 1px solid rgba(201, 155, 61, 0.4);
-  border-radius: 0.45rem;
-  box-shadow: inset 3px 0 rgba(42, 101, 115, 0.55), 0 1rem 2.6rem rgba(0, 0, 0, 0.18);
+  border-radius: var(--lhyzs-radius);
+  box-shadow: inset 2px 0 rgba(42, 101, 115, 0.55);
   text-decoration: none !important;
   transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
 }

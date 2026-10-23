@@ -11,6 +11,9 @@
   --lhyzs-gold-dark: #7d5d25;
   --lhyzs-cyan: #2a6573;
   --lhyzs-green: #62a88c;
+  --lhyzs-header-height: 4.5rem;
+  --lhyzs-radius: 0.25rem;
+  --lhyzs-display-font: Inter, "Microsoft YaHei", "PingFang SC", sans-serif;
   color-scheme: dark;
 }
 
@@ -33,7 +36,7 @@ body {
   position: sticky !important;
   top: 0;
   z-index: 1000 !important;
-  height: 4.5rem;
+  height: var(--lhyzs-header-height);
   background:
     linear-gradient(90deg, rgba(4, 7, 12, 0.99), rgba(10, 17, 25, 0.98) 52%, rgba(4, 7, 12, 0.99)) !important;
   border-top: 1px solid rgba(240, 213, 138, 0.18);
@@ -586,11 +589,11 @@ body {
 }
 
 /* Full-width content and simplified landing page */
-.md-main__inner {
-  width: 100% !important;
-  max-width: none !important;
+:where(html[data-lhyzs-page="home"]) .md-main__inner {
+  width: 100%;
+  max-width: none;
   min-height: calc(100vh - 4.5rem);
-  margin: 0 !important;
+  margin: 0;
 }
 
 .md-content {
@@ -598,10 +601,13 @@ body {
   color: var(--lhyzs-text) !important;
 }
 
-.md-content__inner {
+html[data-lhyzs-page="home"] .md-content { margin: 0; }
+
+html[data-lhyzs-page="home"] .md-content__inner {
   max-width: none;
+  /* Hidden Material sidebars must not add gutters to the existing full-bleed hero. */
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0;
 }
 
 .md-content__inner::before,
@@ -642,54 +648,53 @@ body.lhyzs-music-playing .music-switch__record {
 
 
 /* Reading layout for notes, daily photos, friends, search and PLAY. */
-html:not([data-lhyzs-page="home"]) body .md-main__inner {
-  width: min(100%, 88rem) !important;
-  max-width: 88rem !important;
-  min-height: calc(100vh - 4.5rem);
-  margin: 0 auto !important;
-  padding: clamp(2rem, 5vw, 4.5rem) clamp(1rem, 4vw, 3rem) 5rem;
+:where(html:not([data-lhyzs-page="home"])) .md-main__inner {
+  width: min(100%, 76rem);
+  max-width: 76rem;
+  min-height: calc(100vh - var(--lhyzs-header-height));
+  margin: 0 auto;
+  padding: clamp(1rem, 3vw, 2.5rem) clamp(0.8rem, 3vw, 2rem) 3rem;
 }
 
-html:not([data-lhyzs-page="home"]) body .md-content__inner {
-  width: min(100%, 68rem);
+:where(html:not([data-lhyzs-page="home"])) .md-content__inner {
+  width: 100%;
   max-width: 68rem;
-  min-height: 28rem;
-  margin: 0 auto !important;
-  padding: clamp(1.5rem, 4vw, 3.5rem) !important;
-  background:
-    linear-gradient(145deg, rgba(18, 31, 43, 0.76), rgba(7, 11, 18, 0.9));
-  border: 1px solid rgba(125, 93, 37, 0.34);
-  border-radius: 0.75rem;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px rgba(240, 213, 138, 0.04);
+  min-height: 0;
+  margin: 0 auto;
+  padding: clamp(1rem, 2.5vw, 2rem);
+  background: var(--lhyzs-surface);
+  border: 1px solid rgba(125, 93, 37, 0.28);
+  border-radius: var(--lhyzs-radius);
 }
 
-html:not([data-lhyzs-page="home"]) body .md-typeset h1 {
-  margin: 0 0 2rem;
-  color: var(--lhyzs-gold-light);
-  font-family: Inter, sans-serif;
-  font-weight: 800;
+:where(html:not([data-lhyzs-page="home"])) .md-typeset h1 {
+  margin: 0 0 1rem;
+  color: var(--lhyzs-text);
+  font-family: var(--lhyzs-display-font);
+  font-weight: 750;
+  line-height: 1.25;
   letter-spacing: -0.02em;
 }
 
-html:not([data-lhyzs-page="home"]) body .md-typeset h2 {
+:where(html:not([data-lhyzs-page="home"])) .md-typeset h2 {
   margin-top: 2rem;
   color: var(--lhyzs-text);
-  font-family: Inter, sans-serif;
+  font-family: var(--lhyzs-display-font);
   font-weight: 700;
 }
 
-html:not([data-lhyzs-page="home"]) body .md-typeset a {
+:where(html:not([data-lhyzs-page="home"])) .md-typeset a {
   color: #70b9c8;
   text-decoration-color: rgba(112, 185, 200, 0.35);
   text-underline-offset: 0.18em;
 }
 
-html:not([data-lhyzs-page="home"]) body .md-typeset a:hover,
-html:not([data-lhyzs-page="home"]) body .md-typeset a:focus-visible {
+:where(html:not([data-lhyzs-page="home"])) .md-typeset a:hover,
+:where(html:not([data-lhyzs-page="home"])) .md-typeset a:focus-visible {
   color: var(--lhyzs-gold-light);
 }
 
-html:not([data-lhyzs-page="home"]) body .md-typeset li {
+:where(html:not([data-lhyzs-page="home"])) .md-typeset li {
   margin-block: 0.55rem;
 }
 
@@ -898,20 +903,35 @@ html:not([data-lhyzs-page="home"]) body .md-typeset li {
 }
 
 @media (max-width: 60rem) {
-  .md-header {
-    height: 7.5rem;
-  }
+  :root { --lhyzs-header-height: 5.6rem; }
 
   .md-header__inner {
     align-items: flex-start !important;
-    padding-top: 0.75rem !important;
+    gap: 0.25rem;
+    padding: 0.4rem 0.6rem 0 !important;
   }
 
+  .md-header__button.md-icon[for="__search"],
+  .md-header .music-switch,
+  .md-header .theme-switch {
+    width: 2.2rem;
+    height: 2.2rem;
+    flex: 0 0 2.2rem;
+    margin-inline: 0;
+  }
+
+  .md-header__button.md-icon[for="__search"] { margin-left: auto; }
+  .play-launcher { width: 4.6rem; height: 2.2rem; font-size: 0.68rem; padding-inline: 1rem 0.65rem; }
+  .play-launcher__steps { left: 0.55rem; }
+  .player-profile { margin-left: 0; }
+  .player-profile__trigger { width: 2.2rem; height: 2.2rem; border-radius: var(--lhyzs-radius); }
+  .player-profile__level { font-size: 0.5rem; min-width: 1.25rem; right: -0.25rem; bottom: -0.25rem; }
+
   .game-nav {
-    top: 4.5rem;
-    left: 1rem;
-    right: 1rem;
-    height: 3rem;
+    top: 3.2rem;
+    left: 0.6rem;
+    right: 0.6rem;
+    height: 2.4rem;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-behavior: smooth;
@@ -936,40 +956,19 @@ html:not([data-lhyzs-page="home"]) body .md-typeset li {
   }
 
   .game-nav::-webkit-scrollbar { display: none; }
-  .game-nav .md-tabs__list { justify-content: center; min-width: max-content; height: 3rem; }
-  .game-nav .md-tabs__item { min-height: 2.75rem; scroll-snap-align: center; }
-  .game-nav .md-tabs__link { min-height: 2.75rem; }
-  .md-main__inner { min-height: calc(100vh - 7.5rem); }
-
-  html:not([data-lhyzs-page="home"]) body .md-main__inner {
-    min-height: calc(100vh - 7.5rem);
-    padding-top: 2rem;
-  }
+  .game-nav .md-tabs__list { justify-content: center; min-width: max-content; height: 2.4rem; }
+  .game-nav .md-tabs__item { min-height: 2.2rem; scroll-snap-align: center; }
+  .game-nav .md-tabs__link { min-height: 2.2rem; }
+  .md-main__inner { min-height: calc(100vh - var(--lhyzs-header-height)); }
 }
 
 
 @media (max-width: 34rem) {
-  .md-header__inner {
-    gap: 0.3rem;
-    padding-inline: 0.85rem !important;
-  }
-  .play-launcher {
-    width: 6rem;
-    padding-inline: 1.05rem 0.75rem;
-  }
-  .play-launcher__steps { left: 0.6rem; }
-  .player-profile {
-    margin-left: 0;
-  }
-  .player-profile__trigger {
-    width: 2.4rem;
-    height: 2.4rem;
-  }
   .game-nav .md-tabs__list {
     display: grid;
-    grid-template-columns: repeat(var(--lhyzs-nav-item-count, 5), minmax(3.5rem, 1fr));
+    grid-template-columns: repeat(var(--lhyzs-nav-item-count, 5), minmax(2.75rem, 1fr));
     justify-content: stretch;
-    width: max(100%, calc(var(--lhyzs-nav-item-count, 5) * 3.5rem));
+    width: max(100%, calc(var(--lhyzs-nav-item-count, 5) * 2.75rem));
     min-width: 0;
     gap: 0;
   }
@@ -1229,6 +1228,11 @@ html[data-lhyzs-theme="light"] .md-header {
   box-shadow: 0 8px 24px rgba(22, 34, 43, 0.1) !important;
 }
 
+html[data-lhyzs-theme="light"] .md-search__form {
+  background: var(--lhyzs-surface);
+  box-shadow: inset 0 0 0 1px rgba(54, 90, 100, 0.24);
+}
+
 html[data-lhyzs-theme="light"] .music-switch {
   color: #66747c;
   background: linear-gradient(145deg, #ffffff, #e8eef0 76%);
@@ -1273,13 +1277,12 @@ html[data-lhyzs-theme="light"] .play-launcher:hover,
 html[data-lhyzs-theme="light"] .play-launcher:focus-visible { color: #111820 !important; }
 
 
-html[data-lhyzs-theme="light"]:not([data-lhyzs-page="home"]) body .md-content__inner {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(239, 244, 246, 0.96));
-  border-color: rgba(154, 110, 30, 0.3);
-  box-shadow: 0 20px 55px rgba(38, 51, 60, 0.1), inset 0 1px rgba(255, 255, 255, 0.9);
+:where(html[data-lhyzs-theme="light"]:not([data-lhyzs-page="home"])) .md-content__inner {
+  background: var(--lhyzs-surface);
+  border-color: rgba(154, 110, 30, 0.24);
 }
 
-html[data-lhyzs-theme="light"]:not([data-lhyzs-page="home"]) body .md-typeset a { color: #176c7d; }
+:where(html[data-lhyzs-theme="light"]:not([data-lhyzs-page="home"])) .md-typeset a { color: #176c7d; }
 html[data-lhyzs-theme="light"] .player-profile__trigger,
 html[data-lhyzs-theme="light"] .player-profile__card { box-shadow: 0 8px 24px rgba(28, 41, 51, 0.14); }
 

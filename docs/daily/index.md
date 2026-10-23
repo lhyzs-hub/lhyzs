@@ -33,6 +33,23 @@ hide:
     </button>
   </div>
 
+  <dialog class="daily-gallery" id="daily-gallery" aria-label="照片预览">
+    <header class="daily-gallery__header">
+      <p id="daily-gallery-caption"></p>
+      <button type="button" data-gallery-close aria-label="关闭照片预览">关闭 <span aria-hidden="true">×</span></button>
+    </header>
+    <div class="daily-gallery__stage">
+      <img id="daily-gallery-image" alt="">
+      <p id="daily-gallery-status" role="status"></p>
+      <button type="button" data-gallery-retry hidden>重新加载</button>
+    </div>
+    <nav class="daily-gallery__nav" aria-label="切换照片">
+      <button type="button" data-gallery-prev aria-label="上一张照片">← 上一张</button>
+      <span id="daily-gallery-count" aria-live="polite"></span>
+      <button type="button" data-gallery-next aria-label="下一张照片">下一张 →</button>
+    </nav>
+  </dialog>
+
   <aside class="daily-editor" id="daily-editor" aria-labelledby="daily-editor-title" hidden>
     <div class="daily-editor__backdrop" data-editor-close></div>
     <section class="daily-editor__panel">

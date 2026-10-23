@@ -1,4 +1,6 @@
 (() => {
+  const galleryUrl = new URL("daily-gallery.js", document.currentScript.src).href;
+  let galleryModule;
   const initDaily = async () => {
     const root = document.querySelector("#daily-space");
     if (!root || root.dataset.ready === "true") return;
@@ -51,13 +53,15 @@
       const safeImages = images.filter(Boolean);
       if (!safeImages.length) return "";
       return `<div class="daily-card__photos photos-${Math.min(safeImages.length, 4)}">
-        ${safeImages.map((src, index) => {
+        ${safeImages.slice(0, 4).map((src, index) => {
           const meta = photoManifest[src] || {};
           const preview = meta.thumbnail || src;
           const dimensions = meta.thumbnail_width && meta.thumbnail_height
             ? ` width="${meta.thumbnail_width}" height="${meta.thumbnail_height}"`
             : "";
-          return `<button type="button" data-photo="${escapeHtml(src)}" aria-label="查看第 ${index + 1} 张高清照片"><img src="${escapeHtml(preview)}" alt="" loading="lazy" decoding="async" fetchpriority="low"${dimensions}></button>`;
+          const remaining = index === 3 ? safeImages.length - 4 : 0;
+          const label = remaining > 0 ? `查看全部 ${safeImages.length} 张照片` : `查看第 ${index + 1} 张高清照片`;
+          return `<button type="button" data-photo="${escapeHtml(src)}" data-photo-index="${index}" aria-label="${label}" aria-haspopup="dialog"><img src="${escapeHtml(preview)}" alt="" loading="lazy" decoding="async" fetchpriority="low"${dimensions}>${remaining > 0 ? `<span class="daily-card__photo-more" aria-hidden="true">+${remaining}<small>查看全部</small></span>` : ""}</button>`;
         }).join("")}
       </div>`;
     };
@@ -198,7 +202,7 @@
       visibleEntryCount += entryBatchSize;
       render();
     });
-    timeline.addEventListener("click", (event) => {
+    timeline.addEventListener("click", async (event) => {
       const edit = event.target.closest("[data-edit-entry]");
       if (edit && ownerHost) {
         loadEntry(edit.dataset.editEntry);
@@ -206,7 +210,23 @@
         document.body.classList.add("daily-editor-open");
       }
       const photo = event.target.closest("[data-photo]");
-      if (photo) window.open(photo.dataset.photo, "_blank", "noopener,noreferrer");
+      if (photo) {
+        const entryId = photo.closest("[data-entry-id]")?.dataset.entryId;
+        const entry = payload.entries.find((item) => item.id === entryId);
+        const photos = (entry?.images || []).filter(Boolean);
+        if (!photos.length) return;
+        photo.setAttribute("aria-busy", "true");
+        try {
+          galleryModule ||= import(galleryUrl).catch((error) => { galleryModule = null; throw error; });
+          const { openGallery } = await galleryModule;
+          openGallery({ root, photos, index: Number(photo.dataset.photoIndex) || 0, caption: dateLabel(entry.date), opener: photo });
+        } catch (_) {
+          notice.textContent = "照片预览暂时无法打开，请联网后重试。";
+          notice.hidden = false;
+        } finally {
+          photo.removeAttribute("aria-busy");
+        }
+      }
     });
     root.querySelector("#daily-editor-new").addEventListener("click", clearForm);
     root.querySelector("#daily-editor-delete").addEventListener("click", async () => {
