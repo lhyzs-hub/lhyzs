@@ -56,42 +56,59 @@ hide:
       <header>
         <div>
           <p>OWNER MODE / LOCALHOST</p>
-          <h2 id="daily-editor-title">编辑日常</h2>
+          <h2 id="daily-editor-title">发布日常</h2>
         </div>
         <button type="button" data-editor-close aria-label="关闭编辑器">×</button>
       </header>
 
       <div class="daily-editor__permission">
-        <p>编辑只在本机显示。首次保存时请选择 <code>docs/daily/qzone.json</code>，浏览器会单独请求文件写入权限。</p>
-        <button id="daily-editor-file" type="button">选择数据文件</button>
-        <span id="daily-editor-file-status">尚未授权</span>
+        <p>连接一次 <code>docs</code> 文件夹后，文字和图片会直接写入站点。仅在本机显示。</p>
+        <button id="daily-editor-folder" type="button">连接 docs 文件夹</button>
+        <span id="daily-editor-file-status">尚未连接</span>
       </div>
 
-      <label class="daily-editor__select-label" for="daily-editor-select">选择记录</label>
-      <select id="daily-editor-select"></select>
+      <div class="daily-editor__mode">
+        <button id="daily-editor-new" type="button">发一条新的日常</button>
+        <label for="daily-editor-select">编辑已有</label>
+        <select id="daily-editor-select"></select>
+      </div>
 
       <form id="daily-editor-form">
         <input id="daily-editor-id" type="hidden">
-        <label>类型
-          <select id="daily-editor-type">
-            <option value="说说">说说</option>
-            <option value="相册">相册</option>
-            <option value="日常">日常</option>
-          </select>
-        </label>
-        <label>日期与时间
-          <input id="daily-editor-date" type="datetime-local" required>
-        </label>
-        <label>文字
-          <textarea id="daily-editor-content" rows="6" placeholder="记录今天发生的事…"></textarea>
-        </label>
-        <label>图片地址 <small>每行一张，可填写本地相对路径或网络地址</small>
-          <textarea id="daily-editor-images" rows="5" placeholder="../assets/images/daily/example.jpg"></textarea>
-        </label>
+        <input id="daily-editor-type" type="hidden" value="日常">
+
+        <label class="daily-editor__compose-label" for="daily-editor-content">此刻想记录什么？</label>
+        <textarea id="daily-editor-content" rows="4" placeholder="文字、心情、地点……"></textarea>
+
+        <div class="daily-editor__dropzone" id="daily-editor-dropzone" role="button" tabindex="0" aria-label="粘贴、拖入或点击添加图片">
+          <strong>粘贴、拖入或点击添加图片</strong>
+          <span>支持剪贴板截图，发布时自动压缩并生成缩略图</span>
+          <input id="daily-editor-image-input" class="daily-editor__file-input" type="file" accept="image/*" multiple>
+        </div>
+        <div class="daily-editor__image-list" id="daily-editor-image-list" aria-live="polite"></div>
+
+        <details class="daily-editor__advanced">
+          <summary>
+            <span id="daily-editor-time-summary">发布时间：现在（自动）</span>
+            <span class="daily-editor__advanced-hint" aria-hidden="true">修改</span>
+          </summary>
+          <label>自定义时间
+            <input id="daily-editor-date" type="datetime-local">
+            <small>留空就使用点击“发布”时的时间</small>
+          </label>
+          <label>类型
+            <select id="daily-editor-type-select">
+              <option value="日常">日常</option>
+              <option value="说说">说说</option>
+              <option value="相册">相册</option>
+            </select>
+          </label>
+        </details>
+
+        <p class="daily-editor__status" id="daily-editor-status" role="status"></p>
         <div class="daily-editor__buttons">
-          <button id="daily-editor-new" type="button">新增</button>
-          <button id="daily-editor-delete" class="danger" type="button">删除</button>
-          <button type="submit">保存修改</button>
+          <button id="daily-editor-delete" class="danger" type="button" hidden>删除这条</button>
+          <button type="submit" id="daily-editor-submit">发布</button>
         </div>
       </form>
     </section>

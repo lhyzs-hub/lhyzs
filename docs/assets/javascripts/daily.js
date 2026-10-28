@@ -1,5 +1,7 @@
 (() => {
-  const galleryUrl = new URL("daily-gallery.js", document.currentScript.src).href;
+  const scriptUrl = document.currentScript?.src || location.href;
+  const galleryUrl = new URL("daily-gallery.js", scriptUrl).href;
+  const editorUrl = new URL("daily-editor.js", scriptUrl).href;
   let galleryModule;
   const initDaily = async () => {
     const root = document.querySelector("#daily-space");
@@ -14,18 +16,6 @@
     const loadMore = root.querySelector("#daily-load-more");
     const loadMoreButton = root.querySelector("#daily-load-more-button");
     const loadMoreStatus = root.querySelector("#daily-load-more-status");
-    const editor = root.querySelector("#daily-editor");
-    const form = root.querySelector("#daily-editor-form");
-    const select = root.querySelector("#daily-editor-select");
-    const fileButton = root.querySelector("#daily-editor-file");
-    const fileStatus = root.querySelector("#daily-editor-file-status");
-    const fields = {
-      id: root.querySelector("#daily-editor-id"),
-      type: root.querySelector("#daily-editor-type"),
-      date: root.querySelector("#daily-editor-date"),
-      content: root.querySelector("#daily-editor-content"),
-      images: root.querySelector("#daily-editor-images")
-    };
 
     const ownerHost = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
     const initialEntryCount = 4;
@@ -34,7 +24,6 @@
     let photoManifest = {};
     let visibleEntryCount = initialEntryCount;
     const requestedCommentEntry = new URLSearchParams(location.search).get("comment");
-    let fileHandle = null;
 
     const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
@@ -82,13 +71,12 @@
       payload.entries = (payload.entries || []).sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
       postCount.textContent = String(payload.entries.length);
       photoCount.textContent = String(payload.entries.reduce((sum, entry) => sum + (entry.images || []).length, 0));
-      select.innerHTML = `<option value="">选择一条记录…</option>${payload.entries.map((entry) => `<option value="${escapeHtml(entry.id)}">${escapeHtml(dateLabel(entry.date))} · ${escapeHtml(entry.content || entry.type)}</option>`).join("")}`;
 
       if (!payload.entries.length) {
         notice.hidden = false;
         notice.innerHTML = ownerHost
-          ? "尚未导入 QQ 空间内容。完成二维码登录后，2025-08-15 之后的记录会显示在这里。"
-          : "日常内容正在整理中。"
+          ? "还没有日常记录。点右侧的“编辑日常”，写几个字或加一张图片就能发布。"
+          : "日常内容正在整理中。";
         timeline.innerHTML = "";
         loadMore.hidden = true;
         return;
@@ -121,49 +109,6 @@
       document.dispatchEvent(new CustomEvent("lhyzs:daily-rendered", { detail: { root } }));
     };
 
-    const clearForm = () => {
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-      fields.id.value = `daily-${Date.now()}`;
-      fields.type.value = "日常";
-      fields.date.value = now.toISOString().slice(0, 16);
-      fields.content.value = "";
-      fields.images.value = "";
-      select.value = "";
-    };
-
-    const loadEntry = (id) => {
-      const entry = payload.entries.find((item) => item.id === id);
-      if (!entry) return clearForm();
-      const date = new Date(entry.date);
-      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-      fields.id.value = entry.id;
-      fields.type.value = entry.type || "日常";
-      fields.date.value = date.toISOString().slice(0, 16);
-      fields.content.value = entry.content || "";
-      fields.images.value = (entry.images || []).join("\n");
-      select.value = entry.id;
-    };
-
-    const writePayload = async () => {
-      payload.generated_at = new Date().toISOString();
-      const content = JSON.stringify(payload, null, 2);
-      if (fileHandle) {
-        const writable = await fileHandle.createWritable();
-        await writable.write(content);
-        await writable.close();
-        fileStatus.textContent = "已保存到 qzone.json";
-      } else {
-        const blob = new Blob([content], { type: "application/json" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "qzone.json";
-        link.click();
-        URL.revokeObjectURL(link.href);
-        fileStatus.textContent = "已下载，请替换 docs/daily/qzone.json";
-      }
-    };
-
     try {
       const [response, manifestResponse] = await Promise.all([
         fetch(root.dataset.source, { cache: "no-cache" }),
@@ -173,13 +118,31 @@
       if (manifestResponse?.ok) photoManifest = await manifestResponse.json();
     } catch (_) {}
 
-    if (ownerHost) ownerButton.hidden = false;
     if (requestedCommentEntry) {
       const requestedIndex = payload.entries.findIndex((entry) => entry.id === requestedCommentEntry);
       if (requestedIndex >= 0) visibleEntryCount = Math.max(visibleEntryCount, requestedIndex + 1);
     }
     render();
-    clearForm();
+
+    if (ownerHost) {
+      ownerButton.hidden = false;
+      import(editorUrl)
+        .then(({ initDailyEditor }) => initDailyEditor({
+          root,
+          timeline,
+          ownerButton,
+          render,
+          getPayload: () => payload,
+          setPayload: (value) => { payload = value; },
+          getPhotoManifest: () => photoManifest,
+          setPhotoManifest: (value) => { photoManifest = value; }
+        }))
+        .catch(() => {
+          ownerButton.hidden = true;
+          notice.hidden = false;
+          notice.textContent = "日常编辑器加载失败，请刷新后重试。";
+        });
+    }
 
     if (requestedCommentEntry) {
       window.requestAnimationFrame(() => {
@@ -189,87 +152,29 @@
       });
     }
 
-    ownerButton.addEventListener("click", () => {
-      editor.hidden = false;
-      document.body.classList.add("daily-editor-open");
-    });
-    editor.querySelectorAll("[data-editor-close]").forEach((button) => button.addEventListener("click", () => {
-      editor.hidden = true;
-      document.body.classList.remove("daily-editor-open");
-    }));
-    select.addEventListener("change", () => loadEntry(select.value));
     loadMoreButton.addEventListener("click", () => {
       visibleEntryCount += entryBatchSize;
       render();
     });
+
     timeline.addEventListener("click", async (event) => {
-      const edit = event.target.closest("[data-edit-entry]");
-      if (edit && ownerHost) {
-        loadEntry(edit.dataset.editEntry);
-        editor.hidden = false;
-        document.body.classList.add("daily-editor-open");
-      }
       const photo = event.target.closest("[data-photo]");
-      if (photo) {
-        const entryId = photo.closest("[data-entry-id]")?.dataset.entryId;
-        const entry = payload.entries.find((item) => item.id === entryId);
-        const photos = (entry?.images || []).filter(Boolean);
-        if (!photos.length) return;
-        photo.setAttribute("aria-busy", "true");
-        try {
-          galleryModule ||= import(galleryUrl).catch((error) => { galleryModule = null; throw error; });
-          const { openGallery } = await galleryModule;
-          openGallery({ root, photos, index: Number(photo.dataset.photoIndex) || 0, caption: dateLabel(entry.date), opener: photo });
-        } catch (_) {
-          notice.textContent = "照片预览暂时无法打开，请联网后重试。";
-          notice.hidden = false;
-        } finally {
-          photo.removeAttribute("aria-busy");
-        }
+      if (!photo) return;
+      const entryId = photo.closest("[data-entry-id]")?.dataset.entryId;
+      const entry = payload.entries.find((item) => item.id === entryId);
+      const photos = (entry?.images || []).filter(Boolean);
+      if (!photos.length) return;
+      photo.setAttribute("aria-busy", "true");
+      try {
+        galleryModule ||= import(galleryUrl).catch((error) => { galleryModule = null; throw error; });
+        const { openGallery } = await galleryModule;
+        openGallery({ root, photos, index: Number(photo.dataset.photoIndex) || 0, caption: dateLabel(entry.date), opener: photo });
+      } catch (_) {
+        notice.textContent = "照片预览暂时无法打开，请联网后重试。";
+        notice.hidden = false;
+      } finally {
+        photo.removeAttribute("aria-busy");
       }
-    });
-    root.querySelector("#daily-editor-new").addEventListener("click", clearForm);
-    root.querySelector("#daily-editor-delete").addEventListener("click", async () => {
-      const id = fields.id.value;
-      if (!payload.entries.some((entry) => entry.id === id) || !confirm("确定删除这条日常记录吗？")) return;
-      payload.entries = payload.entries.filter((entry) => entry.id !== id);
-      await writePayload();
-      render();
-      clearForm();
-    });
-    fileButton.addEventListener("click", async () => {
-      if (!("showOpenFilePicker" in window)) {
-        fileStatus.textContent = "浏览器不支持直接写入，将改为下载文件";
-        return;
-      }
-      [fileHandle] = await window.showOpenFilePicker({
-        types: [{ description: "日常 JSON", accept: { "application/json": [".json"] } }],
-        multiple: false
-      });
-      const file = await fileHandle.getFile();
-      payload = JSON.parse(await file.text());
-      fileStatus.textContent = `已授权：${file.name}`;
-      render();
-      clearForm();
-    });
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const date = new Date(fields.date.value);
-      const entry = {
-        id: fields.id.value || `daily-${Date.now()}`,
-        type: fields.type.value,
-        timestamp: Math.floor(date.getTime() / 1000),
-        date: date.toISOString(),
-        content: fields.content.value.trim(),
-        images: fields.images.value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean),
-        source: "本机编辑"
-      };
-      const index = payload.entries.findIndex((item) => item.id === entry.id);
-      if (index >= 0) payload.entries[index] = entry;
-      else payload.entries.push(entry);
-      await writePayload();
-      render();
-      loadEntry(entry.id);
     });
   };
 

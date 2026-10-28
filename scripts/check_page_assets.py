@@ -22,6 +22,7 @@ CSS_BUNDLES = {
     "play.css",
     "workshop.css",
     "daily.css",
+    "daily-editor.css",
     "store.css",
     "admin-comments.css",
 }
@@ -36,6 +37,7 @@ JS_BUNDLES = {
     "admin-auth.js",
     "security.js",
     "daily.js",
+    "daily-editor.js",
     "comments.js",
     "admin-comments.js",
     "game-loader.js",
@@ -176,9 +178,12 @@ def validate(site_dir: Path) -> None:
     if (site_dir / "assets" / "stylesheets" / "theme-v2.css").exists():
         failures.append("Legacy monolithic theme-v2.css is still present in the generated site")
 
-    # The gallery is imported only after opening a photo, not in the initial bundle.
-    if not (site_dir / "assets" / "javascripts" / "daily-gallery.js").is_file():
-        failures.append("Missing on-demand daily-gallery.js")
+    # These modules are imported only after owner interaction, not in the initial bundle.
+    for name in ("daily-gallery.js", "daily-editor.js"):
+        if not (site_dir / "assets" / "javascripts" / name).is_file():
+            failures.append(f"Missing on-demand {name}")
+    if not (site_dir / "assets" / "stylesheets" / "daily-editor.css").is_file():
+        failures.append("Missing on-demand daily-editor.css")
 
     if failures:
         raise RuntimeError("Page asset validation failed:\n- " + "\n- ".join(failures))
