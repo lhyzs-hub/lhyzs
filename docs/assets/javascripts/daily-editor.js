@@ -36,7 +36,9 @@ export const initDailyEditor = ({
   const timeSummary = root.querySelector("#daily-editor-time-summary");
   const editorStatus = root.querySelector("#daily-editor-status");
   const editorTitle = root.querySelector("#daily-editor-title");
+  const deployStatus = root.querySelector("#daily-deploy-status");
   const deleteButton = root.querySelector("#daily-editor-delete");
+  const saveOnlyButton = root.querySelector("#daily-editor-save-only");
   const submitButton = root.querySelector("#daily-editor-submit");
   const fields = {
     id: root.querySelector("#daily-editor-id"),
@@ -53,6 +55,9 @@ export const initDailyEditor = ({
   let pendingImages = [];
   let imageSequence = 0;
   let saving = false;
+  let deployPolling = false;
+  const DEPLOY_BASE = "http://127.0.0.1:8765";
+  const DEPLOY_STORAGE_KEY = "lhyzs-daily-deploy-job";
 
   const renderEntryOptions = () => {
     const entries = [...payload.entries].sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
@@ -66,6 +71,7 @@ export const initDailyEditor = ({
     setPayload(payload);
     setPhotoManifest(photoManifest);
     renderEntryOptions();
+    updateActionLabels();
   };
 
   const localDayKey = (value) => {
@@ -83,6 +89,126 @@ export const initDailyEditor = ({
     editorStatus.textContent = message;
     if (tone) editorStatus.dataset.tone = tone;
     else delete editorStatus.dataset.tone;
+  };
+
+  const setDeployStatus = (message, tone = "") => {
+    deployStatus.textContent = message;
+    deployStatus.hidden = !message;
+    if (tone) deployStatus.dataset.tone = tone;
+    else delete deployStatus.dataset.tone;
+  };
+
+  const updateActionLabels = () => {
+    const editing = payload.entries.some((entry) => entry.id === fields.id.value);
+    submitButton.textContent = editing ? "保存并上线" : "发布并上线";
+    saveOnlyButton.textContent = editing ? "仅保存修改" : "仅保存到本地";
+  };
+
+  const rememberDeployJob = (jobId) => {
+    try {
+      localStorage.setItem(DEPLOY_STORAGE_KEY, JSON.stringify({ jobId, startedAt: Date.now() }));
+    } catch {
+    }
+  };
+
+  const rememberedDeployJob = () => {
+    try {
+      return JSON.parse(localStorage.getItem(DEPLOY_STORAGE_KEY) || "null");
+    } catch {
+      return null;
+    }
+  };
+
+  const forgetDeployJob = () => {
+    try {
+      localStorage.removeItem(DEPLOY_STORAGE_KEY);
+    } catch {
+    }
+  };
+
+  const pollDeployment = async (jobId) => {
+    if (deployPolling) return;
+    deployPolling = true;
+    const deadline = Date.now() + 5 * 60 * 1000;
+    try {
+      while (Date.now() < deadline) {
+        const response = await fetch(`${DEPLOY_BASE}/deploy-status?job=${encodeURIComponent(jobId)}`, {
+          cache: "no-store"
+        });
+        if (response.status === 404) {
+          forgetDeployJob();
+          setDeployStatus("上线状态已失效，请再发布一次。", "error");
+          return;
+        }
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || "无法读取上线状态。");
+        setDeployStatus(data.message || "正在上线…");
+        if (data.state === "success") {
+          forgetDeployJob();
+          setDeployStatus("已上线", "success");
+          setStatus("已发布并上线。", "success");
+          return;
+        }
+        if (data.state === "failed") {
+          forgetDeployJob();
+          setDeployStatus("上线失败", "error");
+          setStatus(data.message || "自动上线失败，请重试。", "error");
+          return;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+      setDeployStatus("等待上线结果超时", "error");
+      setStatus("已保存到本地，但上线结果等待超时，请到 GitHub Actions 查看。", "error");
+    } catch (error) {
+      setDeployStatus("上线状态中断", "error");
+      setStatus(error?.message || "无法读取上线状态。", "error");
+    } finally {
+      deployPolling = false;
+    }
+  };
+
+  const startDeployment = async (files, title) => {
+    setDeployStatus("正在上线…");
+    try {
+      const response = await fetch(`${DEPLOY_BASE}/deploy`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ files: [...new Set(files)], title })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (response.status === 409 && data.jobId) {
+        if (rememberedDeployJob()?.jobId === data.jobId) {
+          void pollDeployment(data.jobId);
+        } else {
+          setDeployStatus("上一条仍在上线", "error");
+          setStatus("本次已保存到本地；等上一条完成后，再点一次“发布并上线”。", "error");
+        }
+        return;
+      }
+      if (!response.ok) throw new Error(data.message || "本机部署服务拒绝了请求。");
+      rememberDeployJob(data.jobId);
+      void pollDeployment(data.jobId);
+    } catch (error) {
+      const message = error instanceof TypeError
+        ? "无法连接本机部署服务，请重启 python -m mkdocs serve 后再试。"
+        : error?.message || "自动上线失败。";
+      setDeployStatus("上线服务未连接", "error");
+      setStatus(`已保存到本地；${message}`, "error");
+    }
+  };
+
+  const resumeDeployment = () => {
+    try {
+      const stored = rememberedDeployJob();
+      if (!stored?.jobId || Date.now() - Number(stored.startedAt || 0) > 15 * 60 * 1000) {
+        forgetDeployJob();
+        return;
+      }
+      setDeployStatus("正在恢复上线状态…");
+      void pollDeployment(stored.jobId);
+    } catch {
+      forgetDeployJob();
+    }
   };
 
   const DB_NAME = "lhyzs-daily-editor";
@@ -342,13 +468,14 @@ export const initDailyEditor = ({
     fields.type.value = "日常";
     fields.typeSelect.value = "日常";
     fields.date.value = "";
+    delete fields.date.dataset.original;
     fields.content.value = "";
     select.value = "";
     deleteButton.hidden = true;
     editorTitle.textContent = "发布日常";
-    submitButton.textContent = "发布";
     clearPendingImages();
     updateTimeSummary();
+    updateActionLabels();
     setStatus("");
   };
 
@@ -360,13 +487,14 @@ export const initDailyEditor = ({
     fields.type.value = entry.type || type;
     fields.typeSelect.value = type;
     fields.date.value = localInputValue(new Date(entry.date));
+    fields.date.dataset.original = entry.date;
     fields.content.value = entry.content || "";
     select.value = entry.id;
     deleteButton.hidden = false;
     editorTitle.textContent = "编辑日常";
-    submitButton.textContent = "保存修改";
     setEntryImages(entry.images);
     updateTimeSummary();
+    updateActionLabels();
     setStatus("正在编辑这条日常。");
   };
 
@@ -424,9 +552,11 @@ export const initDailyEditor = ({
     return false;
   };
 
-  const saveEntry = async () => {
+  const saveEntry = async ({ deploy = true } = {}) => {
     if (saving) return;
-    const date = fields.date.value ? new Date(fields.date.value) : new Date();
+    const date = fields.date.dataset.original
+      ? new Date(fields.date.dataset.original)
+      : fields.date.value ? new Date(fields.date.value) : new Date();
     if (Number.isNaN(date.getTime())) {
       setStatus("发布时间无效。", "error");
       return;
@@ -449,7 +579,8 @@ export const initDailyEditor = ({
 
     saving = true;
     submitButton.disabled = true;
-    submitButton.textContent = "正在发布…";
+    saveOnlyButton.disabled = true;
+    submitButton.textContent = "正在保存…";
     setStatus("正在写入站点…");
     try {
       const dailyDirectory = await docsHandle.getDirectoryHandle("daily");
@@ -458,6 +589,7 @@ export const initDailyEditor = ({
       const mediaDirectory = await getDirectoryPath(docsHandle, ["assets", "images", "daily", "qzone", day], true);
       const thumbnailDirectory = await getDirectoryPath(docsHandle, ["assets", "images", "daily", "thumbs", "qzone", day], true);
       const imageUrls = [];
+      const writtenFiles = ["daily/qzone.json", "daily/photo-manifest.json"];
 
       for (const item of pendingImages) {
         if (item.kind === "existing") {
@@ -473,6 +605,8 @@ export const initDailyEditor = ({
         await writeBlob(mediaDirectory, name, item.blob);
         await writeBlob(thumbnailDirectory, name, item.thumbBlob);
         const src = `../assets/images/daily/qzone/${day}/${name}`;
+        writtenFiles.push(`assets/images/daily/qzone/${day}/${name}`);
+        writtenFiles.push(`assets/images/daily/thumbs/qzone/${day}/${name}`);
         photoManifest[src] = {
           thumbnail: `../assets/images/daily/thumbs/qzone/${day}/${name}`,
           width: item.width,
@@ -504,20 +638,26 @@ export const initDailyEditor = ({
       render();
       clearForm();
       fileStatus.textContent = "已保存到 docs";
-      setStatus(edited ? "已保存修改。" : "已发布。", "success");
+      if (deploy) {
+        setStatus("已保存，正在上线…", "success");
+        void startDeployment(writtenFiles, content || entry.type);
+      } else {
+        setStatus(edited ? "已保存修改。" : "已保存到本地。", "success");
+      }
     } catch (error) {
       setStatus(error?.message || "发布失败，请重试。", "error");
     } finally {
       saving = false;
       submitButton.disabled = false;
-      submitButton.textContent = payload.entries.some((entry) => entry.id === fields.id.value) ? "保存修改" : "发布";
+      saveOnlyButton.disabled = false;
+      updateActionLabels();
     }
   };
 
   const removeEntry = async () => {
     const id = fields.id.value;
     if (!payload.entries.some((entry) => entry.id === id)) return;
-    if (!confirm("确定删除这条日常记录吗？")) return;
+    if (!confirm("确定删除这条日常记录并同步到线上吗？")) return;
     if (!docsHandle && !(await connectFolder())) return;
     if (!payload.entries.some((entry) => entry.id === id)) {
       setStatus("这条记录已经不存在。", "error");
@@ -535,7 +675,8 @@ export const initDailyEditor = ({
       render();
       clearForm();
       fileStatus.textContent = "已保存到 docs";
-      setStatus("已删除这条日常。", "success");
+      setStatus("已删除，正在上线…", "success");
+      void startDeployment(["daily/qzone.json", "daily/photo-manifest.json"], "删除日常");
     } catch (error) {
       setStatus(error?.message || "删除失败，请重试。", "error");
     } finally {
@@ -579,8 +720,14 @@ export const initDailyEditor = ({
     openEditor();
   });
   deleteButton.addEventListener("click", removeEntry);
+  saveOnlyButton.addEventListener("click", () => {
+    void saveEntry({ deploy: false });
+  });
   folderButton.addEventListener("click", () => connectFolder(rememberedHandle));
-  fields.date.addEventListener("input", updateTimeSummary);
+  fields.date.addEventListener("input", () => {
+    delete fields.date.dataset.original;
+    updateTimeSummary();
+  });
   fields.typeSelect.addEventListener("change", () => {
     fields.type.value = fields.typeSelect.value;
   });
@@ -625,7 +772,7 @@ export const initDailyEditor = ({
   });
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    void saveEntry();
+    void saveEntry({ deploy: true });
   });
   fields.content.addEventListener("keydown", (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
@@ -636,4 +783,5 @@ export const initDailyEditor = ({
 
   clearForm();
   restoreFolder().catch(() => {});
+  resumeDeployment();
 };

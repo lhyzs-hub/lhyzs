@@ -397,6 +397,7 @@
 
 .daily-editor__buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: flex-end;
   margin-top: 1rem;
@@ -411,6 +412,11 @@
   margin-right: auto;
   border-color: #854c4c;
   color: #d9948a;
+}
+
+.daily-editor__buttons .secondary {
+  border-color: #466875;
+  color: #9bb6bc;
 }
 
 body.daily-editor-open {

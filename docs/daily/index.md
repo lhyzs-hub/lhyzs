@@ -12,6 +12,7 @@ hide:
       <p>照片、说说与生活片段，从 2025 年 8 月 15 日开始记录。</p>
     </div>
     <div class="daily-space__hero-actions">
+      <span class="daily-deploy-status" id="daily-deploy-status" role="status" hidden></span>
       <button class="daily-owner-only daily-space__edit" id="daily-owner-edit" type="button" hidden>
         <span aria-hidden="true">✦</span> 编辑日常 <small>仅本机</small>
       </button>
@@ -62,7 +63,7 @@ hide:
       </header>
 
       <div class="daily-editor__permission">
-        <p>连接一次 <code>docs</code> 文件夹后，文字和图片会直接写入站点。仅在本机显示。</p>
+        <p>连接一次 <code>docs</code> 文件夹后即可发布。上线时会自动校验、提交并等待 Pages 完成部署。</p>
         <button id="daily-editor-folder" type="button">连接 docs 文件夹</button>
         <span id="daily-editor-file-status">尚未连接</span>
       </div>
@@ -107,8 +108,9 @@ hide:
 
         <p class="daily-editor__status" id="daily-editor-status" role="status"></p>
         <div class="daily-editor__buttons">
-          <button id="daily-editor-delete" class="danger" type="button" hidden>删除这条</button>
-          <button type="submit" id="daily-editor-submit">发布</button>
+          <button id="daily-editor-delete" class="danger" type="button" hidden>删除并上线</button>
+          <button id="daily-editor-save-only" class="secondary" type="button">仅保存到本地</button>
+          <button type="submit" id="daily-editor-submit">发布并上线</button>
         </div>
       </form>
     </section>

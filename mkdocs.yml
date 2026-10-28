@@ -1,5 +1,7 @@
 site_name: lhyzs
 site_url: https://lhyzs-hub.github.io/lhyzs/
+hooks:
+  - scripts/mkdocs_daily_deploy.py
 theme:
   name: material
   custom_dir: overrides

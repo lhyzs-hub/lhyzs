@@ -126,7 +126,31 @@ body:has(.daily-space) .md-content__inner > h1 {
 .daily-space__hero-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 0.65rem;
+}
+
+.daily-deploy-status {
+  max-width: 19rem;
+  border-left: 1px solid #4b8793;
+  padding: 0.42rem 0.65rem;
+  color: #9bb9c0;
+  font: 600 0.62rem/1.35 "JetBrains Mono", monospace;
+}
+
+.daily-deploy-status[hidden] {
+  display: none;
+}
+
+.daily-deploy-status[data-tone="success"] {
+  border-color: #8fcbb2;
+  color: #a7dcc5;
+}
+
+.daily-deploy-status[data-tone="error"] {
+  border-color: #b26767;
+  color: #e0a39b;
 }
 
 .daily-space__source {

@@ -30,6 +30,10 @@ python -m pip install mkdocs-material==9.6.21
 python -m mkdocs serve
 ```
 
+本机预览时，“日常”编辑器会显示“发布并上线”。点击后会自动构建校验、只提交本次日常内容、
+推送到 GitHub，并等待 Pages 部署完成。首次需要选择一次 `docs` 文件夹，部署复用本机已登录的
+Git 与 GitHub CLI 凭据，不会把访问令牌写进网页或仓库。若尚未登录，先运行 `gh auth login`。
+
 ## 同步 Obsidian 笔记
 
 ```powershell
